@@ -1,0 +1,10 @@
+.DS_Store
+*.komodoproject
+Thumbs.db
+temp/gitiwiki/*
+gitiwiki/var/config/installer.ini.php
+gitiwiki/var/config/profiles.ini.php
+gitiwiki/var/config/defaultconfig.ini.php
+gitiwiki/var/log/*
+gitiwiki/var/sessions/*
+gitiwiki/var/uploads/*
