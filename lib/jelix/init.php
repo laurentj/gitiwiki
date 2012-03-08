@@ -17,7 +17,7 @@
  * Version number of Jelix
  * @name  JELIX_VERSION
  */
-define ('JELIX_VERSION', '1.4pre.2272');
+define ('JELIX_VERSION', '1.4pre.2287');
 
 /**
  * base of namespace path used in xml files of jelix
@@ -42,12 +42,13 @@ require (JELIX_LIB_CORE_PATH . 'jApp.class.php');
 require (JELIX_LIB_CORE_PATH . 'jICoordPlugin.iface.php');
 require (JELIX_LIB_CORE_PATH . 'jISelector.iface.php');
 require (JELIX_LIB_CORE_PATH . 'jIUrlEngine.iface.php');
-require (JELIX_LIB_CORE_PATH . 'jErrorHandler.lib.php');
-require (JELIX_LIB_CORE_PATH . 'jException.lib.php');
+require (JELIX_LIB_CORE_PATH . 'jBasicErrorHandler.class.php');
+require (JELIX_LIB_CORE_PATH . 'jException.class.php');
 require (JELIX_LIB_CORE_PATH . 'jContext.class.php');
 require (JELIX_LIB_CORE_PATH . 'jConfig.class.php');
 require (JELIX_LIB_CORE_PATH . 'jConfigAutoloader.class.php');
 require (JELIX_LIB_CORE_PATH . 'jSelector.class.php');
+require (JELIX_LIB_CORE_PATH . 'jServer.class.php');
 require (JELIX_LIB_CORE_PATH . 'selector/jSelectorModule.class.php');
 require (JELIX_LIB_CORE_PATH . 'selector/jSelectorActFast.class.php');
 require (JELIX_LIB_CORE_PATH . 'selector/jSelectorAct.class.php');
@@ -157,7 +158,7 @@ function checkAppOpened() {
     if (file_exists(jApp::configPath('CLOSED'))) {
         $message = file_get_contents(jApp::configPath('CLOSED'));
 
-        if (php_sapi_name() == 'cli') {
+        if (jServer::isCLI()) {
             echo "Application closed.". ($message?"\n$message\n":"\n");
             exit(1);
         }
@@ -179,12 +180,12 @@ function checkAppOpened() {
  * check if the application is not installed. If the app is installed, an
  * error message appears and the scripts ends.
  * It should be called only by some scripts
- * like an installation wizard, not by entry point.
+ * like an installation wizard, not by an entry point.
  * @todo migrate the code to jAppManager or jApp
  */
 function checkAppNotInstalled() {
     if (isAppInstalled()) {
-         if (php_sapi_name() == 'cli') {
+         if (jServer::isCLI()) {
             echo "Application is installed. The script cannot be runned.\n";
         }
         else {

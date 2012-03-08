@@ -16,7 +16,7 @@
  */
 class jTpl {
 
-    const VERSION = '1.0pre.2272';
+    const VERSION = '1.0pre.2287';
 
     /**
      * all assigned template variables. 

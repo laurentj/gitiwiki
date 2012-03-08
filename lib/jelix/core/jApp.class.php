@@ -11,7 +11,7 @@
 /**
 *
 * @package    jelix
-* @subpackage utils
+* @subpackage core
 */
 class jApp {
 
@@ -163,12 +163,11 @@ class jApp {
      *                 and really have to use the default handler or an other handler
      */
     public static function loadConfig ($configFile, $enableErrorHandler=true) {
-
         if ($enableErrorHandler) {
-            set_error_handler('jErrorHandler');
-            set_exception_handler('JExceptionHandler');
+            jBasicErrorHandler::register();
         }
-        self:: setConfig(jConfig::load($configFile));
+        self::setConfig(jConfig::load($configFile));
+        self::$_config->enableErrorHandler = $enableErrorHandler;
     }
 
     protected static $_coord = null;
