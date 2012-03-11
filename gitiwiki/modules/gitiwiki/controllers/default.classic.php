@@ -14,11 +14,7 @@ class defaultCtrl extends jController {
     */
     function index() {
         $rep = $this->getResponse('html');
-
-        // this is a call for the 'welcome' zone after creating a new application
-        // remove this line !
-        $rep->body->assignZone('MAIN', 'jelix~check_install');
-
+        $rep->body->assign('MAIN', '<h3>Wiki list</h3><ul><li><a href="'.jUrl::get('gitiwiki~wiki:index', array('repository'=>'default'), jUrl::XMLSTRING).'">default wiki</a></<li></ul>');
         return $rep;
     }
 }

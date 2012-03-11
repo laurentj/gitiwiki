@@ -2,7 +2,7 @@
 ;for security reasons , don't remove or modify the first line
 ;this file doesn't list all possible properties. See lib/jelix/core/defaultconfig.ini.php for that
 
-startModule=gitiwiki
+startModule=main
 startAction="default:index"
 
 locale=en_EN
@@ -40,6 +40,7 @@ junittests.access=0
 jWSDL.access=0
 
 gitiwiki.access=2
+main.access=2
 [coordplugins]
 ;name = file_ini_name or 1
 
@@ -49,16 +50,20 @@ defaultJformsBuilder=html
 [responses]
 html=myHtmlResponse
 
+[jResponseHtml]
+; list of active plugins for jResponseHtml
+plugins = 
+
 [error_handling]
 ;errorMessage="A technical error has occured (code: %code%). Sorry for this inconvenience."
 
 ;[compilation]
 ;checkCacheFiletime  = on
-;force  = off
+force  = on
 
 [urlengine]
 ; name of url engine :  "simple", "basic_significant" or "significant"
-engine=basic_significant
+engine=significant
 
 ; this is the url path to the jelix-www content (you can found this content in lib/jelix-www/)
 ; because the jelix-www directory is outside the yourapp/www/ directory, you should create a link to
@@ -117,6 +122,9 @@ index=on
 xmlrpc=on
 jsonrpc=on
 rdf=on
+
+
+
 
 [fileLogger]
 default=messages.log
@@ -197,3 +205,9 @@ name=
 [datepickers]
 ;default = jelix/js/jforms/datepickers/default/init.js
 
+
+[gwrepo_default]
+path = 
+wikiextension = .wiki
+wr_rules = dokuwiki_to_xhtml
+branch = master
