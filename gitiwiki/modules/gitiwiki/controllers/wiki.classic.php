@@ -9,7 +9,7 @@
 */
 
 
-//require_once(dirname(__FILE__).'/../classes/glip/glip.php');
+//
 //jClasses::inc('wikiFile');
 
 class wikiCtrl extends jController {
@@ -19,7 +19,7 @@ class wikiCtrl extends jController {
     function index() {
         $rep = $this->getResponse('html');
 
-        $rep->body->assign('MAIN', '<p> <a href="'.jUrl::get('gitiwiki~wiki:page', array('repository'=>'default', 'page'=>'page'), jUrl::XMLSTRING).'">a page</a></p>');
+        $rep->body->assign('MAIN', '<p> <a href="'.jUrl::get('gitiwiki~wiki:page', array('repository'=>'default', 'page'=>'index.wiki'), jUrl::XMLSTRING).'">a page</a></p>');
 
         return $rep;
     }
@@ -27,33 +27,17 @@ class wikiCtrl extends jController {
 
     function page() {
         $rep = $this->getResponse('html');
-
-        $rep->body->assign('MAIN', '<p> the page</p>');
-
+        jClasses::inc('gtwRepo');
+        $repo = new gtwRepo($this->param('repository'));
+        $page = $repo->getFile($this->param('page'));
+        if ($page === null) {
+            $rep->body->assign('MAIN', '<p>not found</p>');
+        }
+        else {
+            list($name, $content) = $page;
+            $rep->body->assign('MAIN', '<h2>'.htmlspecialchars($name).'</h2><pre>'.htmlspecialchars($content).'</pre>');
+        }
         return $rep;
-    }
-
-
-
-    protected function getFile($path, $repoName) {
-        $conf = jApp::config();
-        if (!isset($conf->{'jwiki_'.$name})) {
-            return null;
-        }
-
-        $conf = $conf->{'jwiki_'.$name};
-
-        $repo = new Git($conf['path']);
-        if ($commit = $this->param('commit')) {
-            
-        }
-        else
-            $commit = $repo->getTip($conf['branch']);
-        
-        
-        return new wikiFile($path, $repo, $commit);
-        
-        
     }
 
 }
