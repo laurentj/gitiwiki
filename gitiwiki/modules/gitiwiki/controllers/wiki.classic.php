@@ -33,6 +33,11 @@ class wikiCtrl extends jController {
         if ($page === null) {
             $rep->body->assign('MAIN', '<p>not found</p>');
         }
+        elseif(isset($page['redirection'])) {
+            $rep = $this->getResponse('redirect');
+            $rep->action = 'gitiwiki~wiki:page';
+            $rep->params = array('repository'=>  $this->param('repository') ,'page'=> $page['redirection']);
+        }
         else {
             list($name, $content) = $page;
             $rep->body->assign('MAIN', '<h2>'.htmlspecialchars($name).'</h2><pre>'.htmlspecialchars($content).'</pre>');
