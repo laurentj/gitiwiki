@@ -7,8 +7,12 @@
 * @link      http://jelix.org
 * @license    GNU PUBLIC LICENCE
 */
-
-require_once(dirname(__FILE__).'/glip/glip.php');
+$dirname = dirname(__FILE__);
+require_once($dirname.'/glip/glip.php');
+require_once($dirname.'/gtwFilebase.class.php');
+require_once($dirname.'/gtwFile.class.php');
+require_once($dirname.'/gtwDirectory.class.php');
+require_once($dirname.'/gtwRedirection.class.php');
 
 class gtwRepo {
     /**
@@ -60,6 +64,7 @@ class gtwRepo {
         if (substr($path, -1,1) == '/') {
             $name = 'index';
             $implicitName  = true;
+            //jLog::log("get $path : implicite index");
         }
         else {
             $name = basename($path);
@@ -67,6 +72,7 @@ class gtwRepo {
             if ($path == '.')
                 $path = '';
             $implicitName = false;
+            //jLog::log("get $path/$name : explicit page $name");
         }
 
         // retrieve the object corresponding to the dir
@@ -84,12 +90,25 @@ class gtwRepo {
         }
 
         if (! ($treeObject instanceof GitTree)) {
+            //jLog::log("get $path: treeobject is not a tree");
             // the path does not correspond to a directory, but to a file
             // in case when a leading / was provided, so we could ignore this / and
             // display the content of the file
             if ($implicitName) {
-                //FIXME return a gtwDirectory ? gtwFile ?
-                return array(basename($path), $treeObject->data);
+                $path = rtrim($path, '/');
+                $name = basename($path);
+                $path = dirname($path);
+                if ($path == '.')
+                    $path = '/';
+                $hash = $commit->find($path);
+                if (!$hash) {
+                    return null;
+                }
+                $treeObject = $this->repo->getObject($hash);
+                if (!$treeObject) {
+                    return null;
+                }
+                return new gtwFile($this->repo, $treeObject, $path, $name);
             }
             else {
                 // the directory of the file is not a directory. Error
@@ -105,9 +124,8 @@ class gtwRepo {
             $node = $treeObject->nodes[$name];
             if (!$node->is_dir) {
                 // this is a file, good !
-                // FIXME: returns a gtwFile
-                $fileObject = $this->repo->getObject($node->object);
-                return array($name, $fileObject->data);
+                //jLog::log("get $path/$name : it is a file, good");
+                return new gtwFile($this->repo, $treeObject, $path, $name);
             }
 
             // the given "path/name" is a directory
@@ -116,74 +134,80 @@ class gtwRepo {
                 // error we don't expect to find a directory 'index' under the given path
                 throw new Exception ('Unexpected content at this path');
 
-            //jLog::log("get $path/$name : it is a directory. Try multiview for $path/$name/index");
+            //jLog::log("get $path/$name : it is a directory. Try multiview for $path/$name to get index (dokuwiki compatibility)");
 
             // so the path indicates a directory
             // is there a file with the same name + a known extension?
             // => compatibility with dokuwiki storage
-            $fileResult = $this->checkMultiview($treeObject, $name);
+            $fileResult = $this->checkMultiview($treeObject, $path, $name);
             if ($fileResult) {
-                //jLog::log("get $path/$name  : it is a directory. found $path/$name/".$fileResult[0]);
+                jLog::log("get $path/$name  : it is a directory. found $path/".$fileResult->getName());
                 // ok, we found a file
                 return $fileResult;
             }
+
+            //jLog::log("get $path/$name : it is a directory. Try multiview for $path/$name/index");
 
             // this sub directory becomes the base directory
             $treeObject = $this->repo->getObject($node->object);
             $name = 'index';
             $node = null;
+            $implicitName = true;
         }
-
-        //jLog::log("get $path/$name : not found. Try multiview");
-
-        // multiview : try to find a file with the given name + a known extension
-        $fileResult = $this->checkMultiview($treeObject, $name);
-        if ($fileResult) {
-            //jLog::log("get $path/$name : found $path/$name/".$fileResult[0]);
-            return $fileResult;
+        else if ($implicitName) {
+            //jLog::log("get $path/$name : not found. Try multiview.");
+            $fileResult = $this->checkMultiview($treeObject, $path, $name);
+            if ($fileResult)
+                return $fileResult;
+            //jLog::log("get $path/$name with multiview not found. Try multiview on $path");
+            $path = rtrim($path, '/');
+            $name = basename($path);
+            $path = dirname($path);
+            if ($path == '.')
+                $path = '/';
+            $hash = $commit->find($path);
+            if (!$hash) {
+                return null;
+            }
+            $treeObject = $this->repo->getObject($hash);
+            if (!$treeObject) {
+                return null;
+            }
         }
         else {
-            //jLog::log("get $path/$name : not found definitively");
-            return null;
+            //jLog::log("get $path/$name : not found. Try multiview");
         }
+
+        // multiview : try to find a file with the given name + a known extension
+        $fileResult = $this->checkMultiview($treeObject, $path, $name);
+        if ($fileResult || ! $implicitName)
+            return $fileResult;
+        //jLog::log("get $path : directory view");
+        return new gtwDirectory($this->repo, $treeObject, $path);
     }
     
-    protected function checkMultiview($treeObject, $name) {
+    protected function checkMultiview($treeObject, $path, $name) {
         $metaDirObject = $this->getMetaDirObject($treeObject);
+        $file = new gtwFile($this->repo, $treeObject, $path, $name);
+        $file->setMetaDirObject($metaDirObject);
 
-        if ($metaDirObject && isset($metaDirObject->nodes[$name.'.ini'])) {
-            // the file does not exist, let's see if there is a redirection
-            $obj = $this->repo->getObject($metaDirObject->nodes[$name.'.ini']->object);
-            if ($obj) {
-                $ini = @parse_ini_string($obj->data, true);
-                if (isset($ini['redirection']) && $ini['redirection'] != '') {
-                    // FIXME, return a gtwRedirection
-                    return array('redirection' => $ini['redirection']);
-                }
-            }
+        $redir = $file->getMeta('redirection');
+
+        if ($redir) {
+            return new gtwRedirection($redir);
         }
 
         $extList = array('.html', '.htm', '.wiki', '.md', '.txt');
         foreach($extList as $ext) {
             $n = $name.$ext;
-            if (isset($treeObject->nodes[$n])) {
-                $node = $treeObject->nodes[$n];
-                if (!$node->is_dir) {
-                    $fileObject = $this->repo->getObject($node->object);
-                    return array($node->name, $fileObject->data);
-                }
+            $file = new gtwFile($this->repo, $treeObject, $path, $n);
+            if ($file->exists()) {
+                return $file;
             }
-            else if ($metaDirObject && isset($metaDirObject->nodes[$n.'.ini'])) {
-
-                // the file does not exist, let's see if there is a redirection
-                $obj = $this->repo->getObject($metaDirObject->nodes[$n.'.ini']->object);
-                if ($obj) {
-                    $ini = @parse_ini_string($obj->data, true);
-                    if (isset($ini['redirection']) && $ini['redirection'] != '') {
-                        // FIXME, return a gtwRedirection
-                        return array('redirection' => $ini['redirection']);
-                    }
-                }
+            $file->setMetaDirObject($metaDirObject);
+            $redir = $file->getMeta('redirection');
+            if ($redir) {
+                return new gtwRedirection($redir);
             }
         }
         return null;
