@@ -208,6 +208,7 @@ name=
 
 [gwrepo_default]
 path = 
-wikiextension = .wiki
-wr_rules = dokuwiki_to_xhtml
 branch = master
+
+[gitiwikiGenerators]
+wiki = "gitiwiki~gtwWikiRenderer,dokuwiki_to_xhtml"

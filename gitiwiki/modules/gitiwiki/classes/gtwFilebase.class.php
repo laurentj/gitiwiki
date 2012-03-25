@@ -32,6 +32,11 @@ abstract class gtwFileBase {
      */
     protected $treeGitObject;
 
+    /**
+     * @param gtwRepo $repo
+     * @param gitTree $treeGitObject
+     * @param string $path
+     */
     function __construct($repo, $treeGitObject, $path ) {
         $this->path = $path;
         $this->repo = $repo;
@@ -40,7 +45,9 @@ abstract class gtwFileBase {
 
     abstract function exists();
 
-    abstract function isHtmlContent();
+    abstract function isStaticContent();
+
+    abstract function getHtmlContent();
 
     abstract function getContent();
 

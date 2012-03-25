@@ -35,8 +35,28 @@ class gtwRepo {
         }
 
         $this->config = $conf->{'gwrepo_'.$repoName};
+        if (isset($this->config['generators']) && isset($conf->{$this->config['generators']})) {
+            $this->config['generators'] = $conf->{$this->config['generators']};
+        }
+        else if (isset($conf->gitiwikiGenerators)) {
+            $this->config['generators'] = $conf->gitiwikiGenerators;
+        }
+        else {
+            $this->config['generators'] = array();
+        }
 
         $this->repo = new Git($this->config['path']);
+    }
+
+    /**
+     * @return Git
+     */
+    function git() {
+        return $this->repo;
+    }
+
+    function config() {
+        return $this->config;
     }
 
     /**
@@ -45,8 +65,10 @@ class gtwRepo {
      * @param string $path  the path of the file into the repository
      * @param string $commitId the bin hash of a commit corresponding to a branch tip, if we want to search in
      *                  an other branch than the default branch
+     * @todo  support of redirection a a path component, to allow to indicate a redirection
+     *     of a directory content to another directory
      */
-    function getFile($path, $commitId = null) {
+    function findFile($path, $commitId = null) {
 
         // verify that the path does not contain names begining by '.' -> not found
         foreach (explode('/', $path) as $p) {
@@ -108,7 +130,7 @@ class gtwRepo {
                 if (!$treeObject) {
                     return null;
                 }
-                return new gtwFile($this->repo, $treeObject, $path, $name);
+                return new gtwFile($this, $treeObject, $path, $name);
             }
             else {
                 // the directory of the file is not a directory. Error
@@ -125,7 +147,7 @@ class gtwRepo {
             if (!$node->is_dir) {
                 // this is a file, good !
                 //jLog::log("get $path/$name : it is a file, good");
-                return new gtwFile($this->repo, $treeObject, $path, $name);
+                return new gtwFile($this, $treeObject, $path, $name);
             }
 
             // the given "path/name" is a directory
@@ -183,12 +205,12 @@ class gtwRepo {
         if ($fileResult || ! $implicitName)
             return $fileResult;
         //jLog::log("get $path : directory view");
-        return new gtwDirectory($this->repo, $treeObject, $path);
+        return new gtwDirectory($this, $treeObject, $path);
     }
     
     protected function checkMultiview($treeObject, $path, $name) {
         $metaDirObject = $this->getMetaDirObject($treeObject);
-        $file = new gtwFile($this->repo, $treeObject, $path, $name);
+        $file = new gtwFile($this, $treeObject, $path, $name);
         $file->setMetaDirObject($metaDirObject);
 
         $redir = $file->getMeta('redirection');
@@ -200,7 +222,7 @@ class gtwRepo {
         $extList = array('.html', '.htm', '.wiki', '.md', '.txt');
         foreach($extList as $ext) {
             $n = $name.$ext;
-            $file = new gtwFile($this->repo, $treeObject, $path, $n);
+            $file = new gtwFile($this, $treeObject, $path, $n);
             if ($file->exists()) {
                 return $file;
             }

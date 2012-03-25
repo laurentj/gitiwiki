@@ -18,13 +18,29 @@ class gtwFile extends gtwFileBase {
      */
     protected $fileGitObject;
 
+    protected $generator = null;
+
     function __construct($repo, $treeGitObject, $path, $name ) {
         parent::__construct($repo, $treeGitObject, $path);
         $this->name = $name;
 
+        $pos = strrpos($name, '.');
+        if ($pos !== false) {
+            $ext = substr($name, $pos+1);
+            $conf = $this->repo->config();
+            $generatorsList = $conf['generators'];
+            if (isset($generatorsList[$ext])) {
+                $genParams = explode(',',$generatorsList[$ext]);
+                $class = array_shift($genParams);
+                $this->generator = jClasses::create($class);
+                if ($genParams)
+                    $this->generator->init($genParams);
+            }
+        }
+
         if (isset($treeGitObject->nodes[$name])) {
             $node = $treeGitObject->nodes[$name];
-            $this->fileGitObject = $repo->getObject($node->object);
+            $this->fileGitObject = $this->repo->git()->getObject($node->object);
         }
     }
 
@@ -52,7 +68,7 @@ class gtwFile extends gtwFileBase {
         $this->metaDirObject = $metaDirObject;
         if (!isset($metaDirObject->nodes[$this->name.'.ini']))
             return;
-        $this->metaFileObject = $this->repo->getObject($metaDirObject->nodes[$this->name.'.ini']->object);
+        $this->metaFileObject = $this->repo->git()->getObject($metaDirObject->nodes[$this->name.'.ini']->object);
 
         if ($this->metaFileObject) {
             $ini = @parse_ini_string($this->metaFileObject->data, true);
@@ -67,8 +83,8 @@ class gtwFile extends gtwFileBase {
         return null;
     }
 
-    function isHtmlContent() {
-        return false;
+    function isStaticContent() {
+        return ($this->generator === null);
     }
 
     function save($message, $authorName, $authorMail) {
@@ -83,6 +99,16 @@ class gtwFile extends gtwFileBase {
         throw new Exception('not implemented');
     }
 
+    function getHtmlContent() {
+        if ($this->fileGitObject) {
+            if ($this->generator) {
+                return $this->generator->generate($this->fileGitObject->data);
+            } else
+                return '<pre>'.htmlspecialchars($this->fileGitObject->data).'</pre>';
+        }
+        return '';
+    }
+
     function getContent() {
         if ($this->fileGitObject)
             return $this->fileGitObject->data;
@@ -90,30 +116,35 @@ class gtwFile extends gtwFileBase {
     }
 
     function setContent($content) {
-        
+        throw new Exception('not implemented');
     }
 
     function getTitle() {
-        
+        throw new Exception('not implemented');
     }
 
     function setTitle($title) {
-        
+        throw new Exception('not implemented');
     }
 
     function getDescription() {
-        
+        throw new Exception('not implemented');
     }
 
     function setDescription() {
-        
+        throw new Exception('not implemented');
     }
 
     function getMimeType() {
-        
+        if ($this->generator) {
+            return 'text/html';
+        }
+        else {
+            return jFile::getMimeTypeFromFilename($this->name);
+        }
     }
 
     function setMimeType($title) {
-        
+        throw new Exception('not implemented');
     }
 }

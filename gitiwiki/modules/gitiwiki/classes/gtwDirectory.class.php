@@ -27,11 +27,11 @@ class gtwDirectory extends gtwFileBase {
         throw new Exception('not implemented');
     }
 
-    function isHtmlContent() {
-        return true;
+    function isStaticContent() {
+        return false;
     }
 
-    function getContent() {
+    function getHtmlContent() {
         if (!$this->treeGitObject)
             return '';
         $ct = '<ul>';
@@ -39,5 +39,15 @@ class gtwDirectory extends gtwFileBase {
             $ct .= '<li>'.$node->name.'</li>';
         }
         return $ct . '</ul>';
+    }
+
+    function getContent() {
+        if (!$this->treeGitObject)
+            return '';
+        $ct = '';
+        foreach($this->treeGitObject->nodes as $node) {
+            $ct .= $node->name."\n";
+        }
+        return $ct;
     }
 }

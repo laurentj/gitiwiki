@@ -29,7 +29,7 @@ class wikiCtrl extends jController {
         $rep = $this->getResponse('html');
         jClasses::inc('gtwRepo');
         $repo = new gtwRepo($this->param('repository'));
-        $page = $repo->getFile($this->param('page'));
+        $page = $repo->findFile($this->param('page'));
         if ($page === null) {
             $rep->body->assign('MAIN', '<p>not found</p>');
         }
@@ -38,8 +38,18 @@ class wikiCtrl extends jController {
             $rep->action = 'gitiwiki~wiki:page';
             $rep->params = array('repository'=>  $this->param('repository') ,'page'=> $page->url);
         }
-        else {
-            $rep->body->assign('MAIN', '<h2>'.htmlspecialchars($name).'</h2><pre>'.htmlspecialchars($page->getContent()).'</pre>');
+        elseif($page instanceof gtwFile) {
+            if ($page->isStaticContent()) {
+                $resp = $this->getResponse('binary');
+                $resp->fileName = $page->getName();
+                $resp->content = $page->getContent();
+                $resp->mimeType = $page->getMimeType();
+                return $resp;
+            }
+            $rep->body->assign('MAIN', '<h2>'.htmlspecialchars($page->getName()).'</h2>'.$page->getHtmlContent());
+        }
+        else { // directory index
+            $rep->body->assign('MAIN', '<h2>'.htmlspecialchars($page->getName()).'</h2>'.$page->getHtmlContent());
         }
         return $rep;
     }

@@ -12,13 +12,12 @@
 class gitiwikiModuleInstaller extends jInstallerModule {
 
     function install() {
-        //if ($this->firstDbExec())
-        //    $this->execSQLScript('sql/install');
-
-        /*if ($this->firstExec('acl2')) {
-            jAcl2DbManager::addSubject('my.subject', 'gitiwiki~acl.my.subject', 'subject.group.id');
-            jAcl2DbManager::addRight('admins', 'my.subject'); // for admin group
+        if ($this->firstConfExec()) {
+            $conf = $this->config->getMaster();
+            if (!$conf->isSection('gitiwikiGenerators')) {
+                $ini = new jIniFileModifier(dirname(__FILE__).'/config.ini');
+                $conf->merge($ini);
+            }
         }
-        */
     }
 }
