@@ -48,6 +48,9 @@ Olivier Demah (aka FoxMaSk)
 Antoine Detante (aka antoinefr)
  - support of persistant authentification in jAuth and auth plugin (#229)
 
+Sid-Ali Djenadid
+ - contribution on the jDaoRecordBase::save method implementation
+
 DSDenes
  - fix little thing in crud template (#844)
  - added a native modifier in jtpl (#845)
@@ -80,6 +83,9 @@ Geekbay
 Gildas Givaja (aka Giviz)
  - testor, bug fixes
  - bug fix in jXmlRpc.class.php (#192)
+
+Flav
+ - allow to implements methods in controllers with __call (#1448)
 
 Frédéric Guillot (aka fg)
  - patch for multiple authentification in a same session (#207)

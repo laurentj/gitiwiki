@@ -27,7 +27,7 @@ class jAcl2DbUserGroup {
     private function __construct (){ }
 
     /**
-     * Says if the current user is a member of the given user group
+     * Indicates if the current user is a member of the given user group
      * @param string $groupid The id of a group
      * @return boolean true if it's ok
      */
@@ -38,7 +38,7 @@ class jAcl2DbUserGroup {
     protected static $groups = null;
 
     /**
-     * retrieve the list of group the current user is member of
+     * Retrieve the list of group the current user is member of
      * @return array list of group id
      */
     public static function getGroups(){
@@ -47,7 +47,7 @@ class jAcl2DbUserGroup {
             return array();
         }
 
-        // chargement des groupes
+        // load groups
         if(self::$groups === null){
             $gp = jDao::get('jacl2db~jacl2usergroup', 'jacl2_profile')
                     ->getGroupsUser(jAuth::getUserSession()->login);
@@ -61,7 +61,7 @@ class jAcl2DbUserGroup {
     }
 
     /**
-     * get the private group for the current user or for the given login
+     * Get the private group for the current user or for the given login
      * @param string $login The user's login
      * @return string the id of the private group
      * @since 1.2
@@ -76,7 +76,7 @@ class jAcl2DbUserGroup {
     }
 
     /**
-     * get a group
+     * Get a group
      * @param string $code The code
      * @return jacl2group|false the dao object r false if it doesn't exist
      * @since 1.2
@@ -109,7 +109,7 @@ class jAcl2DbUserGroup {
         $usergrp = jDao::createRecord('jacl2db~jacl2usergroup','jacl2_profile');
         $usergrp->login = $login;
 
-        // si $defaultGroup -> assign le user aux groupes par defaut
+        // if $defaultGroup -> assign the user to default groups
         if($defaultGroup){
             $defgrp = $daogroup->getDefaultGroups();
             foreach($defgrp as $group){
@@ -131,7 +131,7 @@ class jAcl2DbUserGroup {
     }
 
     /**
-     * add a user into a group
+     * Add a user into a group
      *
      * (a user can be a member of several groups)
      * @param string $login the user login
@@ -147,7 +147,7 @@ class jAcl2DbUserGroup {
     }
 
     /**
-     * remove a user from a group
+     * Remove a user from a group
      * @param string $login the user login
      * @param string $groupid the group id
      */
@@ -156,28 +156,28 @@ class jAcl2DbUserGroup {
     }
 
     /**
-     * unregister a user in the acl system
+     * Unregister a user in the acl system
      * @param string $login the user login
      */
     public static function removeUser($login){
         $daogroup = jDao::get('jacl2db~jacl2group','jacl2_profile');
 
-        // recupere le groupe privé
+        // get the private group
         $privategrp = $daogroup->getPrivateGroup($login);
         if(!$privategrp) return;
 
-        // supprime les droits sur le groupe privé (jacl_rights)
+        // delete the rights on the private group (jacl_rights)
         jDao::get('jacl2db~jacl2rights','jacl2_profile')->deleteByGroup($privategrp->id_aclgrp);
 
-        // l'enleve de tous les groupes (jacl_users_group)
+        // remove from all the groups (jacl_users_group)
         jDao::get('jacl2db~jacl2usergroup','jacl2_profile')->deleteByUser($login);
 
-        // supprime le groupe personnel du user (jacl_group)
+        // remove the user's personal group (jacl_group)
         $daogroup->delete($privategrp->id_aclgrp);
     }
 
     /**
-     * create a new group
+     * Create a new group
      * @param string $name its name
      * @param string $id_aclgrp its id
      * @return string the id of the new group
@@ -194,7 +194,7 @@ class jAcl2DbUserGroup {
     }
 
     /**
-     * set a group to be default (or not)
+     * Set a group to be default (or not)
      *
      * there can have several default group. A default group is a group
      * where a user is assigned to during its registration
@@ -213,7 +213,7 @@ class jAcl2DbUserGroup {
     }
 
     /**
-     * change the name of a group
+     * Change the name of a group
      * @param string $groupid the group id
      * @param string $name the new name
      */
@@ -230,16 +230,16 @@ class jAcl2DbUserGroup {
     public static function removeGroup($groupid){
         if( $groupid == '__anonymous')
             throw new Exception ('jAcl2DbUserGroup::removeGroup : invalid group id');
-        // enlever tous les droits attachés au groupe
+        // remove all the rights attached to the group
         jDao::get('jacl2db~jacl2rights','jacl2_profile')->deleteByGroup($groupid);
-        // enlever les utilisateurs du groupe
+        // remove the users from the group
         jDao::get('jacl2db~jacl2usergroup','jacl2_profile')->deleteByGroup($groupid);
-        // suppression du groupe
+        // remove the group itself
         jDao::get('jacl2db~jacl2group','jacl2_profile')->delete($groupid);
     }
 
     /**
-     * return a list of group.
+     * Return a list of group.
      *
      * if a login is given, it returns only the groups of the user.
      * Else it returns all groups (except private groups)
@@ -255,7 +255,7 @@ class jAcl2DbUserGroup {
     }
 
     /**
-     * clear cache of variables of this class
+     * Clear cache of variables of this class
      * @since 1.3
      */
     public static function clearCache(){

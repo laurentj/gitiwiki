@@ -24,7 +24,7 @@ class jAclDbUserGroup {
     private function __construct (){ }
 
     /**
-     * Says if the current user is a member of the given user group
+     * Indicates if the current user is a member of the given user group
      * @param int $groupid The id of a group
      * @return boolean true if it's ok
      * @since 1.0b3
@@ -35,7 +35,7 @@ class jAclDbUserGroup {
     }
 
     /**
-     * retrieve the list of group the current user is member of
+     * Retrieve the list of group the current user is member of
      * @return array list of group id
      * @since 1.0b3
      */
@@ -45,7 +45,7 @@ class jAclDbUserGroup {
         if(!jAuth::isConnected())
             return array();
 
-        // chargement des groupes
+        // load the groups
         if($groups === null){
             $dao = jDao::get('jacldb~jaclusergroup', 'jacl_profile');
             $gp = $dao->getGroupsUser(jAuth::getUserSession()->login);
@@ -83,7 +83,7 @@ class jAclDbUserGroup {
         $usergrp = jDao::createRecord('jacldb~jaclusergroup','jacl_profile');
         $usergrp->login =$login;
 
-        // si $defaultGroup -> assign le user aux groupes par defaut
+        // if $defaultGroup -> assign the user to the default group(s)
         if($defaultGroup){
             $defgrp = $daogroup->getDefaultGroups();
             foreach($defgrp as $group){
@@ -92,7 +92,7 @@ class jAclDbUserGroup {
             }
         }
 
-        // creation d'un groupe personnel
+        // create a personal group
         $persgrp = jDao::createRecord('jacldb~jaclgroup','jacl_profile');
         $persgrp->name = $login;
         $persgrp->grouptype = 2;
@@ -137,17 +137,17 @@ class jAclDbUserGroup {
         $daoright = jDao::get('jacldb~jaclrights','jacl_profile');
         $daousergroup = jDao::get('jacldb~jaclusergroup','jacl_profile');
 
-        // recupere le groupe privé
+        // get the private group
         $privategrp = $daogroup->getPrivateGroup($login);
         if(!$privategrp) return;
 
-        // supprime les droits sur le groupe privé (jacl_rights)
+        // delete the rights on the private group (jacl_rights)
         $daoright->deleteByGroup($privategrp->id_aclgrp);
 
-        // supprime le groupe personnel du user (jacl_group)
+        // remove the user's personal group (jacl_group)
         $daogroup->delete($privategrp->id_aclgrp);
 
-        // l'enleve de tous les groupes (jacl_users_group)
+        // remove from all the groups (jacl_users_group)
         $daousergroup->deleteByUser($login);
     }
 
@@ -199,11 +199,11 @@ class jAclDbUserGroup {
         $daogroup = jDao::get('jacldb~jaclgroup','jacl_profile');
         $daoright = jDao::get('jacldb~jaclrights','jacl_profile');
         $daousergroup = jDao::get('jacldb~jaclusergroup','jacl_profile');
-        // enlever tous les droits attachés au groupe
+        // remove all the rights attached to the group
         $daoright->deleteByGroup($groupid);
-        // enlever les utilisateurs du groupe
+        // remove the users from the group
         $daousergroup->deleteByGroup($groupid);
-        // suppression du groupe
+        // remove the group itself
         $daogroup->delete($groupid);
     }
 
