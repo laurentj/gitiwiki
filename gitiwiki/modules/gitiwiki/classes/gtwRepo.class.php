@@ -82,6 +82,25 @@ class gtwRepo {
             $commitId = $this->repo->getTip($this->config['branch']);
         }
 
+        // retrieve the object corresponding to the dir
+        $commit = $this->repo->getObject($commitId);
+        $this->loadRedirections($commit);
+
+        foreach($this->redirections as $regexp=>$target) {
+            if (preg_match('!'.$regexp.'!', $path, $m)) {
+                if ($target == '')
+                    return null;
+                if (count($m) > 1) {
+                    array_shift($m);
+                    array_unshift($m, $target);
+                    return new gtwRedirection(call_user_func_array('sprintf',$m));
+                }
+                else {
+                    return new gtwRedirection($target);
+                }
+            }
+        }
+
         // extract the dir path and the file name from the given path
         if (substr($path, -1,1) == '/') {
             $name = 'index';
@@ -97,8 +116,7 @@ class gtwRepo {
             //jLog::log("get $path/$name : explicit page $name");
         }
 
-        // retrieve the object corresponding to the dir
-        $commit = $this->repo->getObject($commitId);
+
         $hash = $commit->find($path);
         if (!$hash) {
             //jLog::log("get $path : don't find the path at the given commit");
@@ -248,5 +266,26 @@ class gtwRepo {
             return null;
         }
         return $metaDirObject;
+    }
+
+    protected $redirections = array();
+    protected function loadRedirections($commit) {
+        $this->redirections = array();
+        $hash = $commit->find('.redirections');
+        if (!$hash)
+            return;
+        $object = $this->repo->getObject($hash);
+        if (!$object || !($object instanceof GitBlob)) {
+            return;
+        }
+        $lines = explode("\n", $object->data);
+        foreach($lines as $line) {
+            if (trim($line) == '')
+                continue;
+            list($old,$new) = explode("=>", $line);
+            $old = trim($old);
+            if ($old)
+                $this->redirections[trim($old)] = trim($new);
+        }
     }
 }
