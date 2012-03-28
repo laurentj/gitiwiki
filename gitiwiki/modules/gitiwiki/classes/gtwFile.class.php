@@ -20,6 +20,12 @@ class gtwFile extends gtwFileBase {
 
     protected $generator = null;
 
+    /**
+     * @param gtwRepo $repo
+     * @param gitTree $treeGitObject
+     * @param string $path the path, without ending slash
+     * @param string $name the filename
+     */
     function __construct($repo, $treeGitObject, $path, $name ) {
         parent::__construct($repo, $treeGitObject, $path);
         $this->name = $name;

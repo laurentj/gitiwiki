@@ -34,9 +34,15 @@ class wikiCtrl extends jController {
             $rep->body->assign('MAIN', '<p>not found</p>');
         }
         elseif($page instanceof gtwRedirection) {
-            $rep = $this->getResponse('redirect');
-            $rep->action = 'gitiwiki~wiki:page';
-            $rep->params = array('repository'=>  $this->param('repository') ,'page'=> $page->url);
+            if (!$page->isWikiUrl()) {
+                $rep = $this->getResponse('redirectUrl');
+                $rep->url = $page->url;
+            }
+            else {
+                $rep = $this->getResponse('redirect');
+                $rep->action = 'gitiwiki~wiki:page';
+                $rep->params = array('repository'=>  $this->param('repository') ,'page'=> $page->url);
+            }
         }
         elseif($page instanceof gtwFile) {
             if ($page->isStaticContent()) {

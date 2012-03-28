@@ -86,6 +86,7 @@ class gtwRepo {
         $commit = $this->repo->getObject($commitId);
         $this->loadRedirections($commit);
 
+        $path = ltrim($path, '/');
         foreach($this->redirections as $regexp=>$target) {
             if (preg_match('!'.$regexp.'!', $path, $m)) {
                 if ($target == '')
@@ -103,6 +104,7 @@ class gtwRepo {
 
         // extract the dir path and the file name from the given path
         if (substr($path, -1,1) == '/') {
+            $path = rtrim($path, '/');
             $name = 'index';
             $implicitName  = true;
             //jLog::log("get $path : implicite index");
@@ -117,7 +119,7 @@ class gtwRepo {
         }
 
 
-        $hash = $commit->find($path);
+        $hash = $commit->find($path.'/');
         if (!$hash) {
             //jLog::log("get $path : don't find the path at the given commit");
             return null;
@@ -135,12 +137,11 @@ class gtwRepo {
             // in case when a leading / was provided, so we could ignore this / and
             // display the content of the file
             if ($implicitName) {
-                $path = rtrim($path, '/');
                 $name = basename($path);
                 $path = dirname($path);
                 if ($path == '.')
-                    $path = '/';
-                $hash = $commit->find($path);
+                    $path = '';
+                $hash = $commit->find($path.'/');
                 if (!$hash) {
                     return null;
                 }
@@ -200,12 +201,11 @@ class gtwRepo {
             if ($fileResult)
                 return $fileResult;
             //jLog::log("get $path/$name with multiview not found. Try multiview on $path");
-            $path = rtrim($path, '/');
             $name = basename($path);
             $path = dirname($path);
             if ($path == '.')
-                $path = '/';
-            $hash = $commit->find($path);
+                $path = '';
+            $hash = $commit->find($path.'/');
             if (!$hash) {
                 return null;
             }
@@ -232,9 +232,8 @@ class gtwRepo {
         $file->setMetaDirObject($metaDirObject);
 
         $redir = $file->getMeta('redirection');
-
         if ($redir) {
-            return new gtwRedirection($redir);
+            return new gtwRedirection($redir, $path);
         }
 
         $extList = array('.html', '.htm', '.wiki', '.md', '.txt');
@@ -247,7 +246,7 @@ class gtwRepo {
             $file->setMetaDirObject($metaDirObject);
             $redir = $file->getMeta('redirection');
             if ($redir) {
-                return new gtwRedirection($redir);
+                return new gtwRedirection($redir, $path);
             }
         }
         return null;
@@ -284,7 +283,8 @@ class gtwRepo {
                 continue;
             list($old,$new) = explode("=>", $line);
             $old = trim($old);
-            if ($old)
+            $c = substr($old, 0,1);
+            if ($old && $c != '#' && $c != ';')
                 $this->redirections[trim($old)] = trim($new);
         }
     }
