@@ -20,7 +20,7 @@ class gtwRepo {
      * configuration parameters of the repository
      */
     protected $config;
-    
+
     /**
      * @var Git
      * the git object representing the repository
@@ -44,6 +44,7 @@ class gtwRepo {
         else {
             $this->config['generators'] = array();
         }
+        $this->config['branches'] = array();
 
         $this->repo = new Git($this->config['path']);
     }
@@ -69,6 +70,7 @@ class gtwRepo {
      *     of a directory content to another directory
      */
     function findFile($path, $commitId = null) {
+        //jLog::log("------------------findFile $path");
 
         // verify that the path does not contain names begining by '.' -> not found
         foreach (explode('/', $path) as $p) {
@@ -84,10 +86,11 @@ class gtwRepo {
 
         // retrieve the object corresponding to the dir
         $commit = $this->repo->getObject($commitId);
-        $this->loadRedirections($commit);
+        $config = $this->loadBranchConfig($commit);
 
         $path = ltrim($path, '/');
-        foreach($this->redirections as $regexp=>$target) {
+
+        foreach($config['redirection'] as $regexp=>$target) {
             if (preg_match('!'.$regexp.'!', $path, $m)) {
                 if ($target == '')
                     return null;
@@ -103,7 +106,12 @@ class gtwRepo {
         }
 
         // extract the dir path and the file name from the given path
-        if (substr($path, -1,1) == '/') {
+        if ($path == '') {
+            $name = 'index';
+            $implicitName  = true;
+            //jLog::log("get $path : implicite index home");
+        }
+        else if (substr($path, -1,1) == '/') {
             $path = rtrim($path, '/');
             $name = 'index';
             $implicitName  = true;
@@ -117,7 +125,6 @@ class gtwRepo {
             $implicitName = false;
             //jLog::log("get $path/$name : explicit page $name");
         }
-
 
         $hash = $commit->find($path.'/');
         if (!$hash) {
@@ -180,9 +187,9 @@ class gtwRepo {
             // so the path indicates a directory
             // is there a file with the same name + a known extension?
             // => compatibility with dokuwiki storage
-            $fileResult = $this->checkMultiview($treeObject, $path, $name);
+            $fileResult = $this->checkMultiview($treeObject, $path, $name, $commitId);
             if ($fileResult) {
-                jLog::log("get $path/$name  : it is a directory. found $path/".$fileResult->getName());
+                //jLog::log("get $path/$name  : it is a directory. found $path/".$fileResult->getName());
                 // ok, we found a file
                 return $fileResult;
             }
@@ -197,7 +204,7 @@ class gtwRepo {
         }
         else if ($implicitName) {
             //jLog::log("get $path/$name : not found. Try multiview.");
-            $fileResult = $this->checkMultiview($treeObject, $path, $name);
+            $fileResult = $this->checkMultiview($treeObject, $path, $name, $commitId);
             if ($fileResult)
                 return $fileResult;
             //jLog::log("get $path/$name with multiview not found. Try multiview on $path");
@@ -219,14 +226,14 @@ class gtwRepo {
         }
 
         // multiview : try to find a file with the given name + a known extension
-        $fileResult = $this->checkMultiview($treeObject, $path, $name);
+        $fileResult = $this->checkMultiview($treeObject, $path, $name, $commitId);
         if ($fileResult || ! $implicitName)
             return $fileResult;
         //jLog::log("get $path : directory view");
         return new gtwDirectory($this, $treeObject, $path);
     }
     
-    protected function checkMultiview($treeObject, $path, $name) {
+    protected function checkMultiview($treeObject, $path, $name, $commitId) {
         $metaDirObject = $this->getMetaDirObject($treeObject);
         $file = new gtwFile($this, $treeObject, $path, $name);
         $file->setMetaDirObject($metaDirObject);
@@ -236,7 +243,7 @@ class gtwRepo {
             return new gtwRedirection($redir, $path);
         }
 
-        $extList = array('.html', '.htm', '.wiki', '.md', '.txt');
+        $extList = $this->config['branches'][$commitId]['multiviews'];
         foreach($extList as $ext) {
             $n = $name.$ext;
             $file = new gtwFile($this, $treeObject, $path, $n);
@@ -267,25 +274,51 @@ class gtwRepo {
         return $metaDirObject;
     }
 
-    protected $redirections = array();
-    protected function loadRedirections($commit) {
-        $this->redirections = array();
-        $hash = $commit->find('.redirections');
-        if (!$hash)
-            return;
-        $object = $this->repo->getObject($hash);
+    protected function loadBranchConfig($commit) {
+        $hash = $commit->getName();
+        if (isset($this->config['branches'][$hash])) {
+            return $this->config['branches'][$hash];
+        }
+        $c = $this->config['branches'][$hash] = array('multiviews'=>array(), 'redirection'=>array(), 'ignore'=>array());
+
+        $cfhash = $commit->find('.config.ini');
+        if (!$cfhash){
+            return $c;
+        }
+        $object = $this->repo->getObject($cfhash);
         if (!$object || !($object instanceof GitBlob)) {
-            return;
+            return $c;
         }
-        $lines = explode("\n", $object->data);
-        foreach($lines as $line) {
-            if (trim($line) == '')
-                continue;
-            list($old,$new) = explode("=>", $line);
-            $old = trim($old);
-            $c = substr($old, 0,1);
-            if ($old && $c != '#' && $c != ';')
-                $this->redirections[trim($old)] = trim($new);
+
+        $c = parse_ini_string($object->data, true);
+        if ($c) {
+
+           if (isset($c['multiviews'])) {
+                $c['multiviews'] = preg_split("/\s*,\s*/", $c['multiviews']);
+            }
+            else
+                $c['multiviews'] = array();
+
+            if (isset($c['redirection']) && is_array($c['redirection'])) {
+                $r = array();
+                foreach( $c['redirection'] as $k=>$line) {
+                    if (trim($line) == '')
+                        continue;
+                    list($old,$new) = explode("->", $line);
+                    $old = trim($old);
+                    if ($old)
+                        $r[trim($old)] = trim($new);
+                }
+                $c['redirection'] = $r;
+            }
+            else
+                $c['redirection'] = array();
+
+            if (!isset($c['ignore']))
+                $c['ignore'] = array();
+
+            $this->config['branches'][$hash] = $c;
         }
+        return $this->config['branches'][$hash];
     }
 }

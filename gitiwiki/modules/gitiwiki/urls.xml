@@ -3,7 +3,8 @@
     <url pathinfo="/" module="gitiwiki" action="default:index" optionalTrailingSlash="true">
     </url>
 
-    <url pathinfo="/:repository" module="gitiwiki" action="wiki:index" optionalTrailingSlash="true">
+    <url pathinfo="/:repository" module="gitiwiki" action="wiki:page" optionalTrailingSlash="true">
+        <static name="page" value="/"/>
     </url>
 
     <url pathinfo="/:repository/:page" module="gitiwiki" action="wiki:page">

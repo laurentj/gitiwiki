@@ -3,7 +3,7 @@
 require_once(dirname(__FILE__).'/../classes/gtwRepo.class.php');
 
 class getFileTest extends PHPUnit_Framework_TestCase {
-/*
+
     public function testGetImplicitHome() {
         $repo = new gtwRepo('default');
         $page = $repo->findFile('/');
@@ -148,7 +148,7 @@ Hello world !
         $this->assertNotNull($page);
         $this->assertInstanceOf('gtwRedirection', $page);
         $this->assertTrue($page->isWikiUrl());
-        $this->assertEquals('manual2/article2.wiki', $page->url);
+        $this->assertEquals('manual2/article2', $page->url);
 
         $page = $repo->findFile('/manual/relative-renamed-page.wiki');
         $this->assertNotNull($page);
@@ -165,7 +165,7 @@ Hello world !
         $this->assertFalse($page->isWikiUrl());
         $this->assertEquals('/foo.html', $page->url);
     }
-*/
+
     
     public function testGlobalRedirection() {
         $repo = new gtwRepo('default');
