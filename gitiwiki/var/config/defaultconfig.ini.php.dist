@@ -207,7 +207,8 @@ name=
 
 
 [gwrepo_default]
-path = 
+path =
+generators = gitiwikiGenerators
 branch = master
 
 [gitiwikiGenerators]
