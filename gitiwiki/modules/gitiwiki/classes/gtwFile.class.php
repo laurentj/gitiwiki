@@ -105,10 +105,10 @@ class gtwFile extends gtwFileBase {
         throw new Exception('not implemented');
     }
 
-    function getHtmlContent() {
+    function getHtmlContent($basePath) {
         if ($this->fileGitObject) {
             if ($this->generator) {
-                return $this->generator->generate($this->fileGitObject->data);
+                return $this->generator->generate($this->fileGitObject->data, $basePath, $this->path.'/');
             } else
                 return '<pre>'.htmlspecialchars($this->fileGitObject->data).'</pre>';
         }

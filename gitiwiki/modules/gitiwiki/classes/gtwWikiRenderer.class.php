@@ -25,8 +25,10 @@ class gtwWikiRenderer {
         }
     }
     
-    function generate($source) {
+    function generate($source, $basePath, $pagePath) {
         $wr = new jWiki($this->rules);
+        $wr->getConfig()->basePath = $basePath;
+        $wr->getConfig()->pagePath = $pagePath;
         return $wr->render($source);
     }
 }

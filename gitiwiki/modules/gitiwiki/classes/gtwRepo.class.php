@@ -279,7 +279,7 @@ class gtwRepo {
         if (isset($this->config['branches'][$hash])) {
             return $this->config['branches'][$hash];
         }
-        $c = $this->config['branches'][$hash] = array('multiviews'=>array(), 'redirection'=>array(), 'ignore'=>array());
+        $c = $this->config['branches'][$hash] = array('multiviews'=>array('.wiki'), 'redirection'=>array(), 'ignore'=>array());
 
         $cfhash = $commit->find('.config.ini');
         if (!$cfhash){

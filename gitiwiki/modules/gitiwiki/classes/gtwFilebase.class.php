@@ -47,7 +47,7 @@ abstract class gtwFileBase {
 
     abstract function isStaticContent();
 
-    abstract function getHtmlContent();
+    abstract function getHtmlContent($basePath);
 
     abstract function getContent();
 

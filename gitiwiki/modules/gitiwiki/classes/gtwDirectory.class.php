@@ -30,8 +30,10 @@ class gtwDirectory extends gtwFileBase {
     function isStaticContent() {
         return false;
     }
-
-    function getHtmlContent() {
+    function getName() {
+        return basename($this->path);
+    }
+    function getHtmlContent($basePath) {
         if (!$this->treeGitObject)
             return '';
         $ct = '<ul>';
