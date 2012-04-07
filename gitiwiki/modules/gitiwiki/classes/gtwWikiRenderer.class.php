@@ -24,11 +24,20 @@ class gtwWikiRenderer {
             $this->rules = $params[0];
         }
     }
-    
+
+    protected $extraData = array();
+
     function generate($source, $basePath, $pagePath) {
         $wr = new jWiki($this->rules);
-        $wr->getConfig()->basePath = $basePath;
-        $wr->getConfig()->pagePath = $pagePath;
-        return $wr->render($source);
+        $conf = $wr->getConfig();
+        $conf->basePath = $basePath;
+        $conf->pagePath = $pagePath;
+        $content = $wr->render($source);
+        $this->extraData = $conf->extractedData;
+        return $content;
+    }
+
+    function getExtraData() {
+        return $this->extraData;
     }
 }
