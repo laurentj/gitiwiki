@@ -24,10 +24,10 @@ class gtwFile extends gtwFileBase {
      * @param gtwRepo $repo
      * @param gitTree $treeGitObject
      * @param string $path the path, without ending slash
-     * @param string $name the filename
+     * @param string $name the filename (real filename)
      */
-    function __construct($repo, $treeGitObject, $path, $name ) {
-        parent::__construct($repo, $treeGitObject, $path);
+    function __construct($repo, $commitId, $treeGitObject, $path, $name ) {
+        parent::__construct($repo, $commitId, $treeGitObject, $path);
         $this->name = $name;
 
         $pos = strrpos($name, '.');
@@ -108,7 +108,13 @@ class gtwFile extends gtwFileBase {
     function getHtmlContent($basePath) {
         if ($this->fileGitObject) {
             if ($this->generator) {
-                return $this->generator->generate($this->fileGitObject->data, $basePath, $this->path.'/');
+                $content = $this->generator->generate($this->fileGitObject->data, $basePath, $this->path.'/');
+                $extraData = $this->generator->getExtraData();
+                if (isset($extraData['bookContent']) && isset($extraData['bookInfos'])) {
+                    $books = jClasses::create('gitiwiki~gtwBooks');
+                    $books->saveBook($this->commitId, $this->repo->getName(), $this->path.'/'.$this->name, $extraData);
+                }
+                return $content;
             } else
                 return '<pre>'.htmlspecialchars($this->fileGitObject->data).'</pre>';
         }
@@ -153,4 +159,5 @@ class gtwFile extends gtwFileBase {
     function setMimeType($title) {
         throw new Exception('not implemented');
     }
+
 }

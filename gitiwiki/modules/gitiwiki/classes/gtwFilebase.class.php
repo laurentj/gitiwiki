@@ -33,14 +33,25 @@ abstract class gtwFileBase {
     protected $treeGitObject;
 
     /**
+     * the commit id
+     * @var string
+     */
+    protected $commitId;
+
+    /**
      * @param gtwRepo $repo
      * @param gitTree $treeGitObject
      * @param string $path
      */
-    function __construct($repo, $treeGitObject, $path ) {
+    function __construct($repo, $commitId, $treeGitObject, $path ) {
         $this->path = $path;
         $this->repo = $repo;
+        $this->commitId = $commitId;
         $this->treeGitObject = $treeGitObject;
+    }
+
+    function getCommitId() {
+        return $this->commitId;
     }
 
     abstract function exists();

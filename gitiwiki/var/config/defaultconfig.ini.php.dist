@@ -206,6 +206,9 @@ name=
 ;default = jelix/js/jforms/datepickers/default/init.js
 
 
+[gitiwiki]
+booksPath = "var/books"
+
 [gwrepo_default]
 path =
 generators = gitiwikiGenerators

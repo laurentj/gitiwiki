@@ -26,6 +26,7 @@ Here are steps:
 2. put "write" rights for your web server on these directories
   - temp/gitiwiki
   - gitiwiki/var/log/
+  - gitiwiki/var/books/
 3. configure a virtual host with `gitiwiki/www` as a document root
 4. configure your virtual host with an alias `/jelix/` to `lib/jelix-www`
 5. in gitiwiki/var/config, copy defaultconfig.ini.php.dist to defaultconfig.ini.php
@@ -58,11 +59,14 @@ a "hello world" ;-)
 "gwrepo_" (ex: gwrepo_mywiki)
 3. indicate the path to this repository in a "path" parameter. This should be a
 bare repository or the .git directory of your repository.
-4. indicate the branch gitiwiki should use in the "branch" parameter
+4. in the "branch" parameter, indicate the branch that gitiwiki should use 
 
     [gwrepo_mywiki]
     path=/home/myaccount/projects/mywiki/.git
     branch=master
+    title= A title
+
+You can also indicate a title for the list of wikis
 
 ## Content of a repository
 

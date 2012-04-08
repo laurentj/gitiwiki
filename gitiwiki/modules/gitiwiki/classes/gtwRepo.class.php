@@ -27,6 +27,7 @@ class gtwRepo {
      */
     protected $repo;
 
+    protected $repoName;
 
     function __construct($repoName) {
         $conf = jApp::config();
@@ -47,6 +48,7 @@ class gtwRepo {
         $this->config['branches'] = array();
 
         $this->repo = new Git($this->config['path']);
+        $this->repoName = $repoName;
     }
 
     /**
@@ -60,6 +62,9 @@ class gtwRepo {
         return $this->config;
     }
 
+    function getName() {
+        return $this->repoName;
+    }
     /**
      * searches a file at the given path. It has a "multiview" support, and
      * has a "redirection" support by checking the meta file corresponding to th e given path
@@ -156,7 +161,7 @@ class gtwRepo {
                 if (!$treeObject) {
                     return null;
                 }
-                return new gtwFile($this, $treeObject, $path, $name);
+                return new gtwFile($this, $commitId, $treeObject, $path, $name);
             }
             else {
                 // the directory of the file is not a directory. Error
@@ -173,7 +178,7 @@ class gtwRepo {
             if (!$node->is_dir) {
                 // this is a file, good !
                 //jLog::log("get $path/$name : it is a file, good");
-                return new gtwFile($this, $treeObject, $path, $name);
+                return new gtwFile($this, $commitId, $treeObject, $path, $name);
             }
 
             // the given "path/name" is a directory
@@ -230,12 +235,12 @@ class gtwRepo {
         if ($fileResult || ! $implicitName)
             return $fileResult;
         //jLog::log("get $path : directory view");
-        return new gtwDirectory($this, $treeObject, $path);
+        return new gtwDirectory($this, $commitId, $treeObject, $path);
     }
     
     protected function checkMultiview($treeObject, $path, $name, $commitId) {
         $metaDirObject = $this->getMetaDirObject($treeObject);
-        $file = new gtwFile($this, $treeObject, $path, $name);
+        $file = new gtwFile($this, $commitId, $treeObject, $path, $name);
         $file->setMetaDirObject($metaDirObject);
 
         $redir = $file->getMeta('redirection');
@@ -246,7 +251,7 @@ class gtwRepo {
         $extList = $this->config['branches'][$commitId]['multiviews'];
         foreach($extList as $ext) {
             $n = $name.$ext;
-            $file = new gtwFile($this, $treeObject, $path, $n);
+            $file = new gtwFile($this, $commitId, $treeObject, $path, $n);
             if ($file->exists()) {
                 return $file;
             }
