@@ -16,7 +16,6 @@ class defaultCtrl extends jController {
         $rep = $this->getResponse('html');
         $rep->body->assign('MAIN', '<h2>Home page</h2><ul>
                            <li><a href="'.jUrl::get('gitiwiki~default:index', array(), jUrl::XMLSTRING).'">wikis list</a></li>
-                           <li><a href="'.jUrl::get('gitiwiki~wiki:index', array('repository'=>'default'), jUrl::XMLSTRING).'">default wiki</a></li>
                            </ul>');
         return $rep;
     }

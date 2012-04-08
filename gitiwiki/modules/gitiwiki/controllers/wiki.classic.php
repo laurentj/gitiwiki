@@ -9,20 +9,8 @@
 */
 
 
-//
-//jClasses::inc('wikiFile');
-
 class wikiCtrl extends jController {
-    /**
-    *
-    */
-    function index() {
-        $rep = $this->getResponse('html');
 
-        $rep->body->assign('MAIN', '<p> <a href="'.jUrl::get('gitiwiki~wiki:page', array('repository'=>'default', 'page'=>'index.wiki'), jUrl::XMLSTRING).'">a page</a></p>');
-
-        return $rep;
-    }
 
 
     function page() {
