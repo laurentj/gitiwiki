@@ -29,7 +29,7 @@ class  gitiwiki_to_xhtml extends dokuwiki_to_xhtml  {
     /**
     * liste des balises de type bloc reconnus par WikiRenderer.
     */
-    public $bloctags = array('dkxhtml_title', 'dkxhtml_list', 'dkxhtml_blockquote','dkxhtml_table', 'dkxhtml_pre',
+    public $bloctags = array('gtwxhtml_title', 'dkxhtml_list', 'dkxhtml_blockquote','dkxhtml_table', 'dkxhtml_pre',
           'dkxhtml_syntaxhighlight', 'dkxhtml_file', 'dkxhtml_nowiki', 'dkxhtml_html', 'dkxhtml_php', 'dkxhtml_para',
           'gtwxhtml_alternatelang', 'gtwxhtml_bookcontents', 'gtwxhtml_bookinfos', 'gtwxhtml_notinbook',
           'gtwxhtml_bookpagelegalnotice', 'gtwxhtml_booklegalnotice'
@@ -55,6 +55,24 @@ class  gitiwiki_to_xhtml extends dokuwiki_to_xhtml  {
             $url = $this->basePath . ltrim($this->pagePath, '/') . $url;
         }
         return $url;
+    }
+
+    public $pageTitles = array();
+    public $tableOfContent = array();
+
+    public function onStart($texte){
+        $this->pageTitles = array();
+        $this->extractedData = array();
+        $this->tableOfContent = array();
+        return parent::onStart($texte);
+    }
+
+    public function onParse($finalTexte){
+        $finalTexte = parent::onParse($finalTexte);
+        if (count($this->tableOfContent)) {
+            $this->extractedData['toc'] = $this->tableOfContent;
+        }
+        return $finalTexte;
     }
 }
 
@@ -480,4 +498,74 @@ class gtwxhtml_code extends WikiTag {
 }
 
 
+class gtwxhtml_title extends WikiRendererBloc {
+    public $type='title';
+    protected $regexp="/^\s*(\={1,6})([^=]*)(\={1,6})\s*$/";
+    protected $_closeNow=true;
 
+    public function getRenderedLine(){
+        $level = strlen($this->_detectMatch[1]);
+
+        $conf = $this->engine->getConfig();
+
+        $output='';
+        if(count($conf->sectionLevel)) {
+            $last = end($conf->sectionLevel);
+            if($last < $level) {
+                while($last = end($conf->sectionLevel) && $last <= $level) {
+                    $output.= '</div>';
+                    array_pop($conf->sectionLevel);
+                }
+            }else if($last > $level) {
+
+            }else{
+                array_pop($conf->sectionLevel);
+                $output.= '</div>';
+            }
+        }
+
+        $conf->sectionLevel[] = $level;
+        $h = 6 - $level + $conf->startHeaderNumber;
+        if($h > 5) $h = 5;
+        elseif($h < 1) $h = 1;
+
+        $htmlTitle = $this->_renderInlineTag(trim($this->_detectMatch[2]));
+        $textTitle = strip_tags($htmlTitle);
+        $id = $this->titleToID($textTitle);
+
+        $conf->tableOfContent[] = array(count($conf->sectionLevel), $id, $textTitle);
+        $output .= '<h'.$h.' id="'.$id.'">'.$htmlTitle;
+        $output .= '<a class="anchor" href="#'.$id.'" title="Link to this section"> ¶</a>';
+        $output .= '</h'.$h.'><div class="level'.$h.'">';
+        return $output;
+    }
+
+    function titleToID($title) {
+        static $url_escape_from = null;
+        static $url_escape_to = null;
+        if ($url_escape_from == null) {
+            $url_escape_from = explode(' ',"à â ä é è ê ë ï î ô ö ù ü û À Â Ä É È Ê Ë Ï Î Ô Ö Ù Ü Û ç Ç");
+            $url_escape_to = explode(' ',"a a a e e e e i i o o u u u A A A E E E E I I O O U U U c c");
+        }
+        // first, we do transliteration.
+        // we don't use iconv because it is system dependant
+        // we don't use strtr because it is not utf8 compliant
+        $title = str_replace($url_escape_from, $url_escape_to, $title);
+        // then we replace all non word characters by a space
+        $title = preg_replace("/([^\w])/"," ",$title);
+        // then we replace all spaces by a -
+        $title = preg_replace("/( +)/","-",trim($title));
+        // we convert all character to lower case
+        $title = urlencode(strtolower($title));
+
+
+        $conf = $this->engine->getConfig();
+        if (isset($conf->pageTitles[$title]))
+            $title .= '-'. (++$conf->pageTitles[$title]);
+        else
+            $conf->pageTitles[$title] = 0;
+
+        return $title;
+    }
+
+}
