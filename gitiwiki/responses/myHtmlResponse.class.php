@@ -13,7 +13,7 @@ require_once (JELIX_LIB_CORE_PATH.'response/jResponseHtml.class.php');
 
 class myHtmlResponse extends jResponseHtml {
 
-    public $bodyTpl = 'gitiwiki~main';
+    public $bodyTpl = 'main~main';
 
     function __construct() {
         parent::__construct();
