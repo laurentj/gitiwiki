@@ -41,10 +41,22 @@ class  gitiwiki_to_xhtml extends dokuwiki_to_xhtml  {
 
     public $extractedData = array();
 
+    public function processLink($url, $tagName='') {
+        if(preg_match("/^[a-zA-Z]+\:\/\//", $url)) {
+            return $url;
+        }
+        else if (substr($url, 0,2) == '//') {
+            return substr($url, 1);
+        }
+        else  if (substr($url, 0,1) == '/') {
+            $url = $this->basePath . ltrim($url, '/');
+        }
+        else {
+            $url = $this->basePath . ltrim($this->pagePath, '/') . $url;
+        }
+        return $url;
+    }
 }
-
-
-
 
 
 class gtwxhtml_bookcontents extends WikiRendererBloc {
@@ -188,20 +200,7 @@ array(
     }
 
     protected function createLink($url) {
-        if(preg_match("/^[a-zA-Z]+\:\/\//", $url)) {
-            return htmlspecialchars($url);
-        }
-        else if (substr($url, 0,2) == '//') {
-            return htmlspecialchars( substr($url, 1));
-        }
-        else  if (substr($url, 0,1) == '/') {
-            $url = $this->engine->getConfig()->basePath . ltrim($url, '/');
-        }
-        else {
-            $c = $this->engine->getConfig();
-            $url = $c->basePath . ltrim($c->pagePath, '/') . $url;
-        }
-        return htmlspecialchars($url);
+        return htmlspecialchars($this->engine->getConfig()->processLink($url));
     }
 }
 
@@ -404,19 +403,19 @@ class gtwxhtml_alternatelang extends WikiRendererBloc {
         $langs = preg_split('/ *, */',trim($this->_detectMatch[1]));
         $data = array();
 
+        $conf = $this->engine->getConfig();
+
         foreach ($langs as $langdesc){
           if(preg_match('/^(\w+)@(.+)$/', $langdesc, $m)) {
-            $data[$m[1]] = $m[2];
+            $data[$m[1]] = $conf->processLink($m[2]);
           }
         }
-        $conf = $this->engine->getConfig();
         if(isset($conf->extractedData['relative_page_lang']))
             $conf->extractedData['relative_page_lang'] = array_merge( $conf->extractedData['relative_page_lang'], $data);
         else
             $conf->extractedData['relative_page_lang'] = $data;
         return '';
     }
-
 }
 
 
@@ -479,4 +478,6 @@ class gtwxhtml_code extends WikiTag {
         return false;
     }
 }
+
+
 
