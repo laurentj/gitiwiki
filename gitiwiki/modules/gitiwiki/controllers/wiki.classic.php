@@ -40,8 +40,25 @@ class wikiCtrl extends jController {
                 $resp->mimeType = $page->getMimeType();
                 return $resp;
             }
+
+            // TODO set page title
+
+            // let's generate the HTML content
             $basePath = jUrl::get('gitiwiki~wiki:page', array('repository'=>$this->param('repository'), 'page'=>''));
-            $rep->body->assign('MAIN', '<h2>'.htmlspecialchars($page->getName()).'</h2>'.$page->getHtmlContent($basePath));
+            $html = $page->getHtmlContent($basePath);
+
+            // is the file belongs to a book ? If yes, we will display navigation bars
+            $books = jClasses::create('gitiwiki~gtwBooks');
+            $bookPageInfo = $books->isPageBelongsToBook($page->getCommitId(), $repo->getName(), $page->getPathFileName());
+
+            $tpl = new jTpl();
+            $tpl->assign('repository', $repo->getName());
+            $tpl->assign('pageName', $page->getName());
+            $tpl->assign('pageContent', $html);
+            $tpl->assign('extraData', $page->getExtraData());
+            $tpl->assign('bookPageInfo', $bookPageInfo);
+
+            $rep->body->assign('MAIN', $tpl->fetch('wikipage'));
         }
         else { // directory index
             $basePath = jUrl::get('gitiwiki~wiki:page', array('repository'=>$this->param('repository'), 'page'=>''));

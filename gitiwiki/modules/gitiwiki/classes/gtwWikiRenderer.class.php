@@ -27,6 +27,11 @@ class gtwWikiRenderer {
 
     protected $extraData = array();
 
+    /**
+     * @param string $source the wiki content of the page
+     * @param string $basePath the path to the wiki content, relative the domain name (ends with a slash)
+     * @param string $pagePath the path to the current page (without page name), relative to $basePath (ends with a slash)
+     */
     function generate($source, $basePath, $pagePath) {
         $wr = new jWiki($this->rules);
         $conf = $wr->getConfig();

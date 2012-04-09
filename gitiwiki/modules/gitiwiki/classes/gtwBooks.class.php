@@ -56,16 +56,17 @@ class gtwBooks {
             $data['bookInfos']['bookLegalNotice'] = '';
         }
 
-        $data['bookInfos']['content'] = $data['bookContent'];
-
         $fileContent = '<'."?php\n".'$BOOK='.var_export($data['bookInfos'], true).";\n";
         jFile::createDir($bookPath);
         file_put_contents($bookPath.'book.php', $fileContent);
 
+        $fileContent = '<'."?php\n".'$BOOKINDEX='.var_export($data['bookContent'], true).";\n";
+        file_put_contents($bookPath.'index.php', $fileContent);
+
         $this->pages = array();
-        $this->bookId = $repoName.$indexPath;
+        $this->bookId = ltrim($indexPath, '/');
         $this->bookBasePath = dirname($indexPath);
-        $this->preparePageContents($data['bookInfos']);
+        $this->preparePageContents($data['bookInfos'], $data['bookContent']);
         jFile::createDir($bookPagesPath);
         foreach ($this->pages as $path=>$info) {
             $fileContent = '<'."?php\n".'$PAGE='.var_export($info, true).";\n";
@@ -82,7 +83,7 @@ class gtwBooks {
     protected $bookid = '';
     protected $bookBasePath = '';
 
-    function preparePageContents(&$bookInfos) {
+    protected function preparePageContents(&$bookInfos, &$indexContent) {
 /*
 array(
     array( type, pageId, title,
@@ -100,7 +101,7 @@ array(
 );
 */
         $siblingPages = array();
-        foreach($bookInfos['content'] as $k=>$item) {
+        foreach($indexContent as $k=>$item) {
             list($type, $pageId, $title) = $item;
             if(preg_match("/^[a-zA-Z]+\:\/\//", $pageId)) {
                 continue;
@@ -120,13 +121,13 @@ array(
         $prevPage = null;
         $hierarchyPath = array();
 
-        foreach($bookInfos['content'] as $k=>$item) {
+        foreach($indexContent as $k=>$item) {
             $this->setContentItem($k, $item, $hierarchyPath, $siblingPages, null);
         }
     }
 
     protected function setContentItem($order, $item, $hierarchyPath, &$siblingPages, $parent=null) {
-        $pagePath = $siblingPages[$order][0];
+        $pagePath = ltrim($siblingPages[$order][0], '/');
 
         $this->pages[$pagePath] = array(
             'path'=>$pagePath,
@@ -168,7 +169,7 @@ array(
             else {
                 $childPagePath = $this->bookBasePath.$pageId;
             }
-            $childrenPages[] = array($childPagePath, $title);
+            $childrenPages[] = array(ltrim($childPagePath,'/'), $title);
         }
 
         $this->pages[$pagePath]['children'] = $childrenPages;
@@ -176,5 +177,42 @@ array(
         foreach($item[3] as $k=>$it) {
             $this->setContentItem($k, $it, $hierarchyPath, $childrenPages, $this->pages[$pagePath]);
         }
+    }
+
+    /**
+     * @param string $commitId
+     * @param string $repoName
+     * @param string $pagePath  the path of the page inside the given repo, including filename (with or without extension)
+     */
+    function isPageBelongsToBook($commitId, $repoName, $pagePath) {
+
+        if (!file_exists($this->booksPath)) {
+            return false;
+        }
+
+        $bookBasePath = $this->booksPath.'/'.$repoName.'/'.sha1_hex($commitId).'/';
+
+        if (!file_exists($bookBasePath))
+            return false;
+
+        $PAGE = false;
+        $pagePath = trim($pagePath, '/');
+        $bookPagePath = $bookBasePath.'pages/'.$pagePath.'/page.php';
+        if (file_exists($bookPagePath)) {
+            require_once($bookPagePath);
+        }
+
+        $extPos = strrpos($pagePath, '.');
+        if ($extPos !== false) {
+            $bookPagePath = $bookBasePath.'pages/'.substr($pagePath, 0, $extPos).'/page.php';
+            if (file_exists($bookPagePath)) {
+                require_once($bookPagePath);
+            }
+        }
+        if ($PAGE) {
+            require_once($bookBasePath.'books/'.$PAGE['book'].'/book.php');
+            $PAGE['bookInfo'] = $BOOK;
+        }
+        return $PAGE;
     }
 }

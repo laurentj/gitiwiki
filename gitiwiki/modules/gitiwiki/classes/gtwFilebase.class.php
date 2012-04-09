@@ -58,6 +58,9 @@ abstract class gtwFileBase {
 
     abstract function isStaticContent();
 
+    /**
+     * @param string $basePath the path to the wiki content, relative the domain name
+     */
     abstract function getHtmlContent($basePath);
 
     abstract function getContent();

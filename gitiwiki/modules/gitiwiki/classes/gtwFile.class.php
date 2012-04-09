@@ -54,6 +54,10 @@ class gtwFile extends gtwFileBase {
         return $this->name;
     }
 
+    function getPathFileName() {
+        return $this->path.'/'.$this->name;
+    }
+
     function exists() {
         return ($this->fileGitObject != null);
     }
@@ -105,14 +109,19 @@ class gtwFile extends gtwFileBase {
         throw new Exception('not implemented');
     }
 
+    protected $extraData = array();
+
+    /**
+     * @param string $basePath the path to the wiki content, relative the domain name
+     */
     function getHtmlContent($basePath) {
         if ($this->fileGitObject) {
             if ($this->generator) {
                 $content = $this->generator->generate($this->fileGitObject->data, $basePath, $this->path.'/');
-                $extraData = $this->generator->getExtraData();
-                if (isset($extraData['bookContent']) && isset($extraData['bookInfos'])) {
+                $this->extraData = $this->generator->getExtraData();
+                if (isset($this->extraData['bookContent']) && isset($this->extraData['bookInfos'])) {
                     $books = jClasses::create('gitiwiki~gtwBooks');
-                    $books->saveBook($this->commitId, $this->repo->getName(), $this->path.'/'.$this->name, $extraData);
+                    $books->saveBook($this->commitId, $this->repo->getName(), $this->getPathFileName(), $this->extraData);
                 }
                 return $content;
             } else
@@ -121,6 +130,10 @@ class gtwFile extends gtwFileBase {
         return '';
     }
 
+    function getExtraData() {
+        return $this->extraData;
+    }
+    
     function getContent() {
         if ($this->fileGitObject)
             return $this->fileGitObject->data;
