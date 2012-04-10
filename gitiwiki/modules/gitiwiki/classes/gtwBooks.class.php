@@ -36,12 +36,12 @@ class gtwBooks {
         if (!isset($data['bookContent']) || !isset($data['bookInfos']))
             return false;
 
-        $bookPath =   $this->booksPath.'/'.$repoName.'/'.sha1_hex($commitId).'/books/'.$indexPath.'/';
+        $bookPath =   $this->booksPath.'/'.$repoName.'/books/'.$indexPath.'/';
 
         if (file_exists($bookPath))
             return true; // already saved
 
-        $bookPagesPath =   $this->booksPath.'/'.$repoName.'/'.sha1_hex($commitId).'/pages/';
+        $bookPagesPath =   $this->booksPath.'/'.$repoName.'/pages/';
 
         if (isset($data['bookPageLegalNotice'])) {
            $data['bookInfos']['bookPageLegalNotice']=$data['bookPageLegalNotice'];
@@ -190,7 +190,7 @@ array(
             return false;
         }
 
-        $bookBasePath = $this->booksPath.'/'.$repoName.'/'.sha1_hex($commitId).'/';
+        $bookBasePath = $this->booksPath.'/'.$repoName.'/'; //.sha1_hex($commitId).'/';
 
         if (!file_exists($bookBasePath))
             return false;
