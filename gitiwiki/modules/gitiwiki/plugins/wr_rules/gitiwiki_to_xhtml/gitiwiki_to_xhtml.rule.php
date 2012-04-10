@@ -209,7 +209,7 @@ array(
         }
         else if(preg_match('/^\s*<'.$this->dktag.'( \w+)?>\s*$/',$string,$m)){
             $this->_closeNow = false;
-            $this->_htmlcontent = '<ul class="bookcontents">';
+            $this->_htmlcontent = '<h2>Sommaire</h2><ul class="bookcontents">';
             return true;
         }
         else {
@@ -265,7 +265,7 @@ class gtwxhtml_bookinfos extends WikiRendererBloc {
                 $this->isOpen = false;
                 $this->_htmlcontent = "<h1>".htmlspecialchars($this->bookInfos['title'])."</h1>\n";
                 if ($this->bookInfos['subtitle'])
-                    $this->_htmlcontent = "<h2>".htmlspecialchars($this->bookInfos['subtitle'])."</h2>\n";
+                    $this->_htmlcontent .= "<h2>".htmlspecialchars($this->bookInfos['subtitle'])."</h2>\n";
                 $this->_htmlcontent .=  "<div class=\"authors\">written by <ul>";
                 foreach($this->bookInfos['authors'] as $author) {
                     $this->_htmlcontent .=  '<li>'.$author[0].' '.$author[1];
@@ -276,7 +276,6 @@ class gtwxhtml_bookinfos extends WikiRendererBloc {
                 $this->_htmlcontent .=  "<div class=\"copyright\">Copyright ";
                 $this->_htmlcontent .=  implode(', ', $this->bookInfos['copyright']['years'])."<br/>";
                 $this->_htmlcontent .=  implode(', ', $this->bookInfos['copyright']['holders'])." </div>\n";
-                $this->_htmlcontent .=  "</div>\n";
             }
             else if(preg_match("/^\s*(title|subtitle|title_short|author|edition|copyright_years|copyright_holder)\s*=\s*(.*)/", $string, $m)){
                 list(,$name,$value)=$m;
@@ -300,7 +299,7 @@ class gtwxhtml_bookinfos extends WikiRendererBloc {
         }
         else if(preg_match('/^\s*<'.$this->dktag.'( \w+)?>\s*$/',$string,$m)){
             $this->_closeNow = false;
-            $this->_htmlcontent =  "<div class=\"bookinfos\">\n";
+            $this->_htmlcontent =  "";
             return true;
         }
         else {

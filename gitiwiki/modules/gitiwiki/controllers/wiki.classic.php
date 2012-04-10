@@ -38,6 +38,7 @@ class wikiCtrl extends jController {
                 $resp->fileName = $page->getName();
                 $resp->content = $page->getContent();
                 $resp->mimeType = $page->getMimeType();
+                $resp->doDownload = false;
                 return $resp;
             }
 

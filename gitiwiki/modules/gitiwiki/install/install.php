@@ -16,7 +16,7 @@ class gitiwikiModuleInstaller extends jInstallerModule {
             $conf = $this->config->getMaster();
             if (!$conf->isSection('gitiwikiGenerators')) {
                 $ini = new jIniFileModifier(dirname(__FILE__).'/config.ini');
-                $conf->merge($ini);
+                $conf->import($ini);
             }
         }
     }
