@@ -527,12 +527,13 @@ class gtwxhtml_title extends WikiRendererBloc {
         $h = 6 - $level + $conf->startHeaderNumber;
         if($h > 5) $h = 5;
         elseif($h < 1) $h = 1;
+        
 
         $htmlTitle = $this->_renderInlineTag(trim($this->_detectMatch[2]));
         $textTitle = strip_tags($htmlTitle);
         $id = $this->titleToID($textTitle);
 
-        $conf->tableOfContent[] = array(count($conf->sectionLevel), $id, $textTitle);
+        $conf->tableOfContent[] = array(6 - $level, $id, $textTitle);
         $output .= '<h'.$h.' id="'.$id.'">'.$htmlTitle;
         $output .= '<a class="anchor" href="#'.$id.'" title="Link to this section"> ¶</a>';
         $output .= '</h'.$h.'><div class="level'.$h.'">';

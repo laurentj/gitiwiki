@@ -64,6 +64,48 @@
 </div>
 {/if} {* end of bookPageInfo *}
 
+
+{if isset($extraData['toc'])}
+<div class="toc">
+    <div class="tocheader toctoggle">
+        <span class="toc_close"><span>−</span></span>
+        {@gitiwiki~wikipage.toc.header@}
+    </div>
+    <div>
+            {assign $currentLevel = 0}
+            {foreach $extraData['toc'] as $toc}
+                {if $toc[0] > $currentLevel}
+                    {for ($i=$currentLevel; $i < $toc[0];$i++) }
+                    <ul class="toc">
+                        <li>
+                    {/for}
+                            <div><span><a href="#{$toc[1]}">{$toc[2]|eschtml}</a></span></div>
+                    {assign $currentLevel = $toc[0]}
+                {elseif $toc[0] < $currentLevel}
+                    {for ($i=$currentLevel; $i > $toc[0];$i--) }
+                        </li>
+                    </ul>
+                    {/for}
+                    </li>
+                    <li>
+                        <div><span><a href="#{$toc[1]}">{$toc[2]|eschtml}</a></span></div>
+                    {assign $currentLevel = $toc[0]}
+                {else}
+                    </li>
+                    <li>
+                        <div>{$toc[0]})<span><a href="#{$toc[1]}">{$toc[2]|eschtml}</a></span></div>
+                {/if}
+            {/foreach}
+            {while $currentLevel-- > 0}
+                    </li>
+                    </ul>
+            {/while}
+    </div>
+</div>
+{/if}
+
+
+
 {$pageContent}
 
 {if $bookPageInfo}
