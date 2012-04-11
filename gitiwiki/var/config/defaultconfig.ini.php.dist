@@ -215,4 +215,5 @@ generators = gitiwikiGenerators
 branch = master
 
 [gitiwikiGenerators]
+gtw = "gitiwiki~gtwWikiRenderer,dokuwiki_to_xhtml"
 wiki = "gitiwiki~gtwWikiRenderer,dokuwiki_to_xhtml"
