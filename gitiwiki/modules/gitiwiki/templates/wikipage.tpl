@@ -93,7 +93,7 @@
                 {else}
                     </li>
                     <li>
-                        <div>{$toc[0]})<span><a href="#{$toc[1]}">{$toc[2]|eschtml}</a></span></div>
+                        <div><span><a href="#{$toc[1]}">{$toc[2]|eschtml}</a></span></div>
                 {/if}
             {/foreach}
             {while $currentLevel-- > 0}
