@@ -143,3 +143,16 @@
 </div>
 {/if}
 
+
+{if $sourceEditURL || $sourceViewURL }
+<div id="article-footer">
+    <div id="info">
+        {if $sourceEditURL}
+        <a href="{$sourceEditURL}">{@gitiwiki~wikipage.edit.source.label@}</a><br/>
+        {/if}
+        {if $sourceViewURL}
+        <a href="{$sourceViewURL}">{@gitiwiki~wikipage.view.source.label@}</a>
+        {/if}
+    </div>
+</div>
+{/if}

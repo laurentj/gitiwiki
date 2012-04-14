@@ -59,6 +59,19 @@ class wikiCtrl extends jController {
             $tpl->assign('extraData', $page->getExtraData());
             $tpl->assign('bookPageInfo', $bookPageInfo);
 
+            $conf = $repo->config();
+            $sourceEditURL = '';
+            $sourceViewURL = '';
+            if (isset($conf ['gitSourceEditURL'])) {
+                $sourceEditURL = str_replace(array('%branch%', '%file%'), array($conf['branch'],$page->getPathFileName()), $conf ['gitSourceEditURL'] );
+            }
+            if (isset($conf ['gitSourceViewURL'])) {
+                $sourceViewURL = str_replace(array('%branch%', '%file%'), array($conf['branch'],$page->getPathFileName()), $conf ['gitSourceViewURL'] );
+            }
+
+            $tpl->assign('sourceEditURL', $sourceEditURL);
+            $tpl->assign('sourceViewURL', $sourceViewURL);
+
             $rep->body->assign('MAIN', $tpl->fetch('wikipage'));
         }
         else { // directory index
