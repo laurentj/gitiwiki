@@ -48,9 +48,18 @@ class wikiCtrl extends jController {
             $basePath = jUrl::get('gitiwiki~wiki:page', array('repository'=>$this->param('repository'), 'page'=>''));
             $html = $page->getHtmlContent($basePath);
 
-            // is the file belongs to a book ? If yes, we will display navigation bars
+            $extraData = $page->getExtraData();
             $books = jClasses::create('gitiwiki~gtwBooks');
-            $bookPageInfo = $books->isPageBelongsToBook($page->getCommitId(), $repo->getName(), $page->getPathFileName());
+
+            // for book index
+            if (isset($extraData['bookContent']) && isset($extraData['bookInfos'])) {
+                $books->saveBook($page->getCommitId(), $repo->getName(), $page->getPathFileName(), $extraData);
+                $bookPageInfo = null;
+            }
+            else {
+                // is the file belongs to a book ? If yes, we will display navigation bars
+                $bookPageInfo = $books->isPageBelongsToBook($page->getCommitId(), $repo->getName(), $page->getPathFileName());
+            }
 
             $tpl = new jTpl();
             $tpl->assign('repository', $repo->getName());

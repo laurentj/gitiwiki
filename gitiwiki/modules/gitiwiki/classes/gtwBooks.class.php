@@ -28,7 +28,7 @@ class gtwBooks {
      * @param string $indexPath the path of the book in the repository, including the filename of the index page (without extension)
      * @param array $data all book datas
      */
-    function saveBook($commitId, $repoName, $indexPath, $data) {
+    function saveBook($commitId, $repoName, $indexPath, $data, $force=false) {
         if (!file_exists($this->booksPath)) {
             return false;
         }
@@ -38,10 +38,13 @@ class gtwBooks {
 
         $bookPath =   $this->booksPath.'/'.$repoName.'/books/'.$indexPath.'/';
 
-        if (file_exists($bookPath))
+        if (file_exists($bookPath) && !$force)
             return true; // already saved
 
+        jFile::removeDir($bookPath, false);
+        
         $bookPagesPath =   $this->booksPath.'/'.$repoName.'/pages/';
+        jFile::removeDir($bookPagesPath, false);
 
         if (isset($data['bookPageLegalNotice'])) {
            $data['bookInfos']['bookPageLegalNotice']=$data['bookPageLegalNotice'];

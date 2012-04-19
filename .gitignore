@@ -8,3 +8,5 @@ gitiwiki/var/config/defaultconfig.ini.php
 gitiwiki/var/log/*
 gitiwiki/var/sessions/*
 gitiwiki/var/uploads/*
+gitiwiki/var/books/*
+gitiwiki/var/repositories/*

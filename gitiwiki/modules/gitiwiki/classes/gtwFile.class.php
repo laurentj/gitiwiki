@@ -119,10 +119,6 @@ class gtwFile extends gtwFileBase {
             if ($this->generator) {
                 $content = $this->generator->generate($this->fileGitObject->data, $basePath, $this->path.'/');
                 $this->extraData = $this->generator->getExtraData();
-                if (isset($this->extraData['bookContent']) && isset($this->extraData['bookInfos'])) {
-                    $books = jClasses::create('gitiwiki~gtwBooks');
-                    $books->saveBook($this->commitId, $this->repo->getName(), $this->getPathFileName(), $this->extraData);
-                }
                 return $content;
             } else
                 return '<pre>'.htmlspecialchars($this->fileGitObject->data).'</pre>';
