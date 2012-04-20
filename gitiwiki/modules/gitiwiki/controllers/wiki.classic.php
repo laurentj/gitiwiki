@@ -11,14 +11,17 @@
 
 class wikiCtrl extends jController {
 
-
-
     function page() {
-        $rep = $this->getResponse('html');
+
         jClasses::inc('gtwRepo');
         $repo = new gtwRepo($this->param('repository'));
+        $repoConfig = $repo->config();
+        if (isset($repoConfig['locale']))
+            jApp::config()->locale = $repoConfig['locale'];
+
         $page = $repo->findFile($this->param('page'));
         if ($page === null) {
+            $rep = $this->getResponse('html');
             $rep->body->assign('MAIN', '<p>not found</p>');
         }
         elseif($page instanceof gtwRedirection) {
@@ -42,7 +45,7 @@ class wikiCtrl extends jController {
                 return $resp;
             }
 
-            // TODO set page title
+            $rep = $this->getResponse('html');
 
             // let's generate the HTML content
             $basePath = jUrl::get('gitiwiki~wiki:page', array('repository'=>$this->param('repository'), 'page'=>''));
@@ -55,10 +58,15 @@ class wikiCtrl extends jController {
             if (isset($extraData['bookContent']) && isset($extraData['bookInfos'])) {
                 $books->saveBook($page->getCommitId(), $repo->getName(), $page->getPathFileName(), $extraData);
                 $bookPageInfo = null;
+                $rep->title =  $extraData['bookInfos']['title'].' - '.$repoConfig['title'];
             }
             else {
                 // is the file belongs to a book ? If yes, we will display navigation bars
                 $bookPageInfo = $books->isPageBelongsToBook($page->getCommitId(), $repo->getName(), $page->getPathFileName());
+                if ($bookPageInfo)
+                    $rep->title = $bookPageInfo['title']. ' - '.$repoConfig['title'];
+                else
+                    $rep->title = $page->getName(). ' - '.$repoConfig['title'];
             }
 
             $tpl = new jTpl();
@@ -68,14 +76,13 @@ class wikiCtrl extends jController {
             $tpl->assign('extraData', $page->getExtraData());
             $tpl->assign('bookPageInfo', $bookPageInfo);
 
-            $conf = $repo->config();
             $sourceEditURL = '';
             $sourceViewURL = '';
-            if (isset($conf ['gitSourceEditURL'])) {
-                $sourceEditURL = str_replace(array('%branch%', '%file%'), array($conf['branch'],$page->getPathFileName()), $conf ['gitSourceEditURL'] );
+            if (isset($repoConfig['gitSourceEditURL'])) {
+                $sourceEditURL = str_replace(array('%branch%', '%file%'), array($repoConfig['branch'],$page->getPathFileName()), $repoConfig['gitSourceEditURL'] );
             }
-            if (isset($conf ['gitSourceViewURL'])) {
-                $sourceViewURL = str_replace(array('%branch%', '%file%'), array($conf['branch'],$page->getPathFileName()), $conf ['gitSourceViewURL'] );
+            if (isset($repoConfig['gitSourceViewURL'])) {
+                $sourceViewURL = str_replace(array('%branch%', '%file%'), array($repoConfig['branch'],$page->getPathFileName()), $repoConfig['gitSourceViewURL'] );
             }
 
             $tpl->assign('sourceEditURL', $sourceEditURL);
@@ -85,6 +92,8 @@ class wikiCtrl extends jController {
         }
         else { // directory index
             $basePath = jUrl::get('gitiwiki~wiki:page', array('repository'=>$this->param('repository'), 'page'=>''));
+            $rep = $this->getResponse('html');
+            $rep->title = $page->getName(). ' - '.$repoConfig['title'];
             $rep->body->assign('MAIN', '<h2>'.htmlspecialchars($page->getName()).'</h2>'.$page->getHtmlContent($basePath));
         }
         return $rep;

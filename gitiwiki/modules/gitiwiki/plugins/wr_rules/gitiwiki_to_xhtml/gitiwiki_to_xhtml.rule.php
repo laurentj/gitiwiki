@@ -216,7 +216,7 @@ array(
         }
         else if(preg_match('/^\s*<'.$this->dktag.'( \w+)?>\s*$/',$string,$m)){
             $this->_closeNow = false;
-            $this->_htmlcontent = '<h2>Sommaire</h2><ul class="bookcontents">';
+            $this->_htmlcontent = '<h2>'.jLocale::get('gitiwiki~wikipage.book.summary').'</h2><ul class="bookcontents">';
             return true;
         }
         else {
@@ -274,7 +274,7 @@ class gtwxhtml_bookinfos extends WikiRendererBloc {
                 $this->_htmlcontent = "<h1>".htmlspecialchars($this->bookInfos['title'])."</h1>\n";
                 if ($this->bookInfos['subtitle'])
                     $this->_htmlcontent .= "<h2>".htmlspecialchars($this->bookInfos['subtitle'])."</h2>\n";
-                $this->_htmlcontent .=  "<div class=\"authors\">written by <ul>";
+                $this->_htmlcontent .=  "<div class=\"authors\">".jLocale::get('gitiwiki~wikipage.book.writtenby')." <ul>";
                 foreach($this->bookInfos['authors'] as $author) {
                     $this->_htmlcontent .=  '<li>'.$author[0].' '.$author[1];
                     $this->_htmlcontent .=  '</li>';
@@ -543,7 +543,7 @@ class gtwxhtml_title extends WikiRendererBloc {
 
         $conf->tableOfContent[] = array(6 - $level, $id, $textTitle);
         $output .= '<h'.$h.' id="'.$id.'">'.$htmlTitle;
-        $output .= '<a class="anchor" href="#'.$id.'" title="Link to this section"> ¶</a>';
+        $output .= '<a class="anchor" href="#'.$id.'" title="'.jLocale::get('gitiwiki~wikipage.anchor.title').'"> ¶</a>';
         $output .= '</h'.$h.'><div class="level'.$h.'">';
         return $output;
     }

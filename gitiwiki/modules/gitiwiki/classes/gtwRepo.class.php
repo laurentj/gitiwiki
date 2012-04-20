@@ -50,6 +50,9 @@ class gtwRepo {
         }
         $this->config['branches'] = array();
 
+        if (!isset($this->config['title']))
+            $this->config['title'] = $repoName;
+
         $this->repo = new Git($this->config['path']);
         $this->repoName = $repoName;
     }
@@ -242,7 +245,7 @@ class gtwRepo {
         //jLog::log("get $originalPath: directory view");
         return new gtwDirectory($this, $commitId, $originalTreeObject, $originalPath);
     }
-    
+
     protected function checkMultiview($treeObject, $path, $name, $commitId) {
         $metaDirObject = $this->getMetaDirObject($treeObject);
         $file = new gtwFile($this, $commitId, $treeObject, $path, $name);
