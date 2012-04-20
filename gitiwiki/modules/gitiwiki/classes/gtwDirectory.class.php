@@ -37,8 +37,18 @@ class gtwDirectory extends gtwFileBase {
         if (!$this->treeGitObject)
             return '';
         $ct = '<ul>';
+        $conf = $this->repo->config();
+        $extList = $conf['branches'][$this->commitId]['multiviews'];
+
         foreach($this->treeGitObject->nodes as $node) {
-            $ct .= '<li>'.$basePath.$node->name.'</li>';
+            $name = $node->name;
+            $pos = strrpos($name, '.');
+            if ($pos !== false) {
+                $ext = substr($name, $pos);
+                if (in_array($ext, $extList))
+                    $name = substr($name, 0, $pos);
+            }
+            $ct .= '<li><a href="'.$basePath.$this->path.'/'.$name.'">'.$name.'</a></li>';
         }
         return $ct . '</ul>';
     }
@@ -46,9 +56,19 @@ class gtwDirectory extends gtwFileBase {
     function getContent() {
         if (!$this->treeGitObject)
             return '';
-        $ct = '';
+        $ct = array();
+        $conf = $this->repo->config();
+        $extList = $conf['branches'][$this->commitId]['multiviews'];
+
         foreach($this->treeGitObject->nodes as $node) {
-            $ct .= $node->name."\n";
+            $name = $node->name;
+            $pos = strrpos($name, '.');
+            if ($pos !== false) {
+                $ext = substr($name, $pos);
+                if (in_array($ext, $extList))
+                    $name = substr($name, 0, $pos);
+            }
+            $ct[] = $name;
         }
         return $ct;
     }
