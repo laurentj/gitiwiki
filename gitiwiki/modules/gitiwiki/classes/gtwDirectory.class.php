@@ -38,7 +38,7 @@ class gtwDirectory extends gtwFileBase {
             return '';
         $ct = '<ul>';
         foreach($this->treeGitObject->nodes as $node) {
-            $ct .= '<li>'.$node->name.'</li>';
+            $ct .= '<li>'.$basePath.$node->name.'</li>';
         }
         return $ct . '</ul>';
     }

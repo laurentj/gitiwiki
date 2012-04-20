@@ -54,6 +54,10 @@ abstract class gtwFileBase {
         return $this->commitId;
     }
 
+    function getPath() {
+        return $this->path;
+    }
+
     abstract function exists();
 
     abstract function isStaticContent();

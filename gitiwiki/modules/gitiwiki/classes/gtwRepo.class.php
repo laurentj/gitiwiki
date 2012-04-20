@@ -29,6 +29,9 @@ class gtwRepo {
 
     protected $repoName;
 
+    /**
+     * @param string $repoName the name of the repository as registered in the configuration
+     */
     function __construct($repoName) {
         $conf = jApp::config();
         if (!isset($conf->{'gwrepo_'.$repoName})) {
@@ -114,13 +117,13 @@ class gtwRepo {
         if ($path == '') {
             $name = 'index';
             $implicitName  = true;
-            //jLog::log("get $path : implicite index home");
+            //jLog::log("get $path : implicit index home");
         }
         else if (substr($path, -1,1) == '/') {
             $path = rtrim($path, '/');
             $name = 'index';
             $implicitName  = true;
-            //jLog::log("get $path : implicite index");
+            //jLog::log("get $path : implicit index");
         }
         else {
             $name = basename($path);
@@ -137,7 +140,9 @@ class gtwRepo {
             return null;
         }
 
-        $treeObject = $this->repo->getObject($hash);
+        $originalPath = $path;
+        $originalName = $name;
+        $originalTreeObject = $treeObject = $this->repo->getObject($hash);
         if (!$treeObject) {
             //jLog::log("get $path : don't find the tree object");
             return null;
@@ -234,8 +239,8 @@ class gtwRepo {
         $fileResult = $this->checkMultiview($treeObject, $path, $name, $commitId);
         if ($fileResult || ! $implicitName)
             return $fileResult;
-        //jLog::log("get $path : directory view");
-        return new gtwDirectory($this, $commitId, $treeObject, $path);
+        //jLog::log("get $originalPath: directory view");
+        return new gtwDirectory($this, $commitId, $originalTreeObject, $originalPath);
     }
     
     protected function checkMultiview($treeObject, $path, $name, $commitId) {

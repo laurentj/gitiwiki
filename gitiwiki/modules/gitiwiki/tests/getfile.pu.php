@@ -131,6 +131,8 @@ Hello world !
         $page = $repo->findFile('/manual_no_index/');
         $this->assertNotNull($page);
         $this->assertInstanceOf('gtwDirectory', $page);
+        $this->assertEquals('manual_no_index', $page->getPath());
+        $this->assertEquals("article.wiki\n", $page->getContent());
     }
 
     public function testMetaRedirectionAtRoot() {
