@@ -209,4 +209,25 @@ Hello world !
         $this->assertEquals('http://jelix.org/new-page.txt', $page->url);
     }
 
+    public function testGetTestAlias() {
+        $repo = new gtwRepo('default');
+        $page = $repo->findFile('testalias');
+        $this->assertNotNull($page);
+        $this->assertInstanceOf('gtwFile', $page);
+        $this->assertEquals('
+== a page ==
+
+Hello [[apiref:myclass]] world !
+
+
+', $page->getContent());
+        $content= $page->getHtmlContent('/');
+        $this->assertEquals('
+<h5 id="a-page">a page<a class="anchor" href="#a-page" title="Link to this section"></a></h5><div class="level5">
+
+<p>Hello <a href="http://example.com/api/myclass.html">myclass</a> world !</p>
+
+
+</div>',str_replace(' ¶', '',$content)); // phpunit doesn't like this character !
+    }
 }

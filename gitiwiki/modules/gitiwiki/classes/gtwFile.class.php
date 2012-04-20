@@ -39,8 +39,7 @@ class gtwFile extends gtwFileBase {
                 $genParams = explode(',',$generatorsList[$ext]);
                 $class = array_shift($genParams);
                 $this->generator = jClasses::create($class);
-                if ($genParams)
-                    $this->generator->init($genParams);
+                $this->generator->init($genParams, $conf['branches'][$commitId]);
             }
         }
 
@@ -120,8 +119,9 @@ class gtwFile extends gtwFileBase {
                 $content = $this->generator->generate($this->fileGitObject->data, $basePath, $this->path.'/');
                 $this->extraData = $this->generator->getExtraData();
                 return $content;
-            } else
+            } else {
                 return '<pre>'.htmlspecialchars($this->fileGitObject->data).'</pre>';
+            }
         }
         return '';
     }

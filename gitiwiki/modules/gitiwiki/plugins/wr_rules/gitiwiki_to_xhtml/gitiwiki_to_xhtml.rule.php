@@ -40,13 +40,20 @@ class  gitiwiki_to_xhtml extends dokuwiki_to_xhtml  {
     public $pagePath;
 
     public $extractedData = array();
+    
+    public $protocolAliases = array();
 
     public function processLink($url, $tagName='') {
-        if(preg_match("/^[a-zA-Z]+\:\/\//", $url)) {
-            return $url;
+        list($url, $label) = parent::processLink($url, $tagName);
+        if(preg_match("/^([a-zA-Z]+)\:(.*)$/", $url, $m)) {
+            $proto = strtolower($m[1]);
+            if($proto != 'http' && isset($this->protocolAliases[$proto])) {
+                $url = sprintf($this->protocolAliases[$proto], $m[2]);
+                $label = $m[2];
+            }
         }
         else if (substr($url, 0,2) == '//') {
-            return substr($url, 1);
+            $url = substr($url, 1);
         }
         else  if (substr($url, 0,1) == '/') {
             $url = $this->basePath . ltrim($url, '/');
@@ -54,7 +61,7 @@ class  gitiwiki_to_xhtml extends dokuwiki_to_xhtml  {
         else {
             $url = $this->basePath . ltrim($this->pagePath, '/') . $url;
         }
-        return $url;
+        return array($url, $label);
     }
 
     public $pageTitles = array();
@@ -218,7 +225,8 @@ array(
     }
 
     protected function createLink($url) {
-        return htmlspecialchars($this->engine->getConfig()->processLink($url));
+        list($href, $label) = $this->engine->getConfig()->processLink($url);
+        return htmlspecialchars($href);
     }
 }
 
@@ -423,9 +431,9 @@ class gtwxhtml_alternatelang extends WikiRendererBloc {
         $conf = $this->engine->getConfig();
 
         foreach ($langs as $langdesc){
-          if(preg_match('/^(\w+)@(.+)$/', $langdesc, $m)) {
-            $data[$m[1]] = $conf->processLink($m[2]);
-          }
+            if(preg_match('/^(\w+)@(.+)$/', $langdesc, $m)) {
+                list($data[$m[1]], $label) = $conf->processLink($m[2]);
+            }
         }
         if(isset($conf->extractedData['relative_page_lang']))
             $conf->extractedData['relative_page_lang'] = array_merge( $conf->extractedData['relative_page_lang'], $data);

@@ -284,7 +284,7 @@ class gtwRepo {
         if (isset($this->config['branches'][$hash])) {
             return $this->config['branches'][$hash];
         }
-        $c = $this->config['branches'][$hash] = array('multiviews'=>array('.gtw'), 'redirection'=>array(), 'ignore'=>array());
+        $c = $this->config['branches'][$hash] = array('multiviews'=>array('.gtw'), 'redirection'=>array(), 'ignore'=>array(), 'protocol-aliases'=>array());
 
         $cfhash = $commit->find('.config.ini');
         if (!$cfhash){
@@ -321,6 +321,9 @@ class gtwRepo {
 
             if (!isset($c['ignore']))
                 $c['ignore'] = array();
+
+            if (!isset($c['protocol-aliases']))
+                $c['protocol-aliases'] = array();
 
             $this->config['branches'][$hash] = $c;
         }

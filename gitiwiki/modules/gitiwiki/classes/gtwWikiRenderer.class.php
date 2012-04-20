@@ -12,17 +12,18 @@
 
 class gtwWikiRenderer {
     
-    
+    protected $config;
     
     function __construct() {
     }
 
     protected $rules = null;
     
-    function init($params) {
+    function init($params, $wikiConfig) {
         if (is_array($params) && count($params)) {
             $this->rules = $params[0];
         }
+        $this->config = $wikiConfig;
     }
 
     protected $extraData = array();
@@ -37,6 +38,7 @@ class gtwWikiRenderer {
         $conf = $wr->getConfig();
         $conf->basePath = $basePath;
         $conf->pagePath = $pagePath;
+        $conf->protocolAliases = $this->config['protocol-aliases'];
         $content = $wr->render($source);
         $this->extraData = $conf->extractedData;
         return $content;
