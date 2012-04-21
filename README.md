@@ -27,10 +27,11 @@ A demo ? Go to the web site of [Jelix manuals](http://docs.jelix.org/en) to see 
 
 ## Documentation
 
-- [Installation](docs/installation.md)
-- [Adding a repository](docs/repository.md) and what it should contain.
-- [URL in wiki content](docs/url-support.md) and urls handling
-- [Writing books](docs/books)
+- [Installation](./docs/installation.md)
+- [Adding a repository](./docs/repository.md) and what it should contain.
+- [URL in wiki content](./docs/url-support.md)
+- [Wiki syntax](./docs/syntax.md)
+- [Writing books](./docs/books)
 
 ## Design
 
@@ -44,8 +45,10 @@ Just copy the file `gitiwiki/modules/gitiwiki/templates/main.tpl` to
 HTML content of the `<body>` element. If you want to add style sheets or javascript,
 add these kind of tags at the begining of your templates:
 
+```
     {meta_html css '/mystyles/my.css'}
     {meta_html js '/myscripts/fooscript.js'}
+```
 
 Store these CSS/js files into `gitiwiki/www/mystyles/my.css` and `gitiwiki/www/myscripts/fooscript.js`.
 

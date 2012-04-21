@@ -12,10 +12,12 @@ This chapter explain how to register a Git repository  and what it should contai
 bare repository or the .git directory of your repository.
 4. in the "branch" parameter, indicate the branch that gitiwiki should use 
 
+```ini
     [gwrepo_mywiki]
     path=/home/myaccount/projects/mywiki/.git
     branch=master
     title= A title
+```
 
 You can also indicate a title for the list of wikis.
 
@@ -37,7 +39,7 @@ This is a file (in the ini format) that can contain some parameters for Gitiwiki
 
 - "multiviews" to indicate multiview extensions (see below)
 - global redirections informations (see below)
-- and protocol aliases, [see urls](syntax.md)
+- and protocol aliases, [see urls](url-support.md)
 
 ## Multiviews
 
@@ -49,7 +51,9 @@ the root of your repository.
 
 Here is an example of `.config.ini`
 
+```ini
     multiviews=".wiki, .html, .txt"
+```
 
 With this configuration, when the url `myarticle` is given, Gitiwiki try to load first
 the file myarticle.wiki. If it doesn't exist, it tries then to load myarticle.html,
@@ -88,10 +92,12 @@ this parameter will be filled automatically of course.
 
 Here an example (since there are several redirection parameters, you should use `[]`):
 
+```ini
     redirection[] = "^manual2\.old/(.*)$ -> manual2/%s"
     redirection[] = "^manual2/unexistant -> manual2/article2"
     redirection[] = "^manual/moved-page-outside.txt -> //new-page.txt"
     redirection[] = "^something/elsewhere.txt -> http://jelix.org/new-page.txt"
+```
 
 A redirection information begins with a regular expression that matches the old url,
 followed by an arrow "->", followed by the new url (which will be processed by sprintf
@@ -142,4 +148,6 @@ can have a meta file for an unexistant file.
 For example, you moved a file mydir/article.wiki to otherdir/article.wiki, you
 can have a mydir/.meta/article.wiki.ini file indicating:
 
+```ini
      redirection="/otherdir/article.wiki"
+```

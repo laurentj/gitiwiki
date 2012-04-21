@@ -19,11 +19,15 @@ The syntax is: `~~LANG:{lang-code}@{url},{lang-code}@{url},...~~`
 
 Example with only one alternate language:
 
+```
    ~~LANG:FR@/fr/manuel/chapitre/installation~~
+```
 
 Example with only two alternate languages, and the use of an alias:
 
+```
    ~~LANG:FR@manfr:chapitre/installation, IT@/it/manuale/installazione/~~
+```
 
 Gitiwiki will then show this list of URL in the page.
 

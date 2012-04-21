@@ -31,12 +31,16 @@ with a number at the end: `https://github.com/laurentj/gitiwiki/issues/1234`.
 In the .config.ini file, in a `[protocol-aliases]` section, indicate an alias, for example 'issue',
 and the real urls:
 
+```ini
     [protocol-aliases]
     issue = "https://github.com/laurentj/gitiwiki/issues/%s"
+```
 
 Then, in your wiki page, instead of using the real url, use the alias, as an URI protocol:
 
+```ini
     [[issue:1234|The issue 1234]]
+```
 
 The "%s" in the URL will be replaced by the value after the colon (the tag "%s" can be placed anywhere in the URL).
 

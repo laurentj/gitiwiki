@@ -97,14 +97,19 @@ which is supposed shorter, is displayed on all pages.
 Examples of legal notice:
 
     <booklegalnotice>
-    This manual is distributed under the terms of [[http://creativecommons.org/licenses/by-nc-sa/3.0/deed.en|licence Creative Commons by-nc-sa 3.0]]. Therefore you're allowed to copy, modify and distribute and transmit it publicly  under the following conditions: 
-      * **Attribution**. You must attribute the work in the manner specified by the author or licensor (but not in any way that suggests that they endorse you or your use of the work).
+    This manual is distributed under the terms of [[http://creativecommons.org/licenses/by-nc-sa/3.0/deed.en|licence Creative Commons by-nc-sa 3.0]].
+    Therefore you're allowed to copy, modify and distribute and transmit it publicly  under the following conditions: 
+      * **Attribution**. You must attribute the work in the manner specified by the author or licensor
+        (but not in any way that suggests that they endorse you or your use of the work).
       * **Noncommercial**. You may not use this work for commercial purposes.
-      * **Share Alike**.If you alter, transform, or build upon this work, you may distribute the resulting work only under the same or similar license to this one.
+      * **Share Alike**.If you alter, transform, or build upon this work, you may distribute the
+        resulting work only under the same or similar license to this one.
     </booklegalnotice>
     
     <bookpagelegalnotice>
-    This manual is distributed under the terms of [[http://creativecommons.org/licenses/by-nc-sa/3.0/deed.en|licence Creative Commons by-nc-sa 3.0]]. Therefore you're allowed to copy, modify and distribute and transmit it publicly  under the following conditions: **Attribution**, **Noncommercial**, **Share Alike**.
+    This manual is distributed under the terms of [[http://creativecommons.org/licenses/by-nc-sa/3.0/deed.en|licence Creative Commons by-nc-sa 3.0]].
+    Therefore you're allowed to copy, modify and distribute and transmit it publicly
+    under the following conditions: **Attribution**, **Noncommercial**, **Share Alike**.
     </bookpagelegalnotice>
 
 ## Book initialization
@@ -132,15 +137,18 @@ which will update the repository and then regenerate the book informations.
 To generate with the command line, open a shell, go into the gitiwiki/scripts/
 directory, and type:
 
+```bash
    php manage.php gitiwiki~wiki:generateBook {repository_name} {summary_page}
+```
 
 Replace `{repository_name}` by the name you give to the repository in the configuration. And
 replace `{summary_page}` by the path of the summary page into the repository.
 
 For example:
 
+```bash
    php manage.php gitiwiki~wiki:generateBook mywiki index
-
+```
 
 
 
