@@ -1,0 +1,85 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Gitiwiki by laurentj</title>
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script src="javascripts/respond.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <!--[if lt IE 8]>
+    <link rel="stylesheet" href="stylesheets/ie.css">
+    <![endif]-->
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+
+  </head>
+  <body>
+
+      <div id="header">
+        <nav>
+          <li class="fork"><a href="https://github.com/laurentj/gitiwiki">Fork On GitHub</a></li>
+          <li class="downloads"><a href="https://github.com/laurentj/gitiwiki/zipball/master">ZIP</a></li>
+          <li class="downloads"><a href="https://github.com/laurentj/gitiwiki/tarball/master">TAR</a></li>
+          <li class="title">DOWNLOADS</li>
+        </nav>
+      </div><!-- end header -->
+
+    <div class="wrapper">
+
+      <section>
+        <div id="title">
+          <h1>Gitiwiki</h1>
+          <p>A wiki application using git as backend</p>
+          <hr>
+          <span class="credits left">Project maintained by <a href="https://github.com/laurentj">laurentj</a></span>
+          <span class="credits right">Hosted on GitHub Pages &mdash; Theme by <a href="http://twitter.com/#!/michigangraham">mattgraham</a></span>
+        </div>
+
+        <h1>GitiWiki</h1>
+
+<p>This web application will be a wiki system, storing pages into a Git repository.</p>
+
+<p>No release yet. Work in progress.</p>
+
+<h2>Features</h2>
+
+<p>This project is new, and for the moment, it only reads and display content from a Git repository.
+Features to create and modify wiki page with the browser will be provided later (Contributions are welcomed).</p>
+
+<p>Main existing features:</p>
+
+<ul>
+<li>Support of the Dokuwiki syntax and extended tags (support of others wiki syntaxes is planned of course);</li>
+<li>user protocols for links: you can define "protocols" for urls to have aliases to real urls;</li>
+<li>store anything in your repository and where you want: images, pdf, xml files etc.. ;</li>
+<li>hidden files: files or directory begining by a dot are not accessible with a browser;</li>
+<li>support of several syntax or type file: assign a rendering engine to specific file extensions;</li>
+<li>multiviews: in an URL, the extension part of a filename is not required, Gitiwiki will find the right file.
+So later you can modify the extension (and so the wiki syntax for example) without modifying URL in other files;</li>
+<li>support of redirections: you rename a file or move your page, even to an other site? Indicate it to Gitiwiki.</li>
+<li>support of books: define a page including a summary, the files list of your book, and Gitiwiki adds
+navigation bar automatically on web pages. In the future, you could also generate PDF.</li>
+</ul><p>A demo ? Go to the web site of <a href="http://docs.jelix.org/en">Jelix manuals</a> to see Gitiwiki in action.</p>
+
+<h2>Documentation</h2>
+
+<ul>
+<li><a href="docs/installation.md">Installation</a></li>
+<li>
+<a href="docs/repository.md">Adding a repository</a> and what it should contain.</li>
+<li><a href="docs/url-support.md">URL in wiki content</a></li>
+<li><a href="docs/syntax.md">Wiki syntax</a></li>
+<li><a href="docs/books">Writing books</a></li>
+<li><a href="docs/design">Customization: design</a></li>
+</ul>
+      </section>
+
+    </div>
+    <!--[if !IE]><script>fixScale(document);</script><!--<![endif]-->
+    
+  </body>
+</html>
