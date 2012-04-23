@@ -128,7 +128,17 @@ Two ways to do it:
 If the book have been updated into the repository, you can repeat this process.
 However, if you use the first way, cached informations should be deleted,
 and you need to generate book informations again. Books informations
-are stored into gitiwiki/var/books/.
+are stored by default into gitiwiki/var/books/.
+
+The cache path is indicated in gitiwiki/var/config/defaultconfig.ini.php,
+in the parameter `booksPath`, under the section `[gitiwiki]`. Indicate the
+full path of the directory. You can indicate a relative path to the gitiwiki
+directory, by indicating first `app:`. Here is an example:
+
+```ini
+[gitiwiki]
+booksPath = "app:var/books/"
+```
 
 Prefer to generate informations with the script. It's better. You can call
 it into a "cron" script (a shell script that is called periodically by your system),
