@@ -53,6 +53,7 @@ class gtwRepo {
         if (!isset($this->config['title']))
             $this->config['title'] = $repoName;
 
+        $this->config['path'] = str_replace(array('app:'), array(jApp::appPath()), $this->config['path']);
         $this->repo = new Git($this->config['path']);
         $this->repoName = $repoName;
     }
