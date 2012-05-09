@@ -7,7 +7,7 @@ This chapter explain how to register a Git repository  and what it should contai
 
 1. give a name to this repository (ex: mywiki)
 2. create a new section in profiles.ini.php, with this name and a prefix
-"gwrepo:" (ex: gwrepo:mywiki)
+"gtwrepo:" (ex: "gtwrepo:mywiki")
 3. indicate the path to this repository in a "path" parameter. This should be a
 bare repository or the .git directory of your repository. You can use the alias "app:" as
 prefix to indicate a path relative to the gitiwiki directory. There is a gitiwiki/var/repositories/
@@ -15,7 +15,7 @@ where you can put your repository. However it can be anywhere on your hard drive
 4. in the "branch" parameter, indicate the branch that gitiwiki should use 
 
 ```ini
-    [gwrepo:mywiki]
+    [gtwrepo:mywiki]
     path=app:var/repositories/mywiki/.git
     ; is equals to 
     ; path=/home/myaccount/mysite/mywiki/gitiwiki/var/repositories/mywiki/.git

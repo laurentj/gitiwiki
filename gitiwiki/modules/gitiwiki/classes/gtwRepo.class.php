@@ -35,7 +35,7 @@ class gtwRepo {
     function __construct($repoName) {
         $conf = jApp::config();
 
-        $this->config = jProfiles::get('gwrepo', $repoName, true);
+        $this->config = jProfiles::get('gtwrepo', $repoName, true);
 
         if (isset($this->config['generators']) && isset($conf->{$this->config['generators']})) {
             $this->config['generators'] = $conf->{$this->config['generators']};

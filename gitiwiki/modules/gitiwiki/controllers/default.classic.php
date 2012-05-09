@@ -15,11 +15,10 @@ class defaultCtrl extends jController {
     function index() {
         $rep = $this->getResponse('html');
 
-        $conf = jApp::config();
-        $properties = get_object_vars($conf);
+        $conf = jIniFile::read(jApp::configPath('profiles.ini.php'));
         $list = array();
-        foreach($properties as $prop=> $val) {
-            if (is_array($val) && preg_match('/^gwrepo_(.*)$/', $prop, $m)) {
+        foreach($conf as $prop=> $val) {
+            if (is_array($val) && preg_match('/^gtwrepo\:(.*)$/', $prop, $m)) {
                 if (isset($val['title']))
                     $list[$m[1]] = $val['title'];
                 else

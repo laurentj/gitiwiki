@@ -1,9 +1,9 @@
 ;<?php die(''); ?>
 ;for security reasons, don't remove or modify the first line
 
-[gwrepo]
+[gtwrepo]
 
-[gwrepo:default]
+[gtwrepo:default]
 path = app:var/repositories/default/
 generators = gitiwikiGenerators
 branch = master

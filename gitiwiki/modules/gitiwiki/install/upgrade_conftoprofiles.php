@@ -11,9 +11,7 @@ class gitiwikiModuleUpgrader_conftoprofiles extends jInstallerModule {
         $list = $defaultconf->getSectionList();
         $first = true;
         foreach($list as $section) {
-echo "\nsection $section";
             if (preg_match('/^gwrepo_(.*)$/', $section, $m )) {
-echo " matched";
                 if ($first) {
                     $profiles->setValues(array('default'=>$m[1]), 'gtwrepo');
                     $first = false;
@@ -24,7 +22,6 @@ echo " matched";
                 $defaultconf->removeValue(null, $section);
             }
         }
-echo "\nend\n";
         $profiles->save();
     }
 

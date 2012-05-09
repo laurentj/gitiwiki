@@ -32,7 +32,7 @@ Let's use the repository used for tests:
 1. in the console, go into gitiwiki/var/repositories
 2. unzip testrepos.zip. You should have a "default" directory.
 3. open gitiwiki/var/config/defaultconfig.ini.php, and go at the end of file
-4. in the gwrepo_default section, set the `path` property, by indicating the full
+4. in profiles.ini.php, in the "gtwrepo:default" section, set the `path` property, by indicating the full
 path to gitiwiki/var/repositories/default/
 
 And that's all.
