@@ -207,12 +207,7 @@ name=
 
 
 [gitiwiki]
-booksPath = "var/books"
-
-[gwrepo_default]
-path =
-generators = gitiwikiGenerators
-branch = master
+booksPath = "app:var/books"
 
 [gitiwikiGenerators]
 gtw = "gitiwiki~gtwWikiRenderer,gitiwiki_to_xhtml"

@@ -6,15 +6,19 @@ This chapter explain how to register a Git repository  and what it should contai
 ## Create a repository
 
 1. give a name to this repository (ex: mywiki)
-2. create a new section in defaultconfig.ini.php, with this name and a prefix
-"gwrepo_" (ex: gwrepo_mywiki)
+2. create a new section in profiles.ini.php, with this name and a prefix
+"gwrepo:" (ex: gwrepo:mywiki)
 3. indicate the path to this repository in a "path" parameter. This should be a
-bare repository or the .git directory of your repository.
+bare repository or the .git directory of your repository. You can use the alias "app:" as
+prefix to indicate a path relative to the gitiwiki directory. There is a gitiwiki/var/repositories/
+where you can put your repository. However it can be anywhere on your hard drive.
 4. in the "branch" parameter, indicate the branch that gitiwiki should use 
 
 ```ini
-    [gwrepo_mywiki]
-    path=/home/myaccount/projects/mywiki/.git
+    [gwrepo:mywiki]
+    path=app:var/repositories/mywiki/.git
+    ; is equals to 
+    ; path=/home/myaccount/mysite/mywiki/gitiwiki/var/repositories/mywiki/.git
     branch=master
     title= A title
 ```
@@ -25,7 +29,7 @@ You can also indicate a title for the list of wikis.
 
 Your repository can contain many type of files:
 
-1. wiki pages, with the `.wiki` extension. The syntax is the dokuwiki syntax.
+1. wiki pages, with the `.wiki` or `.gtw` extension. The syntax is the dokuwiki syntax.
    Later, gitiwiki will supports markdown and other syntaxes etc. 
 2. hidden files (see below)
 3. a .config.ini file at the root of the repository, containing some

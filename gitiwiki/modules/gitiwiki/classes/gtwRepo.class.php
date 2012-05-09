@@ -34,11 +34,9 @@ class gtwRepo {
      */
     function __construct($repoName) {
         $conf = jApp::config();
-        if (!isset($conf->{'gwrepo_'.$repoName})) {
-            throw new Exception ('the repository does not exists');
-        }
 
-        $this->config = $conf->{'gwrepo_'.$repoName};
+        $this->config = jProfiles::get('gwrepo', $repoName, true);
+
         if (isset($this->config['generators']) && isset($conf->{$this->config['generators']})) {
             $this->config['generators'] = $conf->{$this->config['generators']};
         }
