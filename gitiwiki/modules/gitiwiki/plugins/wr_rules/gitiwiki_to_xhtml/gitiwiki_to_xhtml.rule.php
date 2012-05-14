@@ -47,12 +47,17 @@ class  gitiwiki_to_xhtml extends dokuwiki_to_xhtml  {
         list($url, $label) = parent::processLink($url, $tagName);
         if(preg_match("/^([a-zA-Z]+)\:(.*)$/", $url, $m)) {
             $proto = strtolower($m[1]);
-            if($proto != 'http' && isset($this->protocolAliases[$proto])) {
-                $url = sprintf($this->protocolAliases[$proto], $m[2]);
-                $label = $m[2];
+            if($proto == 'http' || !isset($this->protocolAliases[$proto])) {
+                return array($url, $label);
+            }
+            $url = sprintf($this->protocolAliases[$proto], $m[2]);
+            $label = $m[2];
+            if(preg_match("/^([a-zA-Z]+)\:(.*)$/", $url, $m)) {
+                return array($url, $label);
             }
         }
-        else if (substr($url, 0,2) == '//') {
+
+        if (substr($url, 0,2) == '//') {
             $url = substr($url, 1);
         }
         else  if (substr($url, 0,1) == '/') {
