@@ -209,7 +209,9 @@ class gtwRepo {
             //jLog::log("get $path/$name : it is a directory. Try multiview for $path/$name/index");
 
             // this sub directory becomes the base directory
+            // XXX: isn't better to do a redirection to the path with a trailing slash ?
             $treeObject = $this->repo->getObject($node->object);
+            $path = ltrim($path.'/'.$name, '/');
             $name = 'index';
             $node = null;
             $implicitName = true;

@@ -77,6 +77,21 @@ Hello world !
         $this->assertInstanceOf('gtwFile', $page);
         $this->assertEquals('This is the index page of manual
 ', $page->getContent());
+        $this->assertEquals('manual/index.wiki', $page->getPathFileName());
+        $this->assertEquals('index.wiki', $page->getName());
+        $this->assertEquals('manual', $page->getPath());
+    }
+
+    public function testGetImplicitDirIndexNoTrailingSlash() {
+        $repo = new gtwRepo('default');
+        $page = $repo->findFile('/manual');
+        $this->assertNotNull($page);
+        $this->assertInstanceOf('gtwFile', $page);
+        $this->assertEquals('This is the index page of manual
+', $page->getContent());
+        $this->assertEquals('manual/index.wiki', $page->getPathFileName());
+        $this->assertEquals('index.wiki', $page->getName());
+        $this->assertEquals('manual', $page->getPath());
     }
 
     public function testGetDirIndex() {

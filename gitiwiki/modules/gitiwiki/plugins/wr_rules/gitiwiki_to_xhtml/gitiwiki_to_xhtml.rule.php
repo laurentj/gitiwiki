@@ -35,8 +35,14 @@ class  gitiwiki_to_xhtml extends dokuwiki_to_xhtml  {
           'gtwxhtml_bookpagelegalnotice', 'gtwxhtml_booklegalnotice'
     );
 
+    /**
+     * @var string the path to the wiki content, relative the domain name (ends with a slash)
+     */
     public $basePath;
 
+    /**
+     * @var string  the path to the current page (without page name), relative to $basePath (ends with a slash)
+     */
     public $pagePath;
 
     public $extractedData = array();
