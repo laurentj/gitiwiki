@@ -28,14 +28,11 @@ class gitiwiki_to_docbook extends dokuwiki_to_docbook  {
     public $docbookGen = null;
 
     /**
-     * @var string the url of the web site (ends with a slash)
-     */
-    public $siteURL;
-
-    /**
      * @var string  the path to the current page (without page name), relative to $basePath (ends with a slash)
      */
     public $pagePath;
+
+    public $pageName;
 
     public function processLink($url, $tagName='') {
         if ($tagName == 'image') {
@@ -43,18 +40,18 @@ class gitiwiki_to_docbook extends dokuwiki_to_docbook  {
         }
 
         list($url, $label) = parent::processLink($url, $tagName);
-        return $this->docbookGen->getFullLink($url, $label, $this->pagePath);
+        return $this->docbookGen->getFullLink($url, $label, $this->pagePath.'/'.$this->pageName);
     }
 
     protected function processImageLink($url) {
         $filename = $this->docbookGen->getImageFile($url, $this->pagePath);
         if ($filename == '')
-            throw new Exception('Image not found: '.$url. ' on page '.$this->pagePath);
+            throw new Exception('Image not found: '.$url. ' on page '.$this->pagePath.'/'.$this->pageName);
         return array($filename, $filename);
     }
 
     public function getSectionId($title) {
-        return $this->docbookGen->getSectionId($title);
+        return $this->docbookGen->getSectionId($this->pagePath.'/'.$this->pageName.'_'.$title);
     }
 }
 

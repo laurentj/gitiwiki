@@ -57,16 +57,16 @@ class gtwDocbookGenerator {
         return $wiki->render($this->book['bookLegalNoticeSrc']);
     }
 
-    /**
-    *
-    */
-    public $sectionId = array();
-
-    protected $pages;
-
     public function generate() {
 
         $content = '';
+
+        try {
+            $cover = $this->getImageFile('pdf_cover_illustration.png', '/');
+        }
+        catch(Exception $e) {
+            echo "Cover not found\n";
+        }
 
         foreach($this->bookIndex as $k=>$item) {
             if($k==0 && $item[0] == 'foreword') {
@@ -86,21 +86,21 @@ class gtwDocbookGenerator {
         if (!$title)
             $title = $urlPage;
 
-        $id = $this->getSectionId($title, true);
+        $id = $this->getSectionId($urlPage);
         $c = $indent.'<'.$tag. ' id="'.$id.'"><title>'. htmlspecialchars($title, ENT_NOQUOTES)."</title>\n";
 
         // here insert content of the item
         $file = $this->repository->findFile($urlPage);
 
         if ($file == null)
-            $c .= '<para>NULL</para>';
+            $c .= '<para> </para>';
 
         elseif ($file instanceof gtwRedirection) {
-            $c .= '<para>REDIR</para>';
+            $c .= '<para> </para>';
         }
         elseif($file instanceof gtwFile) {
             if ($file->isStaticContent()) {
-                $c .= '<para>STATIC</para>';
+                $c .= '<para> </para>';
             }
             else {
                 $content = $file->getContent();
@@ -109,11 +109,15 @@ class gtwDocbookGenerator {
                 $conf->docbookGen = $this;
                 $conf->siteURL = $this->siteURL;
                 $conf->pagePath = $file->getPath().'/';
-                $c .= $wiki->render($content);
+                $conf->pageName = $file->getName();
+                $dbk = $wiki->render($content);
+                if (trim($dbk) == '')
+                    $dbk = '<para> </para>';
+                $c .= $dbk;
             }
         }
         else {
-             $c .= '<para>DIRECTORY</para>';
+            $c .= '<para> </para>';
         }
 
         // loop over children
@@ -141,15 +145,34 @@ class gtwDocbookGenerator {
         if (substr($url, 0,2) == '//') {
             $url = $this->siteURL.substr($url, 1);
         }
-        else  if ($url[0] == '/') {
-            $url = '#'.str_replace('/', '-', ltrim($url, '/'));
-        }
-        else  if ($url == '#') {
-        }
         else {
-            if ($url[0] == '#')
-                $url = substr($url, 1);
-            $url = '#'.str_replace('/', '-', ltrim($currentPagePath, '/') . $url);
+            if ($url[0] == '/') {
+                $url = ltrim($url, '/');
+            }
+            else  if ($url[0] == '#') {
+                 $url = $currentPagePath.$url;
+            }
+
+            $hash = '';
+            if (strpos($url, '#') !== false) {
+                list($url, $hash) = split("#", $url);
+            }
+
+            if (strpos($url, '..') !== false) {
+                $path = explode('/', $url);
+                $goodpath = array();
+                foreach($path as $dir) {
+                    if ($dir == '..') {
+                        array_pop($goodpath);
+                    }
+                    else
+                        $goodpath[] = $dir;
+                }
+                $url = implode('/', $goodpath);
+            }
+            if ($hash)
+                $url .= '_'.$hash;
+            $url = '#'.$this->getSectionId($url, true);
         }
         return array($url, $label);
     }
@@ -228,9 +251,9 @@ class gtwDocbookGenerator {
     }
 
 
-    protected $pageTitles = array();
+    protected $sectionId = array();
 
-    public function getSectionId($title, $isMainSection=false) {
+    public function getSectionId($title, $forUrl=false) {
         static $url_escape_from = null;
         static $url_escape_to = null;
         if ($url_escape_from == null) {
@@ -242,17 +265,18 @@ class gtwDocbookGenerator {
         // we don't use strtr because it is not utf8 compliant
         $title = str_replace($url_escape_from, $url_escape_to, $title);
         // then we replace all non word characters by a space
-        $title = preg_replace("/([^\w])/"," ",$title);
+        $title = preg_replace("/([^\w])/", " ", $title);
+        $title = preg_replace("!(/)!", " ", $title);
         // then we replace all spaces by a -
-        $title = preg_replace("/( +)/","-",trim($title));
+        $title = preg_replace("/( +)/", "-", trim($title));
         // we convert all character to lower case
         $title = urlencode(strtolower($title));
 
-        if ($isMainSection) {
-            if (isset($this->pageTitles[$title]))
-                $title .= '-'. (++$this->pageTitles[$title]);
+        if (!$forUrl) {
+            if (isset($this->sectionId[$title]))
+                $title .= '-'. (++$this->sectionId[$title]);
             else
-                $this->pageTitles[$title] = 0;
+                $this->sectionId[$title] = 0;
         }
 
         return $title;
