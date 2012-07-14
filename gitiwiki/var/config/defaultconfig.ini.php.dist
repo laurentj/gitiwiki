@@ -5,7 +5,7 @@
 startModule=main
 startAction="default:index"
 
-locale=en_EN
+locale=en_US
 charset=UTF-8
 
 ; see http://www.php.net/manual/en/timezones.php for supported values

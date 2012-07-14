@@ -2,8 +2,8 @@
 <module xmlns="http://jelix.org/ns/module/1.0">
     <info id="mainjelix.org" name="main" createdate="2012-03-09">
         <version date="2012-03-09">0.1pre</version>
-        <label lang="en_EN">main</label>
-        <description lang="en_EN" />
+        <label lang="en_US">main</label>
+        <description lang="en_US" />
         <license URL="">All rights reserved</license>
         <copyright>2012 Laurnent Jouanneau</copyright>
         <creator name="Laurent Jouanneau" email="laurent@jelix.org" active="true"/>
@@ -11,6 +11,6 @@
         <homepageURL>http://innophi.com</homepageURL>
     </info>
     <dependencies>
-        <jelix minversion="1.4pre.2287" maxversion="1.4pre.*"/>
+        <jelix minversion="1.4pre.2287" maxversion="1.4.*"/>
     </dependencies>
 </module>

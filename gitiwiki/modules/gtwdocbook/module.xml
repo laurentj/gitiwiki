@@ -2,8 +2,8 @@
 <module xmlns="http://jelix.org/ns/module/1.0">
     <info id="gtwdocbook@jelix.org" name="gtwdocbook" createdate="2012-07-10">
         <version date="2012-07-10">0.1a1</version>
-        <label lang="en_EN">gtwdocbook</label>
-        <description lang="en_EN">Docbook generator for Gitiwiki</description>
+        <label lang="en_US">gtwdocbook</label>
+        <description lang="en_US">Docbook generator for Gitiwiki</description>
         <license URL="">GPL</license>
         <copyright>2012 Laurent Jouanneau</copyright>
         <creator name="Laurent Jouanneau" email="laurent@jelix.org" active="true"/>

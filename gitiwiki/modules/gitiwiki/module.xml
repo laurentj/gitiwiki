@@ -2,8 +2,8 @@
 <module xmlns="http://jelix.org/ns/module/1.0">
     <info id="gitiwiki@jelix.org" name="gitiwiki" createdate="2012-03-03">
         <version date="2012-03-03">0.1a1</version>
-        <label lang="en_EN">gitiwiki</label>
-        <description lang="en_EN" />
+        <label lang="en_US">gitiwiki</label>
+        <description lang="en_US" />
         <license URL="">GPL</license>
         <copyright>2012 Laurent Jouanneau</copyright>
         <creator name="Laurent Jouanneau" email="laurent@jelix.org" active="true"/>
