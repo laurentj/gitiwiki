@@ -80,20 +80,20 @@ class jInstallerMessageProvider {
 
     protected $messages = array(
         'fr'=>array(
-     'checker.title'=>'Vérification de votre serveur pour Jelix 1.4pre.2341',
+     'checker.title'=>'Vérification de votre serveur pour Jelix 1.4b2pre.2383',
         'number.errors'         =>' erreurs.',
         'number.error'          =>' erreur.',
         'number.warnings'       =>' avertissements.',
         'number.warning'        =>' avertissement.',
         'number.notices'        =>' remarques.',
         'number.notice'         =>' remarque.',
-    'conclusion.error'      =>'Vous devez corriger l\'erreur pour faire fonctionner correctement une application Jelix 1.4pre.2341.',
-    'conclusion.errors'     =>'Vous devez corriger les erreurs pour faire fonctionner correctement une application Jelix 1.4pre.2341.',
-    'conclusion.warning'    =>'Une application Jelix 1.4pre.2341 peut à priori fonctionner, mais il est préférable de corriger l\'avertissement pour être sûr.',
-    'conclusion.warnings'   =>'Une application Jelix 1.4pre.2341 peut à priori fonctionner, mais il est préférable de corriger les avertissements pour être sûr.',
-    'conclusion.notice'     =>'Aucun problème pour installer une application pour Jelix  1.4pre.2341 malgré la remarque.',
-    'conclusion.notices'    =>'Aucun problème pour installer une application pour Jelix  1.4pre.2341 malgré les remarques.',
-    'conclusion.ok'         =>'Vous pouvez installer une application avec Jelix 1.4pre.2341',
+    'conclusion.error'      =>'Vous devez corriger l\'erreur pour faire fonctionner correctement une application Jelix 1.4b2pre.2383.',
+    'conclusion.errors'     =>'Vous devez corriger les erreurs pour faire fonctionner correctement une application Jelix 1.4b2pre.2383.',
+    'conclusion.warning'    =>'Une application Jelix 1.4b2pre.2383 peut à priori fonctionner, mais il est préférable de corriger l\'avertissement pour être sûr.',
+    'conclusion.warnings'   =>'Une application Jelix 1.4b2pre.2383 peut à priori fonctionner, mais il est préférable de corriger les avertissements pour être sûr.',
+    'conclusion.notice'     =>'Aucun problème pour installer une application pour Jelix  1.4b2pre.2383 malgré la remarque.',
+    'conclusion.notices'    =>'Aucun problème pour installer une application pour Jelix  1.4b2pre.2383 malgré les remarques.',
+    'conclusion.ok'         =>'Vous pouvez installer une application avec Jelix 1.4b2pre.2383',
         'cannot.continue'       =>'Les vérifications ne peuvent continuer : %s',
         'extension.not.installed'=>'L\'extension %s n\'est pas disponible',
         'extension.optional.not.installed'=>'L\'extension %s optionnelle n\'est pas disponible',
@@ -164,20 +164,20 @@ class jInstallerMessageProvider {
         ),
 
         'en'=>array(
-  'checker.title'   =>'Check your configuration server for Jelix 1.4pre.2341',
+  'checker.title'   =>'Check your configuration server for Jelix 1.4b2pre.2383',
         'number.errors'     =>' errors.',
         'number.error'      =>' error.',
         'number.warnings'   =>' warnings.',
         'number.warning'    =>' warning.',
         'number.notices'    =>' notices.',
         'number.notice'     =>' notice.',
-      'conclusion.error'    =>'You must fix the error in order to run an application correctly with Jelix 1.4pre.2341.',
-      'conclusion.errors'   =>'You must fix errors in order to run an application correctly with Jelix 1.4pre.2341.',
-      'conclusion.warning'  =>'Your application for Jelix 1.4pre.2341 may run without problems, but it is recommanded to fix the warning.',
-      'conclusion.warnings' =>'Your application for Jelix 1.4pre.2341 may run without problems, but it is recommanded to fix warnings.',
-      'conclusion.notice'   =>'You can install an application for Jelix 1.4pre.2341, although there is a notice.',
-      'conclusion.notices'  =>'You can install an application for Jelix 1.4pre.2341, although there are notices.',
-      'conclusion.ok'       =>'You can install an application for Jelix 1.4pre.2341.',
+      'conclusion.error'    =>'You must fix the error in order to run an application correctly with Jelix 1.4b2pre.2383.',
+      'conclusion.errors'   =>'You must fix errors in order to run an application correctly with Jelix 1.4b2pre.2383.',
+      'conclusion.warning'  =>'Your application for Jelix 1.4b2pre.2383 may run without problems, but it is recommanded to fix the warning.',
+      'conclusion.warnings' =>'Your application for Jelix 1.4b2pre.2383 may run without problems, but it is recommanded to fix warnings.',
+      'conclusion.notice'   =>'You can install an application for Jelix 1.4b2pre.2383, although there is a notice.',
+      'conclusion.notices'  =>'You can install an application for Jelix 1.4b2pre.2383, although there are notices.',
+      'conclusion.ok'       =>'You can install an application for Jelix 1.4b2pre.2383.',
         'cannot.continue'       =>'Cannot continue the checking: %s',
         'extension.not.installed'=>'The extension %s is not available',
         'extension.optional.not.installed'=>'the optional extension %s is not available',
@@ -254,12 +254,12 @@ class jInstallerMessageProvider {
             $languages = explode(',', $_SERVER['HTTP_ACCEPT_LANGUAGE']);
             foreach($languages as $bl){
                 // pour les user-agents qui livrent un code internationnal
-                if(preg_match("/^([a-zA-Z]{2})(?:[-_]([a-zA-Z]{2}))?(;q=[0-9]\\.[0-9])?$/",$bl,$match)){
+                if(preg_match("/^([a-zA-Z]{2,3})(?:[-_]([a-zA-Z]{2,3}))?(;q=[0-9]\\.[0-9])?$/",$bl,$match)){
                     $lang = strtolower($match[1]);
                     break;
                 }
             }
-        }elseif(preg_match("/^([a-zA-Z]{2})(?:[-_]([a-zA-Z]{2}))?$/",$lang,$match)){
+        }elseif(preg_match("/^([a-zA-Z]{2,3})(?:[-_]([a-zA-Z]{2,3}))?$/",$lang,$match)){
             $lang = strtolower($match[1]);
         }
         if($lang == '' || !isset($this->messages[$lang])){
