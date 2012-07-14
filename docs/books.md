@@ -160,5 +160,29 @@ For example:
    php manage.php gitiwiki~wiki:generateBook mywiki index
 ```
 
+## Generating a PDF
 
+For the moment, there is only one way to generate a PDF with Gitiwiki. Gitiwiki allows you to
+generate first a [Docbook](http://www.docbook.org/) file (this is an xml file to describe books),
+and then you can pass this file to external tools like [dblatex](http://dblatex.sourceforge.net/),
+to generate PDF files.
 
+To generate the docbook file,  open a shell, go into the gitiwiki/scripts/
+directory, and type:
+
+```bash
+   php manage.php gtwdocbook~docbook:index {repository_name} {summary_page}
+```
+
+Replace `{repository_name}` by the name you give to the repository in the configuration. And
+replace `{summary_page}` by the path of the summary page into the repository.
+
+You'll then have a docbook.xml in the book directory.
+
+For example:
+
+```bash
+   php manage.php gtwdocbook~docbook:index  mywiki index
+```
+
+You'll have a gitiwiki/var/books/mywiki/books/index.gtw/docbook.xml file.

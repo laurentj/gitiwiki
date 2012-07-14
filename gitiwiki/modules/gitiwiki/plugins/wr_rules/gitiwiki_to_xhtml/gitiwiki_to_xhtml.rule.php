@@ -389,6 +389,7 @@ class gtwxhtml_bookpagelegalnotice extends gtwxhtml_notinbook {
     protected $dktag='bookpagelegalnotice';
     protected $storageName = 'bookPageLegalNotice';
     protected $legalNotice = '';
+    protected $legalNoticeSrc = '';
 
     public function open(){
         $this->isOpen = true;
@@ -399,10 +400,12 @@ class gtwxhtml_bookpagelegalnotice extends gtwxhtml_notinbook {
     public function close(){
         $this->isOpen=false;
         $this->engine->getConfig()->extractedData[$this->storageName] = $this->legalNotice;
+        $this->engine->getConfig()->extractedData[$this->storageName.'Src'] = $this->legalNoticeSrc;
         return $this->_closeTag;
     }
 
     public function getRenderedLine(){
+        $this->legalNoticeSrc .= $this->_detectMatch;
         $html = $this->_renderInlineTag($this->_detectMatch);
         $this->legalNotice .= $html;
         return ''; // we don't want display on the first page
@@ -415,6 +418,7 @@ class gtwxhtml_booklegalnotice extends gtwxhtml_bookpagelegalnotice {
     protected $dktag='booklegalnotice';
     protected $storageName = 'bookLegalNotice';
     public function getRenderedLine(){
+        $this->legalNoticeSrc .= $this->_detectMatch;
         $html = $this->_renderInlineTag($this->_detectMatch);
         $this->legalNotice .= $html;
         return $html;

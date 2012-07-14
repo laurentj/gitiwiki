@@ -3,7 +3,7 @@
 
 For the moment, Gitiwiki doesn't really provide a design (but it's planned of course).
 Since Gitiwiki is a Jelix application, to have your own design, simply
-[follow instructions](http://docs.jelix.org/en/manual-1.3/themes)
+[follow instructions](http://docs.jelix.org/en/manual-1.4/themes)
 to create a new theme, in the Jelix documentation.
 
 Just copy the file `gitiwiki/modules/gitiwiki/templates/main.tpl` to 

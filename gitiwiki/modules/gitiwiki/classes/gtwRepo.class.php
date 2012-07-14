@@ -67,6 +67,14 @@ class gtwRepo {
         return $this->config;
     }
 
+    function getBranchConfig($commitId='') {
+        if (!$commitId) {
+            $commitId = $this->repo->getTip($this->config['branch']);
+        }
+        $commit = $this->repo->getObject($commitId);
+        return $this->loadBranchConfig($commit);
+    }
+
     function getName() {
         return $this->repoName;
     }

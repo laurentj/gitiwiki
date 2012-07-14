@@ -13,7 +13,7 @@ timeZone="Europe/Paris"
 
 theme=default
 
-pluginsPath="app:plugins/,lib:jelix-plugins/,module:gitiwiki/plugins/"
+pluginsPath="app:plugins/,lib:jelix-plugins/,module:gitiwiki/plugins/,module:gtwdocbook"
 
 modulesPath="lib:jelix-modules/,app:modules/"
 
@@ -41,6 +41,8 @@ jWSDL.access=0
 
 gitiwiki.access=2
 main.access=2
+gtwdocbook.access=1
+
 [coordplugins]
 ;name = file_ini_name or 1
 

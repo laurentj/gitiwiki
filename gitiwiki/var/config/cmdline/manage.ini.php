@@ -5,3 +5,6 @@ startModule = "gitiwiki"
 startAction = "wiki:index"
 
 [responses]
+
+[modules]
+gtwdocbook.access=2

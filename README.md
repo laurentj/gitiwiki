@@ -20,9 +20,12 @@ Main existing features:
   So later you can modify the extension (and so the wiki syntax for example) without modifying URL in other files;
 - support of redirections: you rename a file or move your page, even to an other site? Indicate it to Gitiwiki.
 - support of books: define a page including a summary, the files list of your book, and Gitiwiki adds
-navigation bar automatically on web pages. In the future, you could also generate PDF.
+navigation bar automatically on web pages.
+- Docbook generation: a command is available to generate a docbook file from a "book". You can then generate a PDF
+  file with external tools, from this docbook file.
 
-A demo ? Go to the web site of [Jelix manuals](http://docs.jelix.org/en) to see Gitiwiki in action.
+A demo ? Go to the web site of [Jelix manuals](http://docs.jelix.org/en) to see Gitiwiki in action, and
+on [this github repository](https://github.com/jelix/jelix-manual-en) to see its wiki content.
 
 ## Documentation
 

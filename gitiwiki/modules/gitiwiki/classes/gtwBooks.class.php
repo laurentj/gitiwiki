@@ -47,16 +47,22 @@ class gtwBooks {
         jFile::removeDir($bookPagesPath, false);
 
         if (isset($data['bookPageLegalNotice'])) {
-           $data['bookInfos']['bookPageLegalNotice']=$data['bookPageLegalNotice'];
+           $data['bookInfos']['bookPageLegalNotice'] = $data['bookPageLegalNotice'];
         }
         else {
             $data['bookInfos']['bookPageLegalNotice'] = '';
         }
         if (isset($data['bookLegalNotice'])) {
-           $data['bookInfos']['bookLegalNotice']=$data['bookLegalNotice'];
+           $data['bookInfos']['bookLegalNotice'] = $data['bookLegalNotice'];
         }
         else {
             $data['bookInfos']['bookLegalNotice'] = '';
+        }
+        if (isset($data['bookLegalNoticeSrc'])) {
+           $data['bookInfos']['bookLegalNoticeSrc'] = $data['bookLegalNoticeSrc'];
+        }
+        else {
+            $data['bookInfos']['bookLegalNoticeSrc'] = '';
         }
 
         $fileContent = '<'."?php\n".'$BOOK='.var_export($data['bookInfos'], true).";\n";
@@ -202,20 +208,44 @@ array(
         $pagePath = trim($pagePath, '/');
         $bookPagePath = $bookBasePath.'pages/'.$pagePath.'/page.php';
         if (file_exists($bookPagePath)) {
-            require_once($bookPagePath);
+            require($bookPagePath);
         }
 
         $extPos = strrpos($pagePath, '.');
         if ($extPos !== false) {
             $bookPagePath = $bookBasePath.'pages/'.substr($pagePath, 0, $extPos).'/page.php';
             if (file_exists($bookPagePath)) {
-                require_once($bookPagePath);
+                require($bookPagePath);
             }
         }
         if ($PAGE) {
-            require_once($bookBasePath.'books/'.$PAGE['book'].'/book.php');
+            require($bookBasePath.'books/'.$PAGE['book'].'/book.php');
             $PAGE['bookInfo'] = $BOOK;
         }
         return $PAGE;
+    }
+
+    function getBookInfo($repoName, $bookId) {
+        if (!file_exists($this->booksPath)) {
+            return false;
+        }
+
+        $bookBasePath = $this->booksPath.'/'.$repoName.'/books/'.$bookId.'/';
+
+        if (!file_exists($bookBasePath))
+            return false;
+
+        $bookInfoPath = $bookBasePath.'book.php';
+        if (!file_exists($bookInfoPath)) {
+            return false;
+        }
+
+        $bookIndexPath = $bookBasePath.'index.php';
+        if (!file_exists($bookIndexPath)) {
+            return false;
+        }
+        require($bookInfoPath);
+        require($bookIndexPath);
+        return array($BOOK, $BOOKINDEX, $bookBasePath);
     }
 }
