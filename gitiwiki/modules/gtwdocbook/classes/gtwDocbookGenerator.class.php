@@ -155,7 +155,6 @@ class gtwDocbookGenerator {
     }
     
     public function getImageFile($url, $currentPagePath) {
-echo 'getImageFile '.$url.'   |  '.$currentPagePath."\n";
         if (preg_match("/^([a-zA-Z]+)\:(.*)$/", $url, $m)) {
             $proto = strtolower($m[1]);
             if($proto == 'http' || !isset($this->protocolAliases[$proto])) {
@@ -181,10 +180,8 @@ echo 'getImageFile '.$url.'   |  '.$currentPagePath."\n";
     }
     
     protected function loadImage($url, $recurCounter = 0) {
-echo 'loadImage '.$url.'   |  '.$recurCounter."\n";
         $image = $this->repository->findFile($url);
         if ($image == null) {
-echo "not found in repo\n";
             return '';
         }
         elseif($image instanceof gtwRedirection) {
@@ -197,16 +194,13 @@ echo "not found in repo\n";
             }
         }
         elseif($image instanceof gtwFile) {
-echo "found file\n";
             if ($image->isStaticContent()) {
-echo "ok static content\n";
                 $filename = $this->bookPath.'medias/'.$image->getPathFileName();
                 jFile::createDir(dirname($filename));
                 file_put_contents($filename, $image->getContent());
                 return $filename;
             }
         }
-echo "image not founc\n";
         // directory
         return '';
     }
