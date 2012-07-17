@@ -29,7 +29,7 @@ class  gitiwiki_to_xhtml extends dokuwiki_to_xhtml  {
     /**
     * liste des balises de type bloc reconnus par WikiRenderer.
     */
-    public $bloctags = array('gtwxhtml_title', 'dkxhtml_list', 'dkxhtml_blockquote','dkxhtml_table', 'dkxhtml_pre',
+    public $bloctags = array('gtwxhtml_title', 'gtwxhtml_list', 'dkxhtml_blockquote','dkxhtml_table', 'gtwxhtml_definition', 'dkxhtml_pre',
           'dkxhtml_syntaxhighlight', 'dkxhtml_file', 'dkxhtml_nowiki', 'dkxhtml_html', 'dkxhtml_php', 'dkxhtml_para',
           'gtwxhtml_alternatelang', 'gtwxhtml_bookcontents', 'gtwxhtml_bookinfos', 'gtwxhtml_notinbook',
           'gtwxhtml_bookpagelegalnotice', 'gtwxhtml_booklegalnotice'
@@ -516,6 +516,115 @@ class gtwxhtml_code extends WikiTag {
     );
     public function isOtherTagAllowed() {
         return false;
+    }
+}
+
+class gtwxhtml_list extends dkxhtml_list {
+
+    protected $_opened = false;
+
+    public function detect($string){
+        if ($this->_opened) {
+            if (preg_match('/^(\s{2,})([\*\-]|[^\=\|\^>;<=~ ])(.*)/', $string, $this->_detectMatch)) {
+                $tag = $this->_detectMatch[2];
+                if ( $tag == '*' || $tag == '-') { // ok, this is a new item
+                    return true;
+                }
+                // if we are here, we have a simple line with indentation, so just check the indentation.
+                // if it is equals or higher than the previous one, this is a line of the current list item
+                // otherwise this is a new paragraph outside the list.
+                $t = end($this->_stack);
+                $indent = strlen($this->_detectMatch[1]);
+                if ($indent >= $t[0]) {
+                    return true;
+                }
+            }
+            return false;
+        }
+        else {
+            return preg_match($this->regexp, $string, $this->_detectMatch);
+        }
+    }
+
+    public function open(){
+        $this->_opened = true;
+        return parent::open();
+    }
+
+    public function close(){
+        $this->_opened = false;
+        return parent::close();
+    }
+
+    public function getRenderedLine(){
+        if ($this->_detectMatch[2] != '*' && $this->_detectMatch[2] != '-') {
+            return $this->_renderInlineTag(trim($this->_detectMatch[2].$this->_detectMatch[3]));
+        }
+        return parent::getRenderedLine();
+    }
+}
+
+
+/**
+ * definition list
+ */
+class gtwxhtml_definition extends WikiRendererBloc {
+
+    public $type='dfn';
+    protected $regexp="/^(\s*);\s*(.*) : (.*)/i";
+    protected $_openTag='<dl>';
+    protected $_closeTag='</dl>';
+    protected $_previousIndentation = -1;
+    protected $_firstItem = true;
+
+    protected $_opened = false;
+
+    public function detect($string){
+        if ($this->_opened) {
+            if (preg_match('/^(\s*)([^\=\|\^><=~])(.*)/', $string, $this->_detectMatch)) {
+                if ($this->_detectMatch[2] != ';') {
+                    if (strlen($this->_detectMatch[1]) > $this->_previousIndentation) {
+                        $this->_detectMatch[1] = '+;';
+                        $this->_detectMatch[2] .= $this->_detectMatch[3];
+                        return true;
+                    }
+                    return false;
+                }
+            }
+            else
+                return false;
+        }
+
+        if (preg_match($this->regexp, $string, $this->_detectMatch)) {
+            $this->_previousIndentation = strlen($this->_detectMatch[1]);
+            return true;
+        }
+        return false;
+    }
+
+    public function open(){
+        $this->_opened = true;
+        $this->_firstItem = true;
+        return parent::open();
+    }
+
+    public function close(){
+        $this->_opened = false;
+        return "</dd>\n".parent::close();
+    }
+
+    public function getRenderedLine(){
+        if ($this->_detectMatch[1] == '+;') {
+            return $this->_renderInlineTag($this->_detectMatch[2]);
+        }
+        $dt = $this->_renderInlineTag($this->_detectMatch[2]);
+        $dd = $this->_renderInlineTag($this->_detectMatch[3]);
+
+        if (!$this->_firstItem) {
+            return "</dd>\n<dt>$dt</dt>\n<dd>$dd\n";
+        }
+        $this->_firstItem = false;
+        return "<dt>$dt</dt>\n<dd>$dd\n";
     }
 }
 

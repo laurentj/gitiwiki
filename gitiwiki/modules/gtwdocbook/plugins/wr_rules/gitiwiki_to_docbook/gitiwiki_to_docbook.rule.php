@@ -20,7 +20,7 @@ class gitiwiki_to_docbook extends dokuwiki_to_docbook  {
         'dkdbk_subscript', 'dkdbk_superscript', 'dkdbk_del', 'dkdbk_link', 'dkdbk_footnote', 'dkdbk_image',
         'gtwdbk_code', 'dkdbk_nowiki_inline',)
     );
-    public $bloctags = array('dkdbk_title', 'dkdbk_list', 'dkdbk_blockquote','dkdbk_table', 'dkdbk_pre',
+    public $bloctags = array('dkdbk_title', 'gtwdbk_list', 'dkdbk_blockquote','dkdbk_table', 'gtwdbk_definition', 'dkdbk_pre',
         'dkdbk_syntaxhighlight', 'dkdbk_file', 'dkdbk_nowiki', 'dkdbk_html', 'dkdbk_php', 'dkdbk_para',
         'dkdbk_macro', 'gtwdbk_notinbook'
     );
@@ -168,4 +168,119 @@ class gtwdbk_notinbook extends WikiRendererBloc {
     }
 }
 
+
+
+class gtwdbk_list extends dkxhtml_list {
+
+    protected $_opened = false;
+
+    public function detect($string){
+        if ($this->_opened) {
+            if (preg_match('/^(\s{2,})([\*\-]|[^\=\|\^>;<=~ ])(.*)/', $string, $this->_detectMatch)) {
+                $tag = $this->_detectMatch[2];
+                if ( $tag == '*' || $tag == '-') { // ok, this is a new item
+                    return true;
+                }
+                // if we are here, we have a simple line with indentation, so just check the indentation.
+                // if it is equals or higher than the previous one, this is a line of the current list item
+                // otherwise this is a new paragraph outside the list.
+                $t = end($this->_stack);
+                $indent = strlen($this->_detectMatch[1]);
+                if ($indent >= $t[0]) {
+                    return true;
+                }
+            }
+            return false;
+        }
+        else {
+            return preg_match($this->regexp, $string, $this->_detectMatch);
+        }
+    }
+
+    public function open(){
+        $this->_opened = true;
+        return parent::open();
+    }
+
+    public function close(){
+        $this->_opened = false;
+        return parent::close();
+    }
+
+    public function getRenderedLine(){
+        if ($this->_detectMatch[2] != '*' && $this->_detectMatch[2] != '-') {
+            return $this->_renderInlineTag(trim($this->_detectMatch[2].$this->_detectMatch[3]));
+        }
+        return parent::getRenderedLine();
+    }
+}
+
+
+/*
+';
+   protected $_closeTag='</variablelist>';
+
+   public function getRenderedLine(){
+      $dt=$this->_renderInlineTag($this->_detectMatch[1]);
+      $dd=$this->_renderInlineTag($this->_detectMatch[2]);
+      return "<varlistentry><term>$dt</term>\n<listitem>$dd</listitem></varlistentry>\n";
+*/
+class gtwdbk_definition extends WikiRendererBloc {
+
+    public $type='dfn';
+    protected $regexp="/^(\s*);\s*(.*) : (.*)/i";
+    protected $_openTag='<variablelist>';
+    protected $_closeTag='</variablelist>';
+    protected $_previousIndentation = -1;
+    protected $_firstItem = true;
+
+    protected $_opened = false;
+
+    public function detect($string){
+        if ($this->_opened) {
+            if (preg_match('/^(\s*)([^\=\|\^><=~])(.*)/', $string, $this->_detectMatch)) {
+                if ($this->_detectMatch[2] != ';') {
+                    if (strlen($this->_detectMatch[1]) > $this->_previousIndentation) {
+                        $this->_detectMatch[1] = '+;';
+                        $this->_detectMatch[2] .= $this->_detectMatch[3];
+                        return true;
+                    }
+                    return false;
+                }
+            }
+            else
+                return false;
+        }
+        if (preg_match($this->regexp, $string, $this->_detectMatch)) {
+            $this->_previousIndentation = strlen($this->_detectMatch[1]);
+            return true;
+        }
+        return false;
+    }
+
+    public function open(){
+        $this->_opened = true;
+        $this->_firstItem = true;
+        return parent::open();
+    }
+
+    public function close(){
+        $this->_opened = false;
+        return "</listitem></varlistentry>\n".parent::close();
+    }
+
+    public function getRenderedLine(){
+        if ($this->_detectMatch[1] == '+;') {
+            return $this->_renderInlineTag($this->_detectMatch[2]);
+        }
+        $dt = $this->_renderInlineTag($this->_detectMatch[2]);
+        $dd = $this->_renderInlineTag($this->_detectMatch[3]);
+
+        if (!$this->_firstItem) {
+            return "</listitem></varlistentry>\n<varlistentry><term>$dt</term>\n<listitem>$dd\n";
+        }
+        $this->_firstItem = false;
+        return "<varlistentry><term>$dt</term>\n<listitem>$dd\n";
+    }
+}
 
