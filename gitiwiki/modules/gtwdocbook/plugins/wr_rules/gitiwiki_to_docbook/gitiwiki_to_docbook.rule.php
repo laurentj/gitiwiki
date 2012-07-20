@@ -170,7 +170,7 @@ class gtwdbk_notinbook extends WikiRendererBloc {
 
 
 
-class gtwdbk_list extends dkxhtml_list {
+class gtwdbk_list extends dkdbk_list {
 
     protected $_opened = false;
 
