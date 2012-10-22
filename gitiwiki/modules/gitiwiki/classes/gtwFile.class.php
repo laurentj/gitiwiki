@@ -54,7 +54,11 @@ class gtwFile extends gtwFileBase {
     }
 
     function getPathFileName() {
-        return $this->path.'/'.$this->name;
+        if( $this->path == '' ) {
+            return $this->name;
+        } else {
+            return $this->path.'/'.$this->name;
+        }
     }
 
     function exists() {
