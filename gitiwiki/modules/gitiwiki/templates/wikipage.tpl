@@ -1,4 +1,4 @@
-{hook 'BeforeWikipage', array('repository'=>$repository, 'page'=>$pageName)}
+{hook 'GtwBeforeWikipage', array('repository'=>$repository, 'page'=>$pageName)}
 
 {if $bookPageInfo}
 <div id="book-page-header">
@@ -158,4 +158,4 @@
 </div>
 {/if}
 
-{hook 'AfterWikipage', array('repository'=>$repository, 'page'=>$pageName)}
+{hook 'GtwAfterWikipage', array('repository'=>$repository, 'page'=>$pageName)}
