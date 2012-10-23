@@ -155,7 +155,7 @@ class gtwDocbookGenerator {
 
             $hash = '';
             if (strpos($url, '#') !== false) {
-                list($url, $hash) = split("#", $url);
+                list($url, $hash) = explode("#", $url);
             }
 
             if (strpos($url, '..') !== false) {
