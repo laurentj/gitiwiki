@@ -89,6 +89,7 @@ class wikiCtrl extends jController {
             $tpl->assign('sourceViewURL', $sourceViewURL);
 
             $rep->body->assign('MAIN', $tpl->fetch('wikipage'));
+            $rep->body->assign('currentRepoName', $repo->getName());
         }
         else { // directory index
             $basePath = jUrl::get('gitiwiki~wiki:page', array('repository'=>$this->param('repository'), 'page'=>''));
