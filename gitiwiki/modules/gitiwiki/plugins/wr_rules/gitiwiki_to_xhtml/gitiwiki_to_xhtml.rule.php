@@ -287,7 +287,7 @@ class gtwxhtml_bookinfos extends WikiRendererBloc {
                     $this->_htmlcontent .= "<h2>".htmlspecialchars($this->bookInfos['subtitle'])."</h2>\n";
                 $this->_htmlcontent .=  "<div class=\"authors\">".jLocale::get('gitiwiki~wikipage.book.writtenby')." <ul>";
                 foreach($this->bookInfos['authors'] as $author) {
-                    $this->_htmlcontent .=  '<li>'.$author[0].' '.$author[1];
+                    $this->_htmlcontent .=  '<li>'. implode(' ', $author);
                     $this->_htmlcontent .=  '</li>';
                 }
                 $this->_htmlcontent .=  '</ul></div>';
