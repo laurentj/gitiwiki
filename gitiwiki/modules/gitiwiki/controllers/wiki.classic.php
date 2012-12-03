@@ -23,6 +23,7 @@ class wikiCtrl extends jController {
         if ($page === null) {
             $rep = $this->getResponse('html');
             $rep->body->assign('MAIN', '<p>not found</p>');
+            $rep->setHttpStatus('404', 'Not Found');
         }
         elseif($page instanceof gtwRedirection) {
             if (!$page->isWikiUrl()) {
