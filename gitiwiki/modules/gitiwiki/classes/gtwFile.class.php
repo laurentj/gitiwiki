@@ -1,12 +1,13 @@
 <?php
 /**
-* @package   gitiwiki
-* @subpackage gitiwiki
-* @author    Laurent Jouanneau
-* @copyright 2012 laurent Jouanneau
-* @link      http://jelix.org
-* @license    GNU PUBLIC LICENCE
-*/
+ * Some lines of code are taken from ewiki, made by Patrik Fimml
+ * @package   gitiwiki
+ * @subpackage gitiwiki
+ * @author    Laurent Jouanneau
+ * @copyright 2012 laurent Jouanneau,  2008 Patrik Fimml
+ * @link      http://jelix.org
+ * @license    GNU PUBLIC LICENCE
+ */
 
 
 class gtwFile extends gtwFileBase {
@@ -14,14 +15,20 @@ class gtwFile extends gtwFileBase {
     protected $name;
 
     /**
-     * @var GitTree|GitBlob
+     * @var GitBlob
      */
     protected $fileGitObject;
+
+    /**
+     * @var GitBlob
+     */
+    protected $newFileGitObject;
 
     protected $generator = null;
 
     /**
      * @param gtwRepo $repo
+     * @param string $commitId the bin hash of the commit of the version of the file
      * @param gitTree $treeGitObject
      * @param string $path the path, without ending slash
      * @param string $name the filename (real filename)
@@ -102,6 +109,120 @@ class gtwFile extends gtwFileBase {
 
     function save($message, $authorName, $authorMail) {
         throw new Exception('not implemented');
+        // Implementation: work in progress
+        
+        // FIXME : verify that the content did not change
+    
+        $conf = $this->repo->config();
+        $repo = $this->repo->git();
+        $commit = $repo->getObject($this->commitId);
+
+        $f = fopen($repo->dir.'/refs/heads/'.$conf['branch'], 'a+b');
+        flock($f, LOCK_EX);
+        $lastCommitId = stream_get_contents($f);
+
+        $howToMerge = $this->_hasNewVersion($repo, $lastCommitId);
+
+        $pending = $this->_createCommit($repo, $commit, $message, $authorName, $authorMail);
+
+        $lastcommit = $pending[0];
+        $blob = $pending[1];
+
+        if ($howToMerge == self::CAN_FASTMERGE) {
+            list($lastcommit, $newtree) = $this->_createMergeCommit($repo, $newcommit, $lastCommitId, $blob);
+            $pending[] = $newtree;
+            $pending[] = $lastcommit;
+        }
+
+        if ($showToMerge == self::MERGE_NEEDED) {
+            fclose($f);
+
+            /* create conflict branch */
+            $dir = sprintf('%s/refs/heads/%s', $repo->dir, "gtwconflict");
+            if (!file_exists($dir))
+                mkdir($dir, 0755);
+            if (!is_dir($dir))
+                throw new Exception(sprintf('%s is not a directory', $dir));
+            if (!is_writable($dir))
+                throw new Exception(sprintf('cannot write to %s', $dir));
+
+            $f = FALSE;
+            for ($i = 1; !$f; $i++)
+            {
+                $branch = sprintf('%s/%02d', "gtwconflict", $i);
+                try
+                {
+                    $f = fopen(sprintf('%s/refs/heads/%s', $repo->dir, $branch), 'xb');
+                }
+                catch (Exception $e)
+                {
+                    /*
+                     * fopen() will raise a warning if the file already
+                     * exists, which Core will make into an Exception.
+                     */
+                }
+            }
+            flock($f, LOCK_EX);
+        }
+        foreach ($pending as $obj)
+            $obj->write();
+        ftruncate($f, 0);
+        fwrite($f, sha1_hex($lastcommit->getName()));
+        fclose($f);
+        
+    }
+
+    protected function _createCommit($repo, $commit, $message, $authorName, $authorMail) {
+
+        // new blob to store the new content
+        $blob = new GitBlob($repo);
+        $blob->data = $this->fileGitObject->data;
+        $blob->rehash();
+
+        // new tree object
+        $tree = clone $this->treeGitObject;
+        $pending = $tree->updateNode($this->getPathFileName(), 0100640, $blob->getName());
+        $tree->rehash();
+        $pending[] = $tree;
+
+        // new commit object
+        $newcommit = new GitCommit($repo);
+        $newcommit->tree = $tree->getName();
+        $newcommit->parents = array($commit->getName());
+        $stamp = new GitCommitStamp;
+        $stamp->name = $authorName;
+        $stamp->email = $authorMail;
+        $stamp->time = time();
+        $stamp->offset = idate('Z', $stamp->time);
+        $newcommit->author = $stamp;
+        $newcommit->committer = $stamp;
+        $lines = explode("\n", $message);
+        $newcommit->summary = array_shift($lines);
+        $newcommit->detail = implode("\n", $lines);
+        $newcommit->rehash();
+
+        array_unshift($pending, $blob);
+        array_unshift($pending, $newcommit);
+        return $pending;
+    }
+
+    protected function _createMergeCommit($repo, $newcommit, $tipCommitId, $blob) {
+        $ref = sha1_bin($tipCommitId);
+        $tip = $repo->getObject($ref);
+
+        $tree = clone $repo->getObject($tip->tree);
+        $pending = $tree->updateNode($this->getPathFileName(), 0100640, $blob->getName());
+        $tree->rehash();
+
+        $mergecommit = new GitCommit($repo);
+        $mergecommit->tree = $tree->getName();
+        $mergecommit->parents = array($tip->getName(), $newcommit->getName());
+        $mergecommit->author = $newcommit->author;
+        $mergecommit->committer = $newcommit->committer;
+        $mergecommit->summary = 'Fast merge';
+        $mergecommit->detail = '';
+        $mergecommit->rehash();
+        return array($mergecommit, $tree);
     }
 
     function moveTo($newPath, $message, $authorName, $authorMail, $commit = null) {
@@ -141,7 +262,9 @@ class gtwFile extends gtwFileBase {
     }
 
     function setContent($content) {
-        throw new Exception('not implemented');
+        $this->newFileGitObject = new GitBlob($this->repo->git());
+        $this->newFileGitObject->data = $content;
+        $this->newFileGitObject->rehash();
     }
 
     function getTitle() {

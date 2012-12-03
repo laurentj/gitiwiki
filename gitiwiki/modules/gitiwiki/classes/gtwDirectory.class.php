@@ -33,6 +33,10 @@ class gtwDirectory extends gtwFileBase {
     function getName() {
         return basename($this->path);
     }
+    function getPathFileName() {
+        return $this->path;
+    }
+    
     function getHtmlContent($basePath) {
         if (!$this->treeGitObject)
             return '';
