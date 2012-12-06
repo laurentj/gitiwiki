@@ -79,11 +79,12 @@ class wikiCtrl extends jController {
 
             $sourceEditURL = '';
             $sourceViewURL = '';
+            $pathFileName = ltrim($page->getPathFileName(), '/');
             if (isset($repoConfig['gitSourceEditURL'])) {
-                $sourceEditURL = str_replace(array('%branch%', '%file%'), array($repoConfig['branch'],$page->getPathFileName()), $repoConfig['gitSourceEditURL'] );
+                $sourceEditURL = str_replace(array('%branch%', '%file%'), array($repoConfig['branch'],$pathFileName), $repoConfig['gitSourceEditURL'] );
             }
             if (isset($repoConfig['gitSourceViewURL'])) {
-                $sourceViewURL = str_replace(array('%branch%', '%file%'), array($repoConfig['branch'],$page->getPathFileName()), $repoConfig['gitSourceViewURL'] );
+                $sourceViewURL = str_replace(array('%branch%', '%file%'), array($repoConfig['branch'],$pathFileName), $repoConfig['gitSourceViewURL'] );
             }
 
             $tpl->assign('sourceEditURL', $sourceEditURL);
