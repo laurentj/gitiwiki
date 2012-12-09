@@ -42,6 +42,8 @@ jWSDL.access=0
 gitiwiki.access=2
 main.access=2
 gtwdocbook.access=1
+gtwsphinx.access=2
+sphinxsearch.access=1
 
 [coordplugins]
 ;name = file_ini_name or 1
