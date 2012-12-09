@@ -77,6 +77,7 @@ class resultsCtrl extends jController {
             'total' => $searchStats['total'] ) );
         $rep->body->assign('MAIN', $content);
         $rep->body->assign('currentRepoName', $repoName);
+        $rep->title = jLocale::get( 'sphinx.title.results', $searchString );
         return $rep;
     }
 }
