@@ -8,6 +8,7 @@ path = app:var/repositories/default/
 generators = gitiwikiGenerators
 branch = master
 title= "Test repository"
+sphinxIndex= "gitiwikiTest"
 
 [jdb]
 ; name of the default profile to use for any connection
