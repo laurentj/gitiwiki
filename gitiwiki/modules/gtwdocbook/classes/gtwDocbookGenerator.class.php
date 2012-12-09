@@ -28,7 +28,7 @@ class gtwDocbookGenerator {
         $books = jClasses::create('gitiwiki~gtwBooks');
         $bookinfo = $books->getBookInfo($repoId, $bookId);
         if ($bookinfo === false)
-            throw "Unknown book or repository";
+            throw new Exception("Unknown book or repository");
 
         list($this->book, $this->bookIndex, $this->bookPath) = $bookinfo;
 
