@@ -1,0 +1,57 @@
+.searchMatch {
+    font-weight: bold;
+}
+
+.searchResultsItem {
+    margin-bottom: 15px;
+}
+
+.searchResults {
+    margin: 0 10px;
+}
+
+h2.searchResultsHeader {
+    margin: 0;
+}
+
+.searchResultsList {
+    padding: 0 20px 0 40px;
+}
+
+a.searchResultsTitle {
+    font-size: 110%;
+    color: #1122CC;
+}
+
+.searchResultsUrl {
+    display: block;
+    margin-left: 5px;
+    color: #009933;
+}
+
+.searchResultsExtract {
+    margin: 2px 5px;
+}
+
+.searchResultsNav {
+    text-align: center;
+    font-size: 110%;
+}
+
+.searchResultsNavLink, .searchResultsNavCurr {
+    padding: 0 5px;
+}
+
+.searchResultsNavPrev {
+    /* famfamfam resultset_previous : */
+    background:url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAEXSURBVDjLY/j//z8DJZiBLgZkz37Ynjrz4ReyDEideb89afrDf5ET7v4n2YCEqXf7qpY9/T9r76v/Xu03STMgasLteaVLHv+fufvl/6k7X/y3qrlCvAHBvTeXFC54ANbctv7p/95Nz/5rFZ0nzoCAzpuPsuc++D91x4v/jasf/y9aeP9/89rH/6VTTxJngGPDtc3xU+/879789H/5kgf/02fd+V+17OF/yZhjxBmgVXCaRT3v7BqP1mv/a1Y+/J824/b/woX3/osHHSAtECVjjqy0Lb/wP2/+3f+Zs+/8F3XfS3o0inntXWSeffJ/0tRb/0Ucdv4nKyEJW25ZYBh/5L+w5fb/ZCdlQYMNs4WMt/wfuMyEDwMA0Irn/pDRT58AAAAASUVORK5CYII=") top left no-repeat;
+    margin-right: 15px;
+    padding-left: 20px;
+}
+
+.searchResultsNavNext {
+    /* famfamfam resultset_next : */
+    background:url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAEdSURBVDjLY/j//z8DJZiB6gY0rH7xpW7li3YKDHj1v2bli38lix61k2VA5fJn/9eeeP+/fcOL/wlT7/aRbEDegkf/Vxx/93/xobf/S5c8/u/ecm0eSQYkTX/4f+HBN/8nbX/xf+bul/8Tp9/9r1N0dgnRBgT33QZqfPW/YdXj/42rH//v2vjkv3fHtf9SScceEWWAc8u1/xO2Pv9fsvjB//IlD4CGPPrvXH/5v2Tksc1EGWBaful/+/on/4sW3gfGxsP/9lUX/ksEH1gj6rqdhSgDlPPO/q9b8fB/5bIH/23LL/wXD9i7kqRAlEo6+b908f3/NiXn/4t57V1EcjRKRB75b1145r+o684FZCUkMb8D/0Uct88euMxEKgYA7Ojrv4CgE7EAAAAASUVORK5CYII=") top right no-repeat;
+    margin-left: 15px;
+    padding-right: 20px;
+}
