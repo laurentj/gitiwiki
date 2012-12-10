@@ -51,6 +51,13 @@ class gtwRepo {
         if (!isset($this->config['title']))
             $this->config['title'] = $repoName;
 
+        if (!isset($this->config['basepath']) || $this->config['basepath'] == '/') {
+            $this->config['basepath'] = '';
+        }
+        else {
+            $this->config['basepath'] = trim($this->config['basepath'],'/').'/';
+        }
+
         $this->config['path'] = str_replace(array('app:'), array(jApp::appPath()), $this->config['path']);
         $this->repo = new Git($this->config['path']);
         $this->repoName = $repoName;
@@ -78,10 +85,13 @@ class gtwRepo {
     function getName() {
         return $this->repoName;
     }
+
     /**
      * searches a file at the given path. It has a "multiview" support, and
-     * has a "redirection" support by checking the meta file corresponding to th e given path
-     * @param string $path  the path of the file into the repository
+     * has a "redirection" support by checking the meta file corresponding to the given path
+     * @param string $path  the path of the file into the repository. It should start with a "/".
+     *                      this path will be prefixed by the basepath config parameter of the repository
+     *                      if needed.
      * @param string $commitId the bin hash of a commit corresponding to a branch tip, if we want to search in
      *                  an other branch than the default branch
      * @todo  support of redirection a a path component, to allow to indicate a redirection
@@ -144,7 +154,13 @@ class gtwRepo {
             //jLog::log("get $path/$name : explicit page $name");
         }
 
-        $hash = $commit->find($path.'/');
+        // we have here
+        //  $path = the path of the directory where the file is
+        //  $name = the name of the file to retrieve
+        //  $implicitName = true if the name was given, false if gtw guessed it
+
+        // let's retrieve the git object corresponding to the path.
+        $hash = $commit->find($this->config['basepath'].$path.'/');
         if (!$hash) {
             //jLog::log("get $path : don't find the path at the given commit");
             return null;
@@ -168,7 +184,7 @@ class gtwRepo {
                 $path = dirname($path);
                 if ($path == '.')
                     $path = '';
-                $hash = $commit->find($path.'/');
+                $hash = $commit->find($this->config['basepath'].$path.'/');
                 if (!$hash) {
                     return null;
                 }
@@ -234,7 +250,7 @@ class gtwRepo {
             $path = dirname($path);
             if ($path == '.')
                 $path = '';
-            $hash = $commit->find($path.'/');
+            $hash = $commit->find($this->config['basepath'].$path.'/');
             if (!$hash) {
                 return null;
             }
@@ -301,9 +317,12 @@ class gtwRepo {
         if (isset($this->config['branches'][$hash])) {
             return $this->config['branches'][$hash];
         }
-        $c = $this->config['branches'][$hash] = array('multiviews'=>array('.gtw'), 'redirection'=>array(), 'ignore'=>array(), 'protocol-aliases'=>array());
+        $c = $this->config['branches'][$hash] = array('multiviews'=>array('.gtw'),
+                                                      'redirection'=>array(),
+                                                      'ignore'=>array(),
+                                                      'protocol-aliases'=>array());
 
-        $cfhash = $commit->find('.config.ini');
+        $cfhash = $commit->find($this->config['basepath'].'.config.ini');
         if (!$cfhash){
             return $c;
         }

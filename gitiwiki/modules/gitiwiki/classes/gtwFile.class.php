@@ -177,7 +177,7 @@ class gtwFile extends gtwFileBase {
 
         // new tree object
         $tree = clone $this->treeGitObject;
-        $pending = $tree->updateNode($this->getPathFileName(), 0100640, $blob->getName());
+        $pending = $tree->updateNode($this->getRealPathFileName(), 0100640, $blob->getName());
         $tree->rehash();
         $pending[] = $tree;
 
@@ -207,7 +207,7 @@ class gtwFile extends gtwFileBase {
         $tip = $repo->getObject($ref);
 
         $tree = clone $repo->getObject($tip->tree);
-        $pending = $tree->updateNode($this->getPathFileName(), 0100640, $blob->getName());
+        $pending = $tree->updateNode($this->getRealPathFileName(), 0100640, $blob->getName());
         $tree->rehash();
 
         $mergecommit = new GitCommit($repo);
@@ -232,12 +232,15 @@ class gtwFile extends gtwFileBase {
     protected $extraData = array();
 
     /**
-     * @param string $basePath the path to the wiki content, relative the domain name
+     * returns the content of the file as HTML content. If a generator is set on the object,
+     * it will be used to generate the HTML version of the content
+     * @param string $webBasePath the path to the wiki content, relative the domain name
+     * @return string the html content
      */
-    function getHtmlContent($basePath) {
+    function getHtmlContent($webBasePath) {
         if ($this->fileGitObject) {
             if ($this->generator) {
-                $content = $this->generator->generate($this->fileGitObject->data, $basePath, $this->path.'/');
+                $content = $this->generator->generate($this->fileGitObject->data, $webBasePath, $this->path.'/');
                 $this->extraData = $this->generator->getExtraData();
                 return $content;
             } else {

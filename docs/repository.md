@@ -12,7 +12,10 @@ This chapter explain how to register a Git repository  and what it should contai
 bare repository or the .git directory of your repository. You can use the alias "app:" as
 prefix to indicate a path relative to the gitiwiki directory. There is a gitiwiki/var/repositories/
 where you can put your repository. However it can be anywhere on your hard drive.
-4. in the "branch" parameter, indicate the branch that gitiwiki should use 
+4. in the "branch" parameter, indicate the branch that gitiwiki should use
+5. in the "basepath" parameter, indicate the directory inside the repository from which file
+  will be retrieve. By default, its value is "/".
+  
 
 ```ini
     [gtwrepo:mywiki]
@@ -21,6 +24,7 @@ where you can put your repository. However it can be anywhere on your hard drive
     ; path=/home/myaccount/mysite/mywiki/gitiwiki/var/repositories/mywiki/.git
     branch=master
     title= A title
+    basepath="/"
 ```
 
 You can also indicate a title for the list of wikis.

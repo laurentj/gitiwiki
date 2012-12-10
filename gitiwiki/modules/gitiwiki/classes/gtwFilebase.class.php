@@ -56,23 +56,60 @@ abstract class gtwFileBase {
         return sha1_hex($this->commitId);
     }
 
+    /**
+     * @return string the path to the directory (relative to the basepath indicated in the configuration)
+     */
     function getPath() {
         return $this->path;
     }
 
+    /**
+     * @return string the real path of the directory into the repository (basepath + path)
+     */
+    function getRealPath() {
+        $conf = $this->repo->config();
+        return $conf['basepath'].$this->path;
+    }
+
+    /**
+     * @return string the real path + the file name into the repository (basepath + path + name)
+     */
+    function getRealPathFileName() {
+        $conf = $this->repo->config();
+        return $conf['basepath'].ltrim($this->path.'/'.$this->name,'/');
+    }
+    
+    /**
+     * @return string the relative path + the file name
+     */
     abstract function getPathFileName();
 
+    /**
+     * @return string the name of the file
+     */
     abstract function getName();
 
+    /**
+     * @return boolean true if the file exists in the repository
+     */
     abstract function exists();
 
+    /**
+     * @return boolean true if the content is not a wiki content for example
+     */
     abstract function isStaticContent();
 
     /**
-     * @param string $basePath the path to the wiki content, relative the domain name
+     * returns the content of the file as HTML content. If the original content
+     * is a wiki content, it could be transformed to HTML by an appropriate library
+     * @param string $webBasePath the path to the wiki content, relative the domain name
+     * @return string the html content
      */
-    abstract function getHtmlContent($basePath);
+    abstract function getHtmlContent($webBasePath);
 
+    /**
+     * @return string the original content of the page
+     */
     abstract function getContent();
 
     abstract function save($message, $authorName, $authorMail);
@@ -111,7 +148,7 @@ abstract class gtwFileBase {
         $tip = $repo->getObject($ref);
         $commit = $repo->getObject($this->commitId);
         try {
-            $path = $this->getPathFileName();
+            $path = $this->getRealPathFileName();
             // if the hash of the file at the tip is equals to
             // the hash of the file at the commit from wich we readed the commit,
             // then the file didn't changed

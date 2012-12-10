@@ -36,7 +36,15 @@ class gtwDirectory extends gtwFileBase {
     function getPathFileName() {
         return $this->path;
     }
-    
+
+    /**
+     * @return string the real path + the file name into the repository (basepath + path + name)
+     */
+    function getRealPathFileName() {
+        $conf = $this->repo->config();
+        return $conf['basepath'].ltrim($this->path,'/');
+    }
+
     function getHtmlContent($basePath) {
         if (!$this->treeGitObject)
             return '';
