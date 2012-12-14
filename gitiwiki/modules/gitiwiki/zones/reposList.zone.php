@@ -16,22 +16,23 @@ class reposListZone extends jZone {
 
         $labelAttr = $this->param( 'labelAttr', 'title' );
         $order = $this->param( 'order', 'asc' ); // 'asc' or 'desc'
+        //passing a 'currentRepoName' param will make the corresponding repo <li> to get a "selected" class
      
         $conf = jIniFile::read(jApp::configPath('profiles.ini.php'));
         $list = array();
         foreach($conf as $prop=> $val) {
             if (is_array($val) && preg_match('/^gtwrepo\:(.*)$/', $prop, $m)) {
                 if (isset($val[$labelAttr]))
-                    $list[$val['order']] = array( 'name'=>$m[1], 'label'=>$val[$labelAttr] );
+                    $list[] = array( 'order'=>$val['order'], 'name'=>$m[1], 'label'=>$val[$labelAttr] );
                 else
-                    $list[$val['order']] = array( 'name'=>$m[1], 'label'=>$m[1] );
+                    $list[] = array( 'order'=>$val['order'], 'name'=>$m[1], 'label'=>$m[1] );
             }
         }
 
-        ksort( $list, SORT_NUMERIC );
-        if( strtoupper($order) == 'DESC' ) {
-            $list = array_reverse( $list );
-        }
+        $comparer = strtoupper($order) === 'DESC'
+            ? 'return intval($a["order"]) < intval($b["order"]);'
+            : 'return intval($a["order"]) > intval($b["order"]);' ;
+        usort( $list, create_function('$a,$b', $comparer) );
 
         $this->_tpl->assign( 'repos', $list );
     }
