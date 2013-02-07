@@ -134,7 +134,7 @@ class gtwFile extends gtwFileBase {
             fclose($f);
 
             /* create conflict branch */
-            $dir = sprintf('%s/refs/heads/%s', $repo->dir, "gtwconflict");
+            $dir = $repo->dir.'/refs/heads/gtwconflict';
             if (!file_exists($dir))
                 mkdir($dir, 0755);
             if (!is_dir($dir))
@@ -145,10 +145,12 @@ class gtwFile extends gtwFileBase {
             $f = FALSE;
             for ($i = 1; !$f; $i++)
             {
-                $branch = sprintf('%s/%02d', "gtwconflict", $i);
+                $branch = sprintf('gtwconflict-%02d', $i);
+                if (file_exists($branch))
+                    continue;
                 try
                 {
-                    $f = fopen(sprintf('%s/refs/heads/%s', $repo->dir, $branch), 'xb');
+                    $f = fopen($repo->dir.'/refs/heads/'.$branch, 'xb');
                 }
                 catch (Exception $e)
                 {
