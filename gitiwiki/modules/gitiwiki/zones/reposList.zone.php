@@ -29,11 +29,28 @@ class reposListZone extends jZone {
             }
         }
 
-        $comparer = strtoupper($order) === 'DESC'
-            ? 'return intval($a["order"]) < intval($b["order"]);'
-            : 'return intval($a["order"]) > intval($b["order"]);' ;
-        usort( $list, create_function('$a,$b', $comparer) );
-
+        if(strtoupper($order) === 'DESC') {
+            usort( $list, array($this, 'desc'));
+        }
+        else {
+            usort( $list, array($this, 'asc'));
+        }
         $this->_tpl->assign( 'repos', $list );
+    }
+
+    protected function desc($a, $b) {
+        $o2 = intval($a["order"]);
+        $o1 = intval($b["order"]);
+        if ($o1 < $o2) return -1;
+        if ($o2 < $o1) return 1;
+        return 0;
+    }
+
+    protected function asc($a, $b) {
+        $o1 = intval($a["order"]);
+        $o2 = intval($b["order"]);
+        if ($o1 < $o2) return -1;
+        if ($o2 < $o1) return 1;
+        return 0;
     }
 }
