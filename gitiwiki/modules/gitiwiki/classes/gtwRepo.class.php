@@ -206,21 +206,15 @@ class gtwRepo {
         // does the given filename correspond to a file/dir ?
         if (isset($treeObject->nodes[$name])) {
             $node = $treeObject->nodes[$name];
-            if (!$node->is_dir) {
-                // this is a file, good !
-                //jLog::log("get $path/$name : it is a file, good");
-                return new gtwFile($this, $commitId, $treeObject, $path, $name);
-            }
-
-            // the given "path/name" is a directory
-
-            if ($implicitName)
+            
+            if( $node->is_dir && $implicitName ) {
                 // error we don't expect to find a directory 'index' under the given path
                 throw new Exception ('Unexpected content at this path');
+            }
 
-            //jLog::log("get $path/$name : it is a directory. Try multiview for $path/$name to get index (dokuwiki compatibility)");
+            //jLog::log("get $path/$name : it is a file or a directory. Try multiview for $path/$name to get index (dokuwiki compatibility)");
 
-            // so the path indicates a directory
+            // so the path indicates a file or a directory
             // is there a file with the same name + a known extension?
             // => compatibility with dokuwiki storage
             $fileResult = $this->checkMultiview($treeObject, $path, $name, $commitId);
@@ -243,8 +237,13 @@ class gtwRepo {
         else if ($implicitName) {
             //jLog::log("get $path/$name : not found. Try multiview.");
             $fileResult = $this->checkMultiview($treeObject, $path, $name, $commitId);
-            if ($fileResult)
-                return $fileResult;
+            if ($fileResult) {
+                if( $fileResult instanceof gtwFile ) {
+                    return new gtwRedirection( $fileResult->getPath() . '/' . $fileResult->getName() );
+                } else {
+                    return $fileResult;
+                }
+            }
             //jLog::log("get $path/$name with multiview not found. Try multiview on $path");
             $name = basename($path);
             $path = dirname($path);
@@ -271,17 +270,34 @@ class gtwRepo {
         return new gtwDirectory($this, $commitId, $originalTreeObject, $originalPath);
     }
 
-    protected function checkMultiview($treeObject, $path, $name, $commitId) {
+    protected function checkMultiview($treeObject, $path, $name, $commitId, $checkDupContent=true) {
         $metaDirObject = $this->getMetaDirObject($treeObject);
         $file = new gtwFile($this, $commitId, $treeObject, $path, $name);
         $file->setMetaDirObject($metaDirObject);
 
+        $extList = $this->config['branches'][$commitId]['multiviews'];
+
         $redir = $file->getMeta('redirection');
         if ($redir) {
             return new gtwRedirection($redir, $path);
+        } elseif ( isset($treeObject->nodes[$name]) && ! $treeObject->nodes[$name]->is_dir ) {
+            if( $checkDupContent ) {
+                //it's a file. But to avoid duplicate contents on this URL, look if there is an url that points to this file using multiview
+                foreach($extList as $ext) {
+                    if( $ext === substr( $name, -strlen($ext) ) ) {
+                        //extension matches
+                        $nameNoExt = substr( $name, 0, -strlen($ext) );
+                        $fileResult = $this->checkMultiview($treeObject, $path, $nameNoExt, $commitId, false);
+                        if( $fileResult instanceof gtwFile && $fileResult->getPath() == $path && $fileResult->getName() == $name ) {
+                            return new gtwRedirection( $path . '/' . $nameNoExt );
+                        }
+                    }
+                }
+            }
+            //no multiview found -> this URL is OK !
+            return $file;
         }
 
-        $extList = $this->config['branches'][$commitId]['multiviews'];
         foreach($extList as $ext) {
             $n = $name.$ext;
             $file = new gtwFile($this, $commitId, $treeObject, $path, $n);
