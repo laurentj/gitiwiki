@@ -128,8 +128,23 @@ abstract class gtwFileBase {
         return ($this->_hasNewVersion($repo, $lastCommitId) == self::MERGE_NEEDED);
     }
 
+    /**
+     * value returned by _hasNewVersion().
+     * indicate that changes can be committed directly
+     */
     const CAN_FASTFORWARD = 2;
+
+    /**
+     * value returned by _hasNewVersion().
+     * indicate that commits occured but not about the file we want to commit
+     * we can commit it directly
+     */
     const CAN_FASTMERGE = 1;
+
+    /**
+     * value returned by _hasNewVersion().
+     * indicate that commits occured on the file we want to commit
+     */
     const MERGE_NEEDED = 0;
 
     protected function _hasNewVersion($repo, $lastCommitId) {

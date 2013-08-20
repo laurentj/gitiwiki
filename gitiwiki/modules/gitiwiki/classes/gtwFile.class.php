@@ -15,11 +15,13 @@ class gtwFile extends gtwFileBase {
     protected $name;
 
     /**
+     * the original git object for the content
      * @var GitBlob
      */
     protected $fileGitObject;
 
     /**
+     * the git object for the new content
      * @var GitBlob
      */
     protected $newFileGitObject;
@@ -104,11 +106,10 @@ class gtwFile extends gtwFileBase {
     }
 
     function save($message, $authorName, $authorMail) {
-        throw new Exception('not implemented');
-        // Implementation: work in progress
-        
-        // FIXME : verify that the content did not change
-    
+        // FIXME : save also meta data if it has changed
+        if (!$this->newFileGitObject || $this->fileGitObject->getName() != $this->newFileGitObject->getName())
+            return false;
+
         $conf = $this->repo->config();
         $repo = $this->repo->git();
         $commit = $repo->getObject($this->commitId);
@@ -167,7 +168,7 @@ class gtwFile extends gtwFileBase {
         ftruncate($f, 0);
         fwrite($f, sha1_hex($lastcommit->getName()));
         fclose($f);
-        
+        return true;
     }
 
     protected function _createCommit($repo, $commit, $message, $authorName, $authorMail) {
