@@ -1,14 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
 <suburls xmlns="http://jelix.org/ns/suburls/1.0">
-    <url pathinfo="/" module="gitiwiki" action="default:index" optionalTrailingSlash="true">
+
+    <url pathinfo="/" action="default:index" optionalTrailingSlash="true">
     </url>
 
-    <url pathinfo="/:repository" module="gitiwiki" action="wiki:page" optionalTrailingSlash="true">
+<!--    <url pathinfo="/:repository\:recent-changes" action="wiki:recent-changes">
+    </url>
+-->
+
+    <url pathinfo="/:repository" action="wiki:page" optionalTrailingSlash="true">
         <static name="page" value="/"/>
     </url>
 
-    <url pathinfo="/:repository/:page" module="gitiwiki" action="wiki:page">
+
+    <url pathinfo="/:repository/:page\:history" action="wiki:history">
         <param name="page" type="path" />
     </url>
+
+    <url pathinfo="/:repository/:page\:details" action="wiki:details">
+        <param name="page" type="path" />
+    </url>
+
+    <url pathinfo="/:repository/:page\:conflicts" action="wiki:conflicts">
+        <param name="page" type="path" />
+    </url>
+
+    <url pathinfo="/:repository/:page\:edit" action="wikiedit:edit">
+        <param name="page" type="path" />
+    </url>
+
+    <url pathinfo="/:repository/:page\:save" action="wikiedit:save">
+        <param name="page" type="path" />
+    </url>
+
+    <url pathinfo="/:repository/:page\:create" action="wikiedit:create">
+        <param name="page" type="path" />
+    </url>
+
+    <url pathinfo="/:repository/:page\:delete" action="wikiedit:delete">
+        <param name="page" type="path" />
+    </url>
+
+    <!-- keep this declaration after all *\:something urls -->
+    <url pathinfo="/:repository/:page" action="wiki:page">
+        <param name="page" type="path" />
+    </url>
+
 
 </suburls>

@@ -102,4 +102,23 @@ class wikiCtrl extends jController {
         return $rep;
     }
 
+    function history() {
+        $rep = $this->getResponse('html');
+        $rep->body->assign('MAIN', '<p>Feature not available yet.</p>');
+        return $rep;
+    }
+
+    function details() {
+        $rep = $this->getResponse('html');
+        $rep->body->assign('MAIN', '<p>Feature not available yet.</p>');
+        return $rep;
+        
+    }
+
+    function conflicts() {
+        $rep = $this->getResponse('html');
+        $rep->body->assign('MAIN', '<p>Feature not available yet.</p>');
+        return $rep;
+    }
+
 }
