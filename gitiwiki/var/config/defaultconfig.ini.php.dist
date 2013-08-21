@@ -30,14 +30,9 @@ domainName=
 
 jelix.access=2
 
-; jacldb is deprecated. keep it uninstall if possible. install jacl2db instead
-jacldb.access=0
-
 jacl2db.access=0
 jauth.access=0
 jauthdb.access=0
-junittests.access=0
-jWSDL.access=0
 
 gitiwiki.access=2
 main.access=2

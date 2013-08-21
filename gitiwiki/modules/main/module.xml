@@ -11,6 +11,6 @@
         <homepageURL>http://innophi.com</homepageURL>
     </info>
     <dependencies>
-        <jelix minversion="1.4pre.2287" maxversion="1.4.*"/>
+        <jelix minversion="1.4pre.2287" maxversion="1.6.*"/>
     </dependencies>
 </module>
