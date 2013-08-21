@@ -3,10 +3,11 @@
 * @package    jelix
 * @subpackage dao
 * @author     Gérald Croes, Laurent Jouanneau
-* @contributor Laurent Jouanneau, Julien Issler, Yannick Le Guédart
+* @contributor Laurent Jouanneau, Julien Issler, Yannick Le Guédart, Philippe Villiers
 * @copyright  2001-2005 CopixTeam, 2005-2009 Laurent Jouanneau
 * @copyright  2008 Thomas
 * @copyright  2008 Julien Issler, 2009 Yannick Le Guédart
+* @copyright  2013 Philippe Villiers
 * This classes was get originally from the Copix project (CopixDAOSearchConditions, Copix 2.3dev20050901, http://www.copix.org)
 * Some lines of code are copyrighted 2001-2005 CopixTeam (LGPL licence).
 * Initial authors of this Copix classes are Gerald Croes and Laurent Jouanneau,
@@ -91,9 +92,14 @@ class jDaoConditions {
      * add an order clause
      * @param string $field_id   the property name used to order results
      * @param string $way        the order type : asc or desc
+     * @param boolean $allowAnyWay true if the value of $way should be checked. Internal use.
+     *                              Not recommended because it may cause security issues
      */
-    function addItemOrder($field_id, $way='ASC'){
-        $this->order[$field_id]=$way;
+    function addItemOrder ($field_id, $way='ASC', $allowAnyWay=false) {
+        if (!$allowAnyWay && strtoupper($way) !='DESC' && strtoupper($way) != 'ASC')
+            throw new jException('jelix~dao.error.bad.operator', $way);
+
+        $this->order[$field_id] = $way;
     }
 
     /**
@@ -129,6 +135,9 @@ class jDaoConditions {
     * @param string $glueOp the logical operator which links each conditions in the group : AND or OR
     */
     function startGroup ($glueOp = 'AND'){
+        $glueOp = strtoupper($glueOp);
+        if ($glueOp !='AND' && $glueOp != 'OR')
+            throw new jException('jelix~dao.error.bad.operator', $glueOp);
         $cond= new jDaoCondition ($glueOp, $this->_currentCondition);
         $this->_currentCondition = $cond;
     }
@@ -149,21 +158,22 @@ class jDaoConditions {
     * @param string $field_id  the property name on which the condition applies
     * @param string $operator  the sql operator
     * @param string $value     the value which is compared to the property
+    * @param string $field_pattern  the pattern to use on the property (WHERE clause)
     * @param boolean $foo      parameter for internal use : don't use it or set to false
     */
-    function addCondition ($field_id, $operator, $value, $foo = false){
+    function addCondition ($field_id, $operator, $value, $field_pattern = '%s', $foo = false){
         $operator = trim(strtoupper($operator));
         if(preg_match ('/^[^\w\d\s;\(\)]+$/', $operator) ||
            in_array($operator, array('LIKE', 'NOT LIKE', 'ILIKE', 'IN', 'NOT IN', 'IS', 'IS NOT', 'IS NULL',
-                    'IS NOT NULL', 'MATCH', 'REGEXP', 'NOT REGEXP', 'RLIKE', 'SOUNDS LIKE'))) {
+                    'IS NOT NULL', 'MATCH', 'REGEXP', 'NOT REGEXP', '~', '!~', '~*', '!~*', 'RLIKE', 'SOUNDS LIKE'))) {
 
             $this->_currentCondition->conditions[] = array (
                'field_id'=>$field_id,
+               'field_pattern'=>$field_pattern,
                'value'=>$value,
                'operator'=>$operator, 'isExpr'=>$foo);
         }
         else
             throw new jException('jelix~dao.error.bad.operator', $operator);
-        
     }
 }

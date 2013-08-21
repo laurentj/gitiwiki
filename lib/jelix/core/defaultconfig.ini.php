@@ -78,19 +78,11 @@ cmdline = jResponseCmdline
 jsonrpc = jResponseJsonrpc
 json = jResponseJson
 xmlrpc = jResponseXmlrpc
-xul = jResponseXul
-xuloverlay = jResponseXulOverlay
-xuldialog = jResponseXulDialog
-xulpage = jResponseXulPage
-rdf = jResponseRdf
 xml = jResponseXml
 zip = jResponseZip
 rss2.0 = jResponseRss20
 atom1.0 = jResponseAtom10
 css= jResponseCss
-ltx2pdf= jResponseLatexToPdf
-tcpdf = jResponseTcpdf
-soap = jResponseSoap
 htmlfragment = jResponseHtmlFragment
 htmlauth = jResponseHtml
 sitemap = jResponseSitemap
@@ -106,19 +98,11 @@ cmdline = jResponseCmdline
 jsonrpc = jResponseJsonrpc
 json = jResponseJson
 xmlrpc = jResponseXmlrpc
-xul = jResponseXul
-xuloverlay = jResponseXulOverlay
-xuldialog = jResponseXulDialog
-xulpage = jResponseXulPage
-rdf = jResponseRdf
 xml = jResponseXml
 zip = jResponseZip
 rss2.0 = jResponseRss20
 atom1.0 = jResponseAtom10
 css= jResponseCss
-ltx2pdf= jResponseLatexToPdf
-tcpdf = jResponseTcpdf
-soap = jResponseSoap
 htmlfragment = jResponseHtmlFragment
 htmlauth = jResponseHtml
 sitemap = jResponseSitemap
@@ -134,10 +118,12 @@ minifyCSS = off
 minifyJS = off
 ; list of filenames which shouldn't be minified. Path relative to basePath:
 minifyExcludeCSS = ""
-minifyExcludeJS = "jquery.wymeditor.js"
+minifyExcludeJS = "jelix/wymeditor/jquery.wymeditor.js"
 
 [debugbar]
 plugins = sqllog,sessiondata,defaultlog
+defaultPosition=right
+errors_openon=error
 
 [error_handling]
 messageLogFormat = "%date%\t%ip%\t[%code%]\t%msg%\t%file%\t%line%\n\t%url%\n%params%\n%trace%\n\n"
@@ -148,12 +134,12 @@ checkCacheFiletime  = on
 force  = off
 
 [urlengine]
-; name of url engine :  "simple" or "significant"
-engine        = simple
+; name of url engine :  "basic_significant" or "significant"
+engine        = basic_significant
 
 ; enable the parsing of the url. Set it to off if the url is already parsed by another program
 ; (like mod_rewrite in apache), if the rewrite of the url corresponds to a simple url, and if
-; you use the significant engine. If you use the simple url engine, you can set to off.
+; you use the significant engine. If you use the deprecated "simple" url engine, you can set to off.
 enableParser = on
 
 ; if multiview is activated in apache, eg, you don't have to indicate the ".php" suffix
@@ -207,12 +193,10 @@ jqueryPath="jelix/jquery/"
 
 defaultEntrypoint= index
 
-entrypointExtension= .php
-
 ; action to show the 'page not found' error
 notfoundAct = "jelix~error:notfound"
 
-; list of actions which require https protocol for the simple url engine
+; list of actions which require https protocol for the deprecated "simple" url engine
 ; syntax of the list is the same as explained in the simple_urlengine_entrypoints
 simple_urlengine_https =
 
@@ -227,7 +211,7 @@ urlScriptIdenc=
 documentRoot=
 
 [simple_urlengine_entrypoints]
-; parameters for the simple url engine. This is the list of entry points
+; parameters for the deprecated "simple" url engine. This is the list of entry points
 ; with list of actions attached to each entry points
 
 ; script_name_without_suffix = "list of action selectors separated by a space"
@@ -240,7 +224,6 @@ documentRoot=
 index = "@classic"
 xmlrpc = "@xmlrpc"
 jsonrpc = "@jsonrpc"
-rdf = "@rdf"
 
 [basic_significant_urlengine_entrypoints]
 ; for each entry point, it indicates if the entry point name
@@ -248,7 +231,6 @@ rdf = "@rdf"
 index = on
 xmlrpc = on
 jsonrpc = on
-rdf = on
 
 [logger]
 ; list of loggers for each categories of log messages
@@ -370,6 +352,7 @@ storage=
 ; dao_db_profile = ""
 
 ; list of selectors of classes to load before the session_start
+; @deprecated please use autoload configuration in module.xml files instead
 loadClasses=
 
 [forms]
@@ -379,6 +362,10 @@ controls.datetime.input = "menulists"
 controls.datetime.months.labels = "names"
 ; define the default config for datepickers in jforms
 datepicker = default
+
+[jforms_builder_html]
+;control type = plugin name
+
 
 [datepickers]
 default = jelix/js/jforms/datepickers/default/init.js
@@ -432,12 +419,12 @@ disableCache = off
 ; the url from which we can display images (basepath excluded). default = current host
 ; if you set this parameter, you MUST set src_path
 src_url=
-; the path on the file system, to the directory where images are stored (the www directory of the other application. default = JELIX_APP_WWW_PATH
+; the path on the file system, to the directory where images are stored (the www directory of the other application. default = jApp::wwwPath()
 src_path=
 ; the url from which we can display images cache. default = current host + basepath + 'cache/images/'
 ; if you set this parameter, you MUST set cache_path
 cache_url=
-; the path on the file system, to the directory where images cache are stored. default = JELIX_APP_WWW_PATH
+; the path on the file system, to the directory where images cache are stored. default = jApp::wwwPath()
 cache_path=
 
 
@@ -450,3 +437,7 @@ jelix.cache=cache/
 
 [langToLocale]
 ; overrides of lang_to_locale.ini.php
+
+[disabledListeners]
+; list of jEvent listener to not call
+; eventname[]="module~listenerName"

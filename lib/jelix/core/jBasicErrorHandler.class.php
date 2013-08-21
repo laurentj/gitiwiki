@@ -131,10 +131,13 @@ class jBasicErrorHandler {
                     $file = jApp::appPath('responses/error.en_US.php');
                 else
                     $file = JELIX_LIB_CORE_PATH.'response/error.en_US.php';
+                $HEADTOP = '';
                 $HEADBOTTOM = '';
                 $BODYTOP = '';
                 $BODYBOTTOM = htmlspecialchars($msg);
-                $basePath = '';
+                $BASEPATH = '/';
+                if (jApp::config() && isset(jApp::config()->urlengine['basePath']))
+                    $BASEPATH = jApp::config()->urlengine['basePath'];
                 header("HTTP/1.1 500 Internal jelix error");
                 header('Content-type: text/html');
                 include($file);

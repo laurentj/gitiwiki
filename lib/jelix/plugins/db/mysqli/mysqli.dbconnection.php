@@ -12,8 +12,8 @@
 * @link      http://www.jelix.org
 * @licence  http://www.gnu.org/licenses/lgpl.html GNU Lesser General Public Licence, see LICENCE file
 */
-require_once(dirname(__FILE__).'/mysqli.dbresultset.php');
-require_once(dirname(__FILE__).'/mysqli.dbstatement.php');
+require_once(__DIR__.'/mysqli.dbresultset.php');
+require_once(__DIR__.'/mysqli.dbstatement.php');
 
 /**
  *
@@ -23,7 +23,7 @@ require_once(dirname(__FILE__).'/mysqli.dbstatement.php');
 class mysqliDbConnection extends jDbConnection {
 
     protected $_charsets =array( 'UTF-8'=>'utf8', 'ISO-8859-1'=>'latin1');
-    private $_usesMysqlnd = true;
+    private $_usesMysqlnd = null;
 
     function __construct($profile){
         // à cause du @, on est obligé de tester l'existence de mysql, sinon en cas d'absence
@@ -32,6 +32,8 @@ class mysqliDbConnection extends jDbConnection {
             throw new jException('jelix~db.error.nofunction','mysql');
         }
         parent::__construct($profile);
+
+        $this->dbms = 'mysql';
     }
 
     /**
@@ -72,6 +74,13 @@ class mysqliDbConnection extends jDbConnection {
     */
     public function prepare ($query){
         $res = $this->_connection->prepare($query);
+        if( $this->_usesMysqlnd === null ) {
+            if( is_callable( array($res, 'get_result') ) ) {
+                $this->_usesMysqlnd = true;
+            } else {
+                $this->_usesMysqlnd = false;
+            }
+        }
         if($res){
             $rs= new mysqliDbStatement($res, $this->_usesMysqlnd);
         }else{
@@ -98,11 +107,6 @@ class mysqliDbConnection extends jDbConnection {
             if(isset($this->profile['force_encoding']) && $this->profile['force_encoding'] == true
               && isset($this->_charsets[jApp::config()->charset])){
                 $cnx->set_charset($this->_charsets[jApp::config()->charset]);
-            }
-            if( is_callable( array($cnx, 'get_result') ) ) {
-                $this->_usesMysqlnd = true;
-            } else {
-                $this->_usesMysqlnd = false;
             }
             return $cnx;
         }

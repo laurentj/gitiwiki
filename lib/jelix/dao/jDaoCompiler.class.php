@@ -15,10 +15,7 @@
 /**
  *
  */
-require(JELIX_LIB_PATH.'dao/jDaoParser.class.php');
-require(JELIX_LIB_PATH.'dao/jDaoProperty.class.php');
-require(JELIX_LIB_PATH.'dao/jDaoMethod.class.php');
-require(JELIX_LIB_PATH.'dao/jDaoGenerator.class.php');
+require_once(JELIX_LIB_PATH.'dao/jDaoParser.class.php');
 
 /**
  * The compiler for the DAO xml files. it is used by jIncluder
@@ -58,32 +55,20 @@ class jDaoCompiler  implements jISimpleCompiler {
         $generator = new $class ($selector, $tools, $parser);
 
         // generation of PHP classes corresponding to the DAO definition
-        $compiled = '<?php '.$generator->buildClasses ()."\n?>";
+        $compiled = '<?php ';
+        $compiled .= "\nif (jApp::config()->compilation['checkCacheFiletime']&&(\n";
+        $compiled .= "\n filemtime('".$daoPath.'\') > '.filemtime($daoPath);
+        $importedDao = $parser->getImportedDao();
+        if ($importedDao) {
+            foreach($importedDao as $selimpdao) {
+                $path = $selimpdao->getPath();
+                $compiled .= "\n|| filemtime('".$path.'\') > '.filemtime($path);
+            }
+        }
+        $compiled .=")){ return false;\n}\nelse {\n";
+        $compiled .= $generator->buildClasses ()."\n return true; }";
+
         jFile::write ($selector->getCompiledFilePath(), $compiled);
         return true;
-    }
-}
-
-/**
- * Exception for Dao compiler
- * @package  jelix
- * @subpackage dao
- */
-class jDaoXmlException extends jException {
-
-    /**
-     * @param jSelectorDao $selector
-     * @param string $localekey a locale key
-     * @param array $localeParams parameters for the message (for sprintf)
-     */
-    public function __construct($selector, $localekey, $localeParams=array()) {
-        $localekey= 'jelix~daoxml.'.$localekey;
-        $arg=array($selector->toString(), $selector->getPath());
-        if(is_array($localeParams)){
-            $arg=array_merge($arg, $localeParams);
-        }else{
-            $arg[]=$localeParams;
-        }
-        parent::__construct($localekey, $arg);
     }
 }

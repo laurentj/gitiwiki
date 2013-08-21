@@ -2,15 +2,14 @@
 /**
 * @package     jelix
 * @subpackage  db
-* @author      Laurent Jouanneau
+* @author      Laurent Jouanneau, Gerald Croes
 * @contributor Julien Issler
 * @copyright   2005-2012 Laurent Jouanneau
 * @copyright   2007-2009 Julien Issler
-*
+* @copyright 2001-2005 CopixTeam
 * This class was get originally from the Copix project (CopixDbConnection, Copix 2.3dev20050901, http://www.copix.org)
 * However only few lines of code are still copyrighted 2001-2005 CopixTeam (LGPL licence).
 * Initial authors of this Copix classes are Gerald Croes and Laurent Jouanneau,
-* and this class was adapted/improved for Jelix by Laurent Jouanneau
 *
 * @link        http://www.jelix.org
 * @licence     http://www.gnu.org/licenses/lgpl.html GNU Lesser General Public Licence, see LICENCE file
@@ -49,9 +48,17 @@ abstract class jDbConnection {
 
     /**
      * The database type name (mysql, pgsql ...)
+     * It is not the driver name. Several drivers could connect to the same database
+     * type. This type name is often used to know whish SQL language we should use.
      * @var string
      */
     public $dbms;
+
+    /**
+     * driver name
+     * @var string
+     */
+    public $driverName = '';
 
     /**
     * The last error message if any
@@ -75,14 +82,16 @@ abstract class jDbConnection {
     */
     protected $_connection = null;
 
+    protected $_debugMode = false;
     /**
     * do a connection to the database, using properties of the given profile
     * @param array $profile  profile properties
     */
     function __construct($profile) {
         $this->profile = & $profile;
-        $this->dbms = $profile['driver'];
+        $this->dbms = $this->driverName = $profile['driver'];
         $this->_connection = $this->_connect();
+        $this->_debugMode = true;
     }
 
     function __destruct() {
@@ -101,10 +110,15 @@ abstract class jDbConnection {
     */
     public function query ($queryString, $fetchmode = self::FETCH_OBJ, $arg1 = null, $ctoargs = null) {
         $this->lastQuery = $queryString;
-        $log = new jSQLLogMessage($queryString);
-        $result = $this->_doQuery ($queryString);
-        $log->endQuery();
-        jLog::log($log,'sql');
+        if ($this->_debugMode) {
+            $log = new jSQLLogMessage($queryString);
+            $result = $this->_doQuery ($queryString);
+            $log->endQuery();
+            jLog::log($log,'sql');
+        }
+        else {
+            $result = $this->_doQuery ($queryString);
+        }
         if ($fetchmode != self::FETCH_OBJ) {
             $result->setFetchMode($fetchmode, $arg1, $ctoargs);
         }
@@ -120,12 +134,17 @@ abstract class jDbConnection {
     */
     public function limitQuery ($queryString, $limitOffset, $limitCount){
         $this->lastQuery = $queryString;
-        $log = new jSQLLogMessage($queryString);
-        $result = $this->_doLimitQuery ($queryString, intval($limitOffset), intval($limitCount));
-        $log->endQuery();
-        $log->setRealQuery($this->lastQuery);
-        jLog::log($log,'sql');
-        return $result;
+        if ($this->_debugMode) {
+            $log = new jSQLLogMessage($queryString);
+            $result = $this->_doLimitQuery ($queryString, intval($limitOffset), intval($limitCount));
+            $log->endQuery();
+            $log->setRealQuery($this->lastQuery);
+            jLog::log($log,'sql');
+            return $result;
+        }
+        else {
+            return $this->_doLimitQuery ($queryString, intval($limitOffset), intval($limitCount));
+        }
     }
 
     /**
@@ -135,11 +154,16 @@ abstract class jDbConnection {
     */
     public function exec ($query) {
         $this->lastQuery = $query;
-        $log = new jSQLLogMessage($query);
-        $result = $this->_doExec ($query);
-        $log->endQuery();
-        jLog::log($log,'sql');
-        return $result;
+        if ($this->_debugMode) {
+            $log = new jSQLLogMessage($query);
+            $result = $this->_doExec ($query);
+            $log->endQuery();
+            jLog::log($log,'sql');
+            return $result;
+        }
+        else {
+            return $this->_doExec ($query);
+        }
     }
 
     /**
@@ -178,14 +202,6 @@ abstract class jDbConnection {
      */
     public function encloseName ($fieldName) {
         return $fieldName;
-    }
-    
-    /**
-     * @deprecated since 1.1.2
-     * @see encloseName
-     */
-    public function encloseFieldName ($fieldName) {
-        return $this->encloseName($fieldName);
     }
 
     /**
@@ -352,8 +368,8 @@ abstract class jDbConnection {
      */
     public function tools () {
         if (!$this->_tools) {
-            require_once(jApp::config()->_pluginsPathList_db[$this->dbms].$this->dbms.'.dbtools.php');
-            $class = $this->dbms.'DbTools';
+            require_once(jApp::config()->_pluginsPathList_db[$this->driverName].$this->driverName.'.dbtools.php');
+            $class = $this->driverName.'DbTools';
             $this->_tools = new $class($this);
         }
 
@@ -373,8 +389,8 @@ abstract class jDbConnection {
      */
     public function schema () {
         if (!$this->_schema) {
-            require_once(jApp::config()->_pluginsPathList_db[$this->dbms].$this->dbms.'.dbschema.php');
-            $class = $this->dbms.'DbSchema';
+            require_once(jApp::config()->_pluginsPathList_db[$this->driverName].$this->driverName.'.dbschema.php');
+            $class = $this->driverName.'DbSchema';
             $this->_schema = new $class($this);
         }
 

@@ -89,7 +89,8 @@ class createmoduleCommand extends JelixScriptCommand {
             $repository .= '/';
         $repositoryPath = str_replace(array('lib:','app:'), array(LIB_PATH, jApp::appPath()), $repository);
 
-        $iniDefault = new jIniFileModifier(jApp::configPath('defaultconfig.ini.php'));
+        $iniDefault = new jIniFileModifier(jApp::mainConfigFile());
+
         $this->updateModulePath($iniDefault, $iniDefault->getValue('modulesPath'), $repository, $repositoryPath);
         if ($this->verbose())
             echo "modulePath updated in the main configuration\n";

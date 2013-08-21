@@ -87,7 +87,7 @@ abstract class jDbTable {
 	}
 
 	public function alterColumn(jDbColumn $column, $oldName = '') {
-        $oldColumn = $this->getColumn(($oldName?$oldName:$column->name));
+        $oldColumn = $this->getColumn(($oldName?:$column->name));
         if (!$oldColumn) {
             $this->addColumn($column);
             return;
@@ -211,7 +211,7 @@ abstract class jDbTable {
         if ($this->references === null)
             $this->_loadReferences();
         return $this->references;
-	}
+    }
 
     public function getReference($refName) {
         if ($this->references === null)
@@ -222,21 +222,21 @@ abstract class jDbTable {
         return null;
     }
 
-	public function addReference(jDbReference $reference) {
+    public function addReference(jDbReference $reference) {
         $this->alterReference($reference);
-	}
-	
-	public function alterReference(jDbReference $reference) {
+    }
+
+    public function alterReference(jDbReference $reference) {
         $ref = $this->getReference($reference->name);
         if ($ref) {
             $this->_dropReference($ref);
         }
         $this->_createReference($reference);
         $this->references[$reference->name] = $reference;
-	}
+    }
 
     public function dropReference($refName) {
-        $ref = $this->getReference($reference->name);
+        $ref = $this->getReference($refName);
         if ($ref) {
             $this->_dropReference($ref);
         }

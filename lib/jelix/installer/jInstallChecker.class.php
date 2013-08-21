@@ -152,14 +152,6 @@ class jInstallCheck {
             }
         }
 
-        if($this->buildProperties['WITH_BYTECODE_CACHE'] != 'auto' &&
-           $this->buildProperties['WITH_BYTECODE_CACHE'] != '') {
-            if(!extension_loaded ('apc') && !extension_loaded ('eaccelerator') && !extension_loaded ('xcache')) {
-                $this->error('extension.opcode.cache');
-                $ok=false;
-            }
-        }
-
         if (count($this->databases)) {
             $req = ($this->dbRequired?'required':'optional');
             $okdb = false;
@@ -251,9 +243,15 @@ class jInstallCheck {
                 $this->error('path.profiles.writable');
                 $ok = false;
             }
-            if (file_exists(jApp::configPath('defaultconfig.ini.php'))
+            if (file_exists(jApp::configPath('mainconfig.ini.php'))
+                && !is_writable(jApp::configPath('mainconfig.ini.php'))) {
+                $this->error('path.mainconfig.writable');
+                $ok = false;
+            }
+            // TODO: remove it in future jelix > 1.6
+            elseif (file_exists(jApp::configPath('defaultconfig.ini.php'))
                 && !is_writable(jApp::configPath('defaultconfig.ini.php'))) {
-                $this->error('path.defaultconfig.writable');
+                $this->error('path.mainconfig.writable');
                 $ok = false;
             }
             if (file_exists(jApp::configPath('installer.ini.php'))
@@ -306,8 +304,8 @@ class jInstallCheck {
 
     function checkPhpSettings(){
         $ok = true;
-        if (file_exists(jApp::configPath("defaultconfig.ini.php")))
-            $defaultconfig = parse_ini_file(jApp::configPath("defaultconfig.ini.php"), true);
+        if (file_exists(jApp::configPath("maintconfig.ini.php")))
+            $defaultconfig = parse_ini_file(jApp::configPath("maintconfig.ini.php"), true);
         else
             $defaultconfig = array();
         if (file_exists(jApp::configPath("index/config.ini.php")))
@@ -315,22 +313,11 @@ class jInstallCheck {
         else
             $indexconfig = array();
 
-        if ((isset ($defaultconfig['coordplugins']['magicquotes']) && $defaultconfig['coordplugins']['magicquotes'] == 1) ||
-            (isset ($indexconfig['coordplugins']['magicquotes']) && $indexconfig['coordplugins']['magicquotes'] == 1)) {
-            if(ini_get('magic_quotes_gpc') == 1){
-                $this->notice('ini.magic_quotes_gpc_with_plugin');
-            }
-            else {
-                $this->error('ini.magicquotes_plugin_without_php');
-                $ok=false;
-            }
+        if(ini_get('magic_quotes_gpc') == 1){
+            $this->error('ini.magic_quotes_gpc');
+            $ok=false;
         }
-        else {
-            if(ini_get('magic_quotes_gpc') == 1){
-                $this->warning('ini.magic_quotes_gpc');
-                $ok=false;
-            }
-        }
+
         if(ini_get('magic_quotes_runtime') == 1){
             $this->error('ini.magic_quotes_runtime');
             $ok=false;
@@ -342,7 +329,7 @@ class jInstallCheck {
         }
 
         if(ini_get('safe_mode') == 1){
-            $this->warning('safe_mode');
+            $this->error('ini.safe_mode');
             $ok=false;
         }
 
@@ -353,9 +340,6 @@ class jInstallCheck {
 
         if(ini_get('asp_tags') == 1){
             $this->notice('ini.asp_tags');
-        }
-        if(ini_get('short_open_tag') == 1){
-            $this->notice('ini.short_open_tag');
         }
         if($ok){
             $this->ok('ini.ok');

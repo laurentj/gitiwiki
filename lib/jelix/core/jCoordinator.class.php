@@ -3,11 +3,11 @@
 * @package      jelix
 * @subpackage   core
 * @author       Laurent Jouanneau
-* @contributor  Thibault Piront (nuKs), Julien Issler, Dominique Papin, Flav
-* @copyright    2005-2012 laurent Jouanneau
+* @contributor  Thibault Piront (nuKs), Julien Issler, Dominique Papin, Flav, Gaëtan MARROT
+* @copyright    2005-2013 laurent Jouanneau
 * @copyright    2007 Thibault Piront
 * @copyright    2008 Julien Issler
-* @copyright    2008-2010 Dominique Papin, 2012 Flav
+* @copyright    2008-2010 Dominique Papin, 2012 Flav, 2013 Gaëtan MARROT
 * @link         http://www.jelix.org
 * @licence      GNU Lesser General Public Licence see LICENCE file or http://www.gnu.org/licenses/lgpl.html
 */
@@ -77,9 +77,6 @@ class jCoordinator {
         if ($configFile)
             jApp::loadConfig($configFile, $enableErrorHandler);
 
-        // temporary init. Remove this line when JELIX_APP_* and $gJConfig support will be removed completely from Jelix
-        jApp::initLegacy();
-
         $this->_loadPlugins();
     }
 
@@ -94,8 +91,8 @@ class jCoordinator {
             // so we don't have to check if the value $conf is empty or not
             if ($conf == '1') {
                 $confname = 'coordplugin_'.$name;
-                if (isset($config->confname))
-                    $conf = $config->confname;
+                if (isset($config->$confname))
+                    $conf = $config->$confname;
                 else
                     $conf = array();
             }
@@ -104,19 +101,27 @@ class jCoordinator {
                 if (false === ($conf = parse_ini_file($conff,true)))
                     throw new Exception("Error in a plugin configuration file -- plugin: $name  file: $conff", 13);
             }
-            include( $config->_pluginsPathList_coord[$name].$name.'.coord.php');
+            include_once($config->_pluginsPathList_coord[$name].$name.'.coord.php');
             $class= $name.'CoordPlugin';
             $this->plugins[strtolower($name)] = new $class($conf);
         }
     }
 
     /**
-    * main method : launch the execution of the action.
+    * initialize the given request and some properties of the coordinator
     *
-    * This method should be called in a entry point.
+    * It extracts information for the request to set the module name and the
+    * action name. It doesn't verify if the corresponding controller does
+    * exist or not.
+    * It enables also the error handler of Jelix, if needed.
+    * Does not call this method directly in entry points. Prefer to call
+    * process() instead (that will call setRequest). 
+    * setRequest is mostly used for tests or specific contexts.
     * @param  jRequest  $request the request object
+    * @throw jException if the module is unknown or the action name format is not valid
+    * @see jCoordinator::process()
     */
-    public function process ($request){
+    protected function setRequest ($request) {
 
         $config = jApp::config();
         $this->request = $request;
@@ -132,42 +137,48 @@ class jCoordinator {
         }
 
         $this->request->init();
-        jSession::start();
 
-        $this->moduleName = $request->getParam('module');
-        $this->actionName = $request->getParam('action');
+        list($this->moduleName, $this->actionName) = $request->getModuleAction();
+        jApp::pushCurrentModule($this->moduleName);
 
-        if(empty($this->moduleName)){
-            $this->moduleName = $config->startModule;
+        $this->action = new jSelectorActFast($this->request->type, $this->moduleName, $this->actionName);
+
+        if ($config->modules[$this->moduleName.'.access'] < 2) {
+            throw new jException('jelix~errors.module.untrusted', $this->moduleName);
         }
-        if(empty($this->actionName)){
-            if($this->moduleName == $config->startModule)
-                $this->actionName = $config->startAction;
-            else {
-                $this->actionName = 'default:index';
-            }
-        }
+    }
 
-        jContext::push ($this->moduleName);
-        try{
-            $this->action = new jSelectorActFast($this->request->type, $this->moduleName, $this->actionName);
+    /**
+    * main method : launch the execution of the action.
+    *
+    * This method should be called in a entry point.
+    *
+    * @param  jRequest  $request the request object. It is required if a descendant of jCoordinator did not called setRequest before
+    */
+    public function process ($request=null) {
 
-            if($config->modules[$this->moduleName.'.access'] < 2){
-                throw new jException('jelix~errors.module.untrusted',$this->moduleName);
-            }
+        try {
+            if ($request)
+                $this->setRequest($request);
 
             $ctrl = $this->getController($this->action);
-        }catch(jException $e){
+        }
+        catch (jException $e) {
+            $config = jApp::config();
             if ($config->urlengine['notfoundAct'] =='') {
                 throw $e;
             }
             try {
                 $this->action = new jSelectorAct($config->urlengine['notfoundAct']);
                 $ctrl = $this->getController($this->action);
-            }catch(jException $e2){
+            }
+            catch(jException $e2) {
                 throw $e;
             }
         }
+        jSession::start();
+
+        jApp::pushCurrentModule ($this->moduleName);
 
         if (count($this->plugins)) {
             $pluginparams = array();
@@ -183,8 +194,8 @@ class jCoordinator {
                 $result = $this->plugins[$name]->beforeAction ($pluginparams);
                 if($result){
                     $this->action = $result;
-                    jContext::pop();
-                    jContext::push($result->module);
+                    jApp::popCurrentModule();
+                    jApp::pushCurrentModule($result->module);
                     $this->moduleName = $result->module;
                     $this->actionName = $result->resource;
                     $ctrl = $this->getController($this->action);
@@ -192,6 +203,7 @@ class jCoordinator {
                 }
             }
         }
+
         $this->response = $ctrl->{$this->action->method}();
         if($this->response == null){
             throw new jException('jelix~errors.response.missing',$this->action->toString());
@@ -207,7 +219,7 @@ class jCoordinator {
             $this->plugins[$name]->afterProcess ();
         }
 
-        jContext::pop();
+        jApp::popCurrentModule();
         jSession::end();
     }
 
@@ -233,26 +245,6 @@ class jCoordinator {
             throw new jException('jelix~errors.ad.controller.method.unknown',array($this->actionName, $selector->method, $class, $ctrlpath));
         }
         return $ctrl;
-    }
-
-
-    /**
-     * instancy a response object corresponding to the default response type
-     * of the current resquest.
-     * Deprecated. use $request->getResponse() instead.
-     * @param boolean $originalResponse TRUE to get the original, non overloaded response
-     * @deprecated since 1.3
-     */
-    public function initDefaultResponseOfRequest($originalResponse = false){
-        try {
-            $this->request->getResponse('', $originalResponse);
-        }
-        catch (Exception $e) {
-            if (!$originalResponse)
-                $this->initDefaultResponseOfRequest(true);
-            else
-                throw $e;
-        }
     }
 
     /**
@@ -378,23 +370,5 @@ class jCoordinator {
     */
     public function isPluginEnabled ($pluginName){
         return isset ($this->plugins[strtolower ($pluginName)]);
-    }
-
-    /**
-    * deprecated.  use jApp::isModuleEnabled() instead
-    * @deprecated
-    */
-    public function isModuleEnabled ($moduleName, $includingExternal = false) {
-        trigger_error("jCoordinator::isModuleEnabled() is deprecated. Use jApp::isModuleEnabled() instead", E_USER_NOTICE);
-        return jApp::isModuleEnabled($moduleName, $includingExternal);
-    }
-
-    /**
-    * deprecated.  use jApp::getModulePath() instead
-    * @deprecated
-     */
-    public function getModulePath($module, $includingExternal = false){
-        trigger_error("jCoordinator::getModulePath() is deprecated. Use jApp::getModulePath() instead", E_USER_NOTICE);
-        return jApp::getModulePath($module, $includingExternal);
     }
 }

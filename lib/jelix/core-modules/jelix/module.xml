@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module xmlns="http://jelix.org/ns/module/1.0">
     <info id="jelix@modules.jelix.org" name="jelix" createdate="2006-01-01">
-       <version stability="stable" date="2012-07-14 11:44">1.4b2pre.2383</version>
-        <label lang="en-EN">Jelix Main Module</label>
-        <description lang="en-EN">Main module of jelix which contains some ressources needed by jelix classes</description>
+       <version stability="stable" date="2013-08-21 11:05">1.6.0a2pre.2985</version>
+        <label lang="en_US">Jelix Main Module</label>
+        <description lang="en_US">Main module of jelix which contains some ressources needed by jelix classes</description>
         <license URL="http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html">LGPL 2.1</license>
         <copyright>2005-2011 Laurent Jouanneau and other contributors</copyright>
         <creator name="Laurent Jouanneau" active="true"/>
         <homepageURL>http://jelix.org</homepageURL>
     </info>
     <dependencies>
-       <jelix minversion="1.4b2pre.2383" maxversion="1.4b2pre.*"/>
+       <jelix minversion="1.6.0a2pre.2985" maxversion="1.6.0a2pre.*"/>
     </dependencies>
 </module>

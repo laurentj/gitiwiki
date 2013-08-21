@@ -35,6 +35,12 @@ class jDbPDOConnection extends PDO {
     public $dbms;
 
     /**
+     * driver name
+     * @var string
+     */
+    public $driverName = '';
+
+    /**
      * Use a profile to do the connection
      * @param array $profile the profile data readed from the ini file
      */
@@ -45,14 +51,14 @@ class jDbPDOConnection extends PDO {
         $password = '';
         $dsn = '';
         if (isset($profile['dsn'])) {
-            $this->dbms = substr($profile['dsn'],0,strpos($profile['dsn'],':'));
+            $this->dbms = $this->driverName = substr($profile['dsn'],0,strpos($profile['dsn'],':'));
             $dsn = $profile['dsn'];
             unset($prof['dsn']);
             if ($this->dbms == 'sqlite')
                 $dsn = str_replace(array('app:','lib:','var:'), array(jApp::appPath(), LIB_PATH, jApp::varPath()), $dsn);
         }
         else {
-            $this->dbms = $profile['driver'];
+            $this->dbms = $this->driverName = $profile['driver'];
             $db = $profile['database'];
             $dsn = $this->dbms.':host='.$profile['host'].';dbname='.$db;
             if($this->dbms != 'sqlite')
@@ -119,35 +125,16 @@ class jDbPDOConnection extends PDO {
 
         switch (count($args)) {
         case 1:
-            $log = new jSQLLogMessage($args[0]);
             $rs = parent::query($args[0]);
-            $log->endQuery();
-            jLog::log($log,'sql');
             $rs->setFetchMode(PDO::FETCH_OBJ);
             return $rs;
         case 2:
-            $log = new jSQLLogMessage($args[0]);
-            $result = parent::query($args[0], $args[1]);
-            $log->endQuery();
-            jLog::log($log,'sql');
-            return $result;
+            return parent::query($args[0], $args[1]);
         case 3:
-            $log = new jSQLLogMessage($args[0]);
-            $result = parent::query($args[0], $args[1], $args[2]);
-            $log->endQuery();
-            jLog::log($log,'sql');
-            return $result;
+            return parent::query($args[0], $args[1], $args[2]);
         default:
             throw new Exception('jDbPDOConnection: bad argument number in query');
         }
-    }
-
-    public function exec($query) {
-        $log = new jSQLLogMessage($query);
-        $result = parent::exec($query);
-        $log->endQuery();
-        jLog::log($log,'sql');
-        return $result;
     }
 
     /**
@@ -262,9 +249,10 @@ class jDbPDOConnection extends PDO {
      */
     public function tools () {
         if (!$this->_tools) {
-            $this->_tools = jApp::loadPlugin($this->dbms, 'db', '.dbtools.php', $this->dbms.'DbTools', $this);
+            $dbms = ($this->dbms === 'sqlite') ? 'sqlite3' : $this->dbms; 
+            $this->_tools = jApp::loadPlugin($dbms, 'db', '.dbtools.php', $dbms.'DbTools', $this);
             if (is_null($this->_tools))
-                throw new jException('jelix~db.error.driver.notfound', $this->dbms);
+                throw new jException('jelix~db.error.driver.notfound', $dbms);
         }
 
         return $this->_tools;
@@ -287,3 +275,4 @@ class jDbPDOConnection extends PDO {
     }
 
 }
+

@@ -4,7 +4,7 @@
 * @subpackage core
 * @author     Laurent Jouanneau
 * @contributor Yannick Le Guédart
-* @copyright  2005-2012 Laurent Jouanneau, 2010 Yannick Le Guédart
+* @copyright  2005-2013 Laurent Jouanneau, 2010 Yannick Le Guédart
 * @link        http://www.jelix.org
 * @licence    GNU Lesser General Public Licence see LICENCE file or http://www.gnu.org/licenses/lgpl.html
 */
@@ -58,8 +58,11 @@ abstract class jRequest {
     public $urlScriptName;
 
     /**
-     * the path to the entry point in the url (basePath included)
-     * if the url is /foo/index.php/bar, its value is /foo/index.php
+     * the path to the entry point in the url
+     * if the url is /foo/index.php/bar, its value is /foo/index.php.
+     * Warning: if the app is behind a proxy, the path includes the backendBasePath,
+     * not the basePath. Use urlScriptPath and urlScriptName to have the
+     * "public" url, as needed for the frontend HTTP server
      * @var string
      */
     public $urlScript;
@@ -70,6 +73,18 @@ abstract class jRequest {
      * @var string
      */
     public $urlPathInfo;
+
+    /**
+     * the module name
+     * @var string
+     */
+    public $module = '';
+
+    /**
+     * the action name ("controller:method")
+     * @var string
+     */
+    public $action = '';
 
     function __construct(){  }
 
@@ -121,6 +136,33 @@ abstract class jRequest {
         }
 
         $this->urlPathInfo = $pathinfo;
+    }
+
+    /**
+     * retrieve module and action
+     * fills also $module and $action properties
+     */
+    public function getModuleAction() {
+        $conf = jApp::config();
+
+        if (isset($this->params['module']) && trim($this->params['module']) != '') {
+            $this->module = $this->params['module'];
+        }
+        else {
+            $this->module = $conf->startModule;
+        }
+
+        if (isset($this->params['action']) && trim($this->params['action']) != '') {
+            $this->action = $this->params['action'];
+        }
+        else {
+            if($this->module == $conf->startModule)
+                $this->action = $conf->startAction;
+            else {
+                $this->action = 'default:index';
+            }
+        }
+        return array($this->module, $this->action);
     }
 
     /**

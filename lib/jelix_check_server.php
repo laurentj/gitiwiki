@@ -80,20 +80,20 @@ class jInstallerMessageProvider {
 
     protected $messages = array(
         'fr'=>array(
-     'checker.title'=>'Vérification de votre serveur pour Jelix 1.4b2pre.2383',
+     'checker.title'=>'Vérification de votre serveur pour Jelix 1.6.0a2pre.2985',
         'number.errors'         =>' erreurs.',
         'number.error'          =>' erreur.',
         'number.warnings'       =>' avertissements.',
         'number.warning'        =>' avertissement.',
         'number.notices'        =>' remarques.',
         'number.notice'         =>' remarque.',
-    'conclusion.error'      =>'Vous devez corriger l\'erreur pour faire fonctionner correctement une application Jelix 1.4b2pre.2383.',
-    'conclusion.errors'     =>'Vous devez corriger les erreurs pour faire fonctionner correctement une application Jelix 1.4b2pre.2383.',
-    'conclusion.warning'    =>'Une application Jelix 1.4b2pre.2383 peut à priori fonctionner, mais il est préférable de corriger l\'avertissement pour être sûr.',
-    'conclusion.warnings'   =>'Une application Jelix 1.4b2pre.2383 peut à priori fonctionner, mais il est préférable de corriger les avertissements pour être sûr.',
-    'conclusion.notice'     =>'Aucun problème pour installer une application pour Jelix  1.4b2pre.2383 malgré la remarque.',
-    'conclusion.notices'    =>'Aucun problème pour installer une application pour Jelix  1.4b2pre.2383 malgré les remarques.',
-    'conclusion.ok'         =>'Vous pouvez installer une application avec Jelix 1.4b2pre.2383',
+    'conclusion.error'      =>'Vous devez corriger l\'erreur pour faire fonctionner correctement une application Jelix 1.6.0a2pre.2985.',
+    'conclusion.errors'     =>'Vous devez corriger les erreurs pour faire fonctionner correctement une application Jelix 1.6.0a2pre.2985.',
+    'conclusion.warning'    =>'Une application Jelix 1.6.0a2pre.2985 peut à priori fonctionner, mais il est préférable de corriger l\'avertissement pour être sûr.',
+    'conclusion.warnings'   =>'Une application Jelix 1.6.0a2pre.2985 peut à priori fonctionner, mais il est préférable de corriger les avertissements pour être sûr.',
+    'conclusion.notice'     =>'Aucun problème pour installer une application pour Jelix  1.6.0a2pre.2985 malgré la remarque.',
+    'conclusion.notices'    =>'Aucun problème pour installer une application pour Jelix  1.6.0a2pre.2985 malgré les remarques.',
+    'conclusion.ok'         =>'Vous pouvez installer une application avec Jelix 1.6.0a2pre.2985',
         'cannot.continue'       =>'Les vérifications ne peuvent continuer : %s',
         'extension.not.installed'=>'L\'extension %s n\'est pas disponible',
         'extension.optional.not.installed'=>'L\'extension %s optionnelle n\'est pas disponible',
@@ -102,7 +102,6 @@ class jInstallerMessageProvider {
         'extension.optional.installed'=>'L\'extension %s optionnelle est disponible',
         'extension.required.installed'=>'L\'extension %s obligatoire est disponible',
         'extensions.required.ok'=>'Toutes les extensions PHP obligatoires sont disponibles',
-        'extension.opcode.cache'=>'Cette édition de Jelix a besoin d\'une extension de cache d\'opcode (apc, eaccelerator...)',
         'extension.database.ok'=>'L\'application utilisera une base de données SQL',
         'extension.database.ok2'=>'L\'application pourra utiliser une base de données SQL',
         'extension.database.missing'=>'L\'application a besoin d\'une base de données SQL',
@@ -115,7 +114,7 @@ class jInstallerMessageProvider {
         'path.www'              =>'Le chemin du répertoire www n\'est pas configuré correctement : ce répertoire n\'existe pas',
         'path.config.writable' =>'Le répertoire var/config n\'a pas les droits en écriture',
         'path.profiles.writable'=>'Le fichier profiles.ini.php n\'a pas les droits en écriture',
-        'path.defaultconfig.writable'=>'Le fichier defaultconfig.ini.php n\'a pas les droits en écriture',
+        'path.mainconfig.writable'=>'Le fichier mainconfig.ini.php n\'a pas les droits en écriture',        
         'path.installer.writable'=>'Le fichier installer.ini.php n\'a pas les droits en écriture',
         'path.custom.not.exists'=>'Le fichier %s n\'existe pas, ses droits ne peuvent être vérifiés',
         'path.custom.writable'=>'Le fichier %s n\'a pas les droits en écriture',
@@ -127,15 +126,12 @@ class jInstallerMessageProvider {
         'too.critical.error'    =>'Trop d\'erreurs critiques sont apparues. Corrigez les.',
         'config.file'           =>'La variable $config_file n\'existe pas ou le fichier qu\'elle indique n\'existe pas',
         'paths.ok'              =>'Les répertoires temp, log, var, config et www sont ok',
-        'ini.magic_quotes_gpc_with_plugin'=>'php.ini : le plugin magicquotes est activé mais vous devriez mettre magic_quotes_gpc à off',
-        'ini.magicquotes_plugin_without_php'=>'php.ini : le plugin magicquotes est activé alors que magic_quotes_gpc est déjà à off, désactivez le plugin',
-        'ini.magic_quotes_gpc'  =>'php.ini : l\'activation des magicquotes n\'est pas recommandée pour jelix. Vous devez les désactiver ou activer le plugin magicquotes si ce n\'est pas fait',
+        'ini.magic_quotes_gpc'  =>'php.ini : l\'activation des magic quotes n\'est pas prise en charge par jelix. Vous devez les désactiver',
         'ini.magic_quotes_runtime'=>'php.ini : magic_quotes_runtime doit être à off',
         'ini.session.auto_start'=>'php.ini : session.auto_start doit être à off',
-        'ini.safe_mode'         =>'php.ini : le safe_mode n\'est pas recommandé.',
+        'ini.safe_mode'         =>'php.ini : le safe_mode est obsolète et n\'est pas recommandé.',
         'ini.register_globals'  =>'php.ini : il faut désactiver register_globals, pour des raisons de sécurité et parce que cette option n\'est pas nécessaire.',
         'ini.asp_tags'          =>'php.ini : il est conseillé de désactiver asp_tags. Cette option n\'est pas nécessaire.',
-        'ini.short_open_tag'    =>'php.ini : il est conseillé de désactiver short_open_tag. Cette option n\'est pas nécessaire.',
         'ini.ok'                =>'Les paramètres de php sont ok',
 
         'module.unknown'        =>'Module inconnu',
@@ -164,20 +160,20 @@ class jInstallerMessageProvider {
         ),
 
         'en'=>array(
-  'checker.title'   =>'Check your configuration server for Jelix 1.4b2pre.2383',
+  'checker.title'   =>'Check your configuration server for Jelix 1.6.0a2pre.2985',
         'number.errors'     =>' errors.',
         'number.error'      =>' error.',
         'number.warnings'   =>' warnings.',
         'number.warning'    =>' warning.',
         'number.notices'    =>' notices.',
         'number.notice'     =>' notice.',
-      'conclusion.error'    =>'You must fix the error in order to run an application correctly with Jelix 1.4b2pre.2383.',
-      'conclusion.errors'   =>'You must fix errors in order to run an application correctly with Jelix 1.4b2pre.2383.',
-      'conclusion.warning'  =>'Your application for Jelix 1.4b2pre.2383 may run without problems, but it is recommanded to fix the warning.',
-      'conclusion.warnings' =>'Your application for Jelix 1.4b2pre.2383 may run without problems, but it is recommanded to fix warnings.',
-      'conclusion.notice'   =>'You can install an application for Jelix 1.4b2pre.2383, although there is a notice.',
-      'conclusion.notices'  =>'You can install an application for Jelix 1.4b2pre.2383, although there are notices.',
-      'conclusion.ok'       =>'You can install an application for Jelix 1.4b2pre.2383.',
+      'conclusion.error'    =>'You must fix the error in order to run an application correctly with Jelix 1.6.0a2pre.2985.',
+      'conclusion.errors'   =>'You must fix errors in order to run an application correctly with Jelix 1.6.0a2pre.2985.',
+      'conclusion.warning'  =>'Your application for Jelix 1.6.0a2pre.2985 may run without problems, but it is recommanded to fix the warning.',
+      'conclusion.warnings' =>'Your application for Jelix 1.6.0a2pre.2985 may run without problems, but it is recommanded to fix warnings.',
+      'conclusion.notice'   =>'You can install an application for Jelix 1.6.0a2pre.2985, although there is a notice.',
+      'conclusion.notices'  =>'You can install an application for Jelix 1.6.0a2pre.2985, although there are notices.',
+      'conclusion.ok'       =>'You can install an application for Jelix 1.6.0a2pre.2985.',
         'cannot.continue'       =>'Cannot continue the checking: %s',
         'extension.not.installed'=>'The extension %s is not available',
         'extension.optional.not.installed'=>'the optional extension %s is not available',
@@ -186,7 +182,6 @@ class jInstallerMessageProvider {
         'extension.optional.installed'=>'the optional extension %s is available',
         'extension.required.installed'=>'the required extension %s is available',
         'extensions.required.ok'=>'All needed PHP extensions are available',
-        'extension.opcode.cache'=>'The application requires an extension for opcode cache (apc, eaccelerator...)',
         'extension.database.ok'=>'The application will use a SQL database',
         'extension.database.ok2'=>'The application can use SQL databases',
         'extension.database.missing'=>'The application needs a SQL database',
@@ -199,7 +194,7 @@ class jInstallerMessageProvider {
         'path.www'              =>'The application www path is not correctly set: www directory  doesn\'t exist!',
         'path.config.writable' =>'The directory var/config have not write rights',
         'path.profiles.writable'=>'The file profiles.ini.php have not write rights',
-        'path.defaultconfig.writable'=>'The file defaultconfig.ini.php have not write rights',
+        'path.mainconfig.writable'=>'The file mainconfig.ini.php have not write rights',
         'path.installer.writable'=>'The file installer.ini.php have not write rights',
         'path.custom.not.exists'=>'The file %s is not found, rights cannot be validated',
         'path.custom.writable'=>'The file %s have not write rights',
@@ -211,15 +206,12 @@ class jInstallerMessageProvider {
         'too.critical.error'    =>'Too much critical errors. Fix them.',
         'config.file'           =>'$config_file variable does not exist or doesn\'t contain a correct application config file name',
         'paths.ok'              =>'temp, log, var, config and www directory are ok',
-        'ini.magic_quotes_gpc_with_plugin'=>'php.ini: the magicquotes plugin is actived but you should set magic_quotes_gpc to off',
-        'ini.magicquotes_plugin_without_php'=>'php.ini: the magicquotes plugin is actived whereas magic_quotes_gpc is already off, you should disable the plugin',
-        'ini.magic_quotes_gpc'  =>'php.ini: magicquotes are not recommended for Jelix. You should deactivate it or activate the magicquote jelix plugin',
+        'ini.magic_quotes_gpc'  =>'php.ini: magic quotes are not supported by Jelix. You must deactivate it into PHP',
         'ini.magic_quotes_runtime'=>'php.ini: magic_quotes_runtime must be off',
         'ini.session.auto_start'=>'php.ini: session.auto_start must be off',
-        'ini.safe_mode'         =>'php.ini: safe_mode is not recommended.',
+        'ini.safe_mode'         =>'php.ini: safe_mode is deprecated and is not recommended.',
         'ini.register_globals'  =>'php.ini: you must deactivate register_globals, for security reasons, and because this option is not needed.',
         'ini.asp_tags'          =>'php.ini: you should deactivate asp_tags. No need to have this option.',
-        'ini.short_open_tag'    =>'php.ini: you should deactivate short_open_tag. No need to have this option.',
         'ini.ok'                =>'php settings are ok',
 
         'module.unknown'        =>'Unknown module %s',
@@ -335,9 +327,8 @@ class jInstallCheck {
         $this->reporter = $reporter;
         $this->messages = new jInstallerMessageProvider($lang);
         $this->buildProperties = array(
-   'PHP_VERSION_TARGET'=>'5.2',
+   'PHP_VERSION_TARGET'=>'5.3',
    'ENABLE_PHP_JELIX'  =>'',
-   'WITH_BYTECODE_CACHE'=>'auto',
         );
     }
 
@@ -443,14 +434,6 @@ class jInstallCheck {
             }
         }
 
-        if($this->buildProperties['WITH_BYTECODE_CACHE'] != 'auto' &&
-           $this->buildProperties['WITH_BYTECODE_CACHE'] != '') {
-            if(!extension_loaded ('apc') && !extension_loaded ('eaccelerator') && !extension_loaded ('xcache')) {
-                $this->error('extension.opcode.cache');
-                $ok=false;
-            }
-        }
-
         if (count($this->databases)) {
             $req = ($this->dbRequired?'required':'optional');
             $okdb = false;
@@ -513,10 +496,11 @@ class jInstallCheck {
 
     function checkPhpSettings(){
         $ok = true;
-            if(ini_get('magic_quotes_gpc') == 1){
-                $this->warning('ini.magic_quotes_gpc');
-                $ok=false;
-            }
+        if(ini_get('magic_quotes_gpc') == 1){
+            $this->error('ini.magic_quotes_gpc');
+            $ok=false;
+        }
+
         if(ini_get('magic_quotes_runtime') == 1){
             $this->error('ini.magic_quotes_runtime');
             $ok=false;
@@ -528,7 +512,7 @@ class jInstallCheck {
         }
 
         if(ini_get('safe_mode') == 1){
-            $this->warning('safe_mode');
+            $this->error('ini.safe_mode');
             $ok=false;
         }
 
@@ -539,9 +523,6 @@ class jInstallCheck {
 
         if(ini_get('asp_tags') == 1){
             $this->notice('ini.asp_tags');
-        }
-        if(ini_get('short_open_tag') == 1){
-            $this->notice('ini.short_open_tag');
         }
         if($ok){
             $this->ok('ini.ok');

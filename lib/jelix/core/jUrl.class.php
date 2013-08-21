@@ -6,7 +6,7 @@
 * @contributor Thibault Piront (nuKs)
 * @contributor Loic Mathaud
 * @contributor Hadrien Lanneau
-* @copyright   2005-2012 Laurent Jouanneau
+* @copyright   2005-2013 Laurent Jouanneau
 * @copyright   2007 Thibault Piront
 * @copyright   2006 Loic Mathaud, 2010 Hadrien Lanneau
 * Some parts of this file are took from an experimental branch of the Copix project (CopixUrl.class.php, Copix 2.3dev20050901, http://www.copix.org),
@@ -108,22 +108,22 @@ class jUrl extends jUrlBase {
     //============================== static helper methods
 
     /**
-    * get current Url
+    * returns the current Url.
+    *
+    * The URL is the URL for the frontend HTTP server, if your app is behind a proxy.
     * @param boolean $forxml if true, escape some characters to include the url into an html/xml document
     * @return string the url
     */
-    static function getCurrentUrl ($forxml = false) {
-        if(isset($_SERVER["REQUEST_URI"])){
-           return $_SERVER["REQUEST_URI"];
-        }
-        static $url = false;
-        if ($url === false){
-            $req = jApp::coord()->request;
-            $url = $req->getServerURI().$req->urlScript.$req->urlPathInfo.'?';
-            $q = http_build_query($_GET, '', ($forxml?'&amp;':'&'));
-            if(strpos($q, '%3A')!==false)
-                $q = str_replace( '%3A', ':', $q);
-            $url .=$q;
+    static function getCurrentUrl ($forxml = false, $full = false) {
+        // we don't take $_SERVER["REQUEST_URI"] because it doesn't correspond to the real URI
+        // if the app is behind a proxy with a different basePath than the frontend
+        $req = jApp::coord()->request;
+        $sel = $req->module.'~'.$req->action;
+        if ($full) {
+            $url = self::getFull($sel, $req->params, ($forxml?self::XMLSTRING:self::STRING));
+         }
+        else {
+            $url = self::get($sel, $req->params, ($forxml?self::XMLSTRING:self::STRING));
         }
         return $url;
     }

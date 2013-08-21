@@ -9,9 +9,9 @@
  * @contributor  Christophe Thiriot (for some code imported from his jphpunit module)
  */
 
-require_once(dirname(__FILE__).'/JelixTestSuite.class.php');
-require_once(dirname(__FILE__).'/junittestcase.class.php');
-require_once(dirname(__FILE__).'/junittestcasedb.class.php');
+require_once(__DIR__.'/JelixTestSuite.class.php');
+require_once(__DIR__.'/junittestcase.class.php');
+require_once(__DIR__.'/junittestcasedb.class.php');
 require_once(JELIX_LIB_CORE_PATH.'jConfigCompiler.class.php');
 
 
@@ -59,11 +59,11 @@ class jelix_TextUI_Command extends PHPUnit_TextUI_Command {
         }
 
         $filter->addFileToBlacklist(__FILE__, 'PHPUNIT');
-        $dir = dirname(__FILE__);
-        $filter->addFileToBlacklist($dir.'/JelixTestSuite.class.php', 'PHPUNIT');
-        $filter->addFileToBlacklist($dir.'/junittestcase.class.php', 'PHPUNIT');
-        $filter->addFileToBlacklist($dir.'/junittestcasedb.class.php', 'PHPUNIT');
-        $filter->addFileToBlacklist(dirname($dir).'/phpunit.inc.php', 'PHPUNIT');
+
+        $filter->addFileToBlacklist(__DIR__.'/JelixTestSuite.class.php', 'PHPUNIT');
+        $filter->addFileToBlacklist(__DIR__.'/junittestcase.class.php', 'PHPUNIT');
+        $filter->addFileToBlacklist(__DIR__.'/junittestcasedb.class.php', 'PHPUNIT');
+        $filter->addFileToBlacklist(dirname(__DIR__).'/phpunit.inc.php', 'PHPUNIT');
 
         if ($this->version36) {
             return new PHPUnit_TextUI_TestRunner($this->arguments['loader'], $filter);
@@ -112,6 +112,11 @@ class jelix_TextUI_Command extends PHPUnit_TextUI_Command {
         $appInstaller = new jInstallerApplication();
         $this->epInfo = $appInstaller->getEntryPointInfo($this->entryPoint);
 
+        // let's load configuration now, and coordinator. it could be needed by tests
+        // (during load of their php files or during execution)
+        jApp::setConfig(jConfigCompiler::readAndCache($this->epInfo->configFile, null, $this->entryPoint));
+        jApp::setCoord(new jCoordinator('', false));
+
         if ($modulesTests == 0) {
             // we add all modules in the test list
             $suite = $this->getAllModulesTestSuites();
@@ -124,7 +129,7 @@ class jelix_TextUI_Command extends PHPUnit_TextUI_Command {
                 exit(PHPUnit_TextUI_TestRunner::FAILURE_EXIT);
             }
         }
-        else if ($modulesTests == 1) {
+        else if ($modulesTests == 1 && !$this->version36) {
             $suite = $this->getModuleTestSuite($this->options[1][0]);
             if (count($suite)) {
                 $this->arguments['test'] = $suite;
@@ -139,11 +144,20 @@ class jelix_TextUI_Command extends PHPUnit_TextUI_Command {
                 exit(PHPUnit_TextUI_TestRunner::FAILURE_EXIT);
             }
         }
-
-        // it will initialize deprecated global variables $gJCoord $gJConfig. it could be needed by tests
-        $config = jConfigCompiler::readAndCache($this->epInfo->configFile, null, $this->entryPoint);
-        $coord = new jCoordinator($config, false);
-
+        else if ($modulesTests == 1) {
+            if (isset($this->options[1][1])) { // a specifique test file
+                $suite = $this->getModuleTestSuite($this->options[1][0], $this->options[1][1]);
+            } else {
+                $suite = $this->getModuleTestSuite($this->options[1][0]);
+            }
+            if (count($suite)) {
+                $this->arguments['test'] = $suite;
+            }
+            else {
+                $this->showMessage("Error: no tests in the module\n");
+                exit(PHPUnit_TextUI_TestRunner::FAILURE_EXIT);
+            }
+        }
     }
 
     protected function getAllModulesTestSuites() {
@@ -180,7 +194,7 @@ class jelix_TextUI_Command extends PHPUnit_TextUI_Command {
     }
 
 
-    protected function getModuleTestSuite($module) {
+    protected function getModuleTestSuite($module, $testFile = '') {
 
         $moduleList = $this->epInfo->getModulesList();
 
@@ -190,12 +204,17 @@ class jelix_TextUI_Command extends PHPUnit_TextUI_Command {
             $type = ($this->testType?'.'.$this->testType: '').'.pu.php';
             $suite = new JelixTestSuite($module);
             if ($this->version36) {
-                $fileIteratorFacade = new File_Iterator_Facade;
-                $files = $fileIteratorFacade->getFilesAsArray(
-                  $moduleList[$module],
-                  $type
-                );
-                $suite->addTestFiles($files);
+                if ($testFile) {
+                    $suite->addTestFile($moduleList[$module].'tests/'.$testFile);
+                }
+                else {
+                    $fileIteratorFacade = new File_Iterator_Facade;
+                    $files = $fileIteratorFacade->getFilesAsArray(
+                      $moduleList[$module],
+                      $type
+                    );
+                    $suite->addTestFiles($files);
+                }
             }
             else {
                 $testCollector = new PHPUnit_Runner_IncludePathTestCollector(

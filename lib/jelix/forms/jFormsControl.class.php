@@ -29,6 +29,8 @@ abstract class jFormsControl {
     public $initialReadOnly = false;
     public $initialActivation = true;
 
+    public $emptyValueLabel = null;
+
     protected $form;
     protected $container;
 
@@ -87,6 +89,9 @@ abstract class jFormsControl {
     }
 
     function getDisplayValue($value){
+        if ($value == '' && $this->emptyValueLabel !== null) {
+            return $this->emptyValueLabel;
+        }
         return $value;
     }
 
@@ -122,6 +127,7 @@ abstract class jFormsControl {
 require(JELIX_LIB_PATH.'forms/controls/jFormsControlDatasource.class.php');
 require(JELIX_LIB_PATH.'forms/controls/jFormsControlGroups.class.php');
 
+require(JELIX_LIB_PATH.'forms/controls/jFormsControlButton.class.php');
 require(JELIX_LIB_PATH.'forms/controls/jFormsControlCaptcha.class.php');
 require(JELIX_LIB_PATH.'forms/controls/jFormsControlCheckbox.class.php');
 require(JELIX_LIB_PATH.'forms/controls/jFormsControlCheckboxes.class.php');

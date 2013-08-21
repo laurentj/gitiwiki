@@ -6,10 +6,12 @@
 * @contributor  Bastien Jaillot
 * @contributor  Thibault Piront (nuKs)
 * @contributor  Mickael Fradin, Brunto
+* @contributor  Vincent Morel
 * @copyright    2007-2009 Laurent Jouanneau
 * @copyright    2007 Thibault Piront
 * @copyright    2007,2008 Bastien Jaillot
 * @copyright    2009 Mickael Fradin, 2011 Brunto
+* @copyright    2012 Vincent Morel
 * @link         http://www.jelix.org
 * @licence      http://www.gnu.org/licenses/lgpl.html GNU Lesser General Public Licence, see LICENCE file
 *
@@ -165,14 +167,6 @@ class jControllerDaoCrud extends jController {
      * @return boolean true if it is ok.
      */
     protected function _checkData($form, $calltype){
-        return $this->_checkDatas($form, $calltype); // for compatibility
-    }
-
-    /**
-     * DEPRECATED, use _checkData instead
-     * @deprecated since 1.1
-     */
-    protected function _checkDatas($form, $calltype){
         return true;
     }
 
@@ -216,6 +210,8 @@ class jControllerDaoCrud extends jController {
         $tpl->assign('page',$offset>0?$offset:null);
         $tpl->assign('recordCount',$dao->countBy($cond));
         $tpl->assign('offsetParameterName',$this->offsetParameterName);
+        $tpl->assign('dao',$this->dao);
+        $tpl->assign('dbProfile',$this->dbProfile); 
 
         $this->_index($rep, $tpl);
         $rep->body->assign($this->templateAssign, $tpl->fetch($this->listTemplate));

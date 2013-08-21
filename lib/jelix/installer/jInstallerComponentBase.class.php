@@ -210,9 +210,9 @@ abstract class jInstallerComponentBase {
       /*  
 <module xmlns="http://jelix.org/ns/module/1.0">
     <info id="jelix@modules.jelix.org" name="jelix" createdate="">
-        <version stability="stable" date="">__LIB_VERSION__</version>
-        <label lang="en-EN" locale="">Jelix Main Module</label>
-        <description lang="en-EN" locale="" type="text/xhtml">Main module of jelix which contains some ressources needed by jelix classes</description>
+        <version stability="stable" date="">1.0</version>
+        <label lang="en_US" locale="">Jelix Main Module</label>
+        <description lang="en_US" locale="" type="text/xhtml">Main module of jelix which contains some ressources needed by jelix classes</description>
         <license URL="http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html">LGPL 2.1</license>
         <copyright>2005-2008 Laurent Jouanneau and other contributors</copyright>
         <creator name="Laurent Jouanneau" nickname="" email="" active="true"/>
@@ -221,7 +221,7 @@ abstract class jInstallerComponentBase {
         <updateURL>http://jelix.org</updateURL>
     </info>
     <dependencies>
-        <jelix minversion="__LIB_VERSION__" maxversion="__LIB_VERSION__" edition="dev/opt/gold"/>
+        <jelix minversion="1.0" maxversion="1.0" edition="dev/opt/gold"/>
         <module id="" name="" minversion="" maxversion="" />
         <plugin id="" name="" minversion="" maxversion="" />
     </dependencies>

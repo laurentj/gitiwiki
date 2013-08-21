@@ -25,13 +25,18 @@ class  jLogSoapMessage extends jLogMessage {
      * @var string
      */
     protected $response;
+    /**
+     * @var string
+     */
+    protected $duration;
 
-    public function __construct($function_name, $soapClient, $category='default') {
+    public function __construct($function_name, $soapClient, $category='default', $duration = 0) {
         $this->category = $category;
         $this->headers = $soapClient->__getLastRequestHeaders();
         $this->request = $soapClient->__getLastRequest ();
         $this->response = $soapClient->__getLastResponse();
         $this->functionName = $function_name;
+        $this->duration = $duration;
         $this->message = 'Soap call: '.$function_name.'()';
     }
 
@@ -47,8 +52,13 @@ class  jLogSoapMessage extends jLogMessage {
         return $this->request;
     }
 
+    public function getDuration() {
+        return $this->duration;
+    }
+
     public function getFormatedMessage() {
         $message =  'Soap call: '.$this->functionName."()\n";
+        $message .= "DURATION: ".$this->duration."s\n";
         $message .= "HEADERS:\n\t".str_replace("\n","\n\t",$this->headers)."\n";
         $message .= "REQUEST:\n\t".str_replace("\n","\n\t",$this->request)."\n";
         $message .= "RESPONSE:\n\t".str_replace("\n","\n\t",$this->response)."\n";
@@ -60,17 +70,43 @@ class  jLogSoapMessage extends jLogMessage {
 
 class SoapClientDebug extends SoapClient {
     public function __call ( $function_name , $arguments) {
-        $result = parent::__call($function_name , $arguments);
-        $log = new jLogSoapMessage($function_name, $this, 'soap');
+        $timeExecutionBegin = $this->_microtimeFloat();
+        $ex = false;
+        try {
+            $result = parent::__call($function_name , $arguments);
+        }
+        catch(Exception $e) {
+            $ex = $e;
+        }
+        $timeExecutionEnd = $this->_microtimeFloat();
+
+        $log = new jLogSoapMessage($function_name, $this, 'soap', $timeExecutionEnd - $timeExecutionBegin);
         jLog::log($log,'soap');
+        if ($ex)
+            throw $ex;
         return $result;
     }
 
     public function __soapCall ( $function_name , $arguments, $options=array(), $input_headers=null,  &$output_headers=null) {
-        $result = parent::__soapCall($function_name , $arguments, $options, $input_headers,  $output_headers);
-        $log = new jLogSoapMessage($function_name, $this, 'soap');
+        $timeExecutionBegin = $this->_microtimeFloat();
+        $ex = false;
+        try {
+            $result = parent::__soapCall($function_name , $arguments, $options, $input_headers,  $output_headers);
+        }
+        catch(Exception $e) {
+            $ex = $e;
+        }
+        $timeExecutionEnd = $this->_microtimeFloat();
+        $log = new jLogSoapMessage($function_name, $this, 'soap', $timeExecutionEnd - $timeExecutionBegin);
         jLog::log($log,'soap');
+        if ($ex)
+            throw $ex;
         return $result;
+    }
+
+    protected function _microtimeFloat() {
+        list($usec, $sec) = explode(" ", microtime());
+        return ((float)$usec + (float)$sec);
     }
 }
 
@@ -82,6 +118,8 @@ class SoapClientDebug extends SoapClient {
 * @subpackage  utils
 */
 class jSoapClient {
+
+    protected static $classmap = array();
 
     /**
      * @param string $profile  the profile name
@@ -113,13 +151,41 @@ class jSoapClient {
         if (isset($profile['connection_timeout'])) {
             $profile['connection_timeout'] = intval($profile['connection_timeout']); // SoapClient recognize only true integer
         }
-        unset ($profile['_name']);
+
+        // deal with classmap
+        $classMap = array();
+        if (isset($profile['classmap_file']) && ($f = trim($profile['classmap_file'])) != '') {
+            if (!isset(self::$classmap[$f])) {
+                if (!file_exists(jApp::configPath($f))) {
+                    trigger_error("jSoapClient: classmap file ".$f." does not exists.", E_USER_WARNING);
+                    self::$classmap[$f] = array();
+                }
+                else {
+                    self::$classmap[$f] = parse_ini_file(jApp::configPath($f), true);
+                }
+            }
+            if (isset(self::$classmap[$f]['__common__'])) {
+                $classMap = array_merge($classMap, self::$classmap[$f]['__common__']);
+            }
+            if (isset(self::$classmap[$f][$profile['_name']])) {
+                $classMap = array_merge($classMap, self::$classmap[$f][$profile['_name']]);
+            }
+            unset($profile['classmap_file']);
+        }
+
         if (isset($profile['classmap']) && is_string ($profile['classmap']) && $profile['classmap'] != '') {
-            $profile['classmap'] = (array)json_decode(str_replace("'", '"',$profile['classmap']));
+            $map = (array)json_decode(str_replace("'", '"',$profile['classmap']));
+            $classMap = array_merge($classMap, $map);
+            unset($profile['classmap']);
+        }
+
+        if (count($classMap)) {
+            $profile['classmap'] = $classMap;
         }
 
         //$context = stream_context_create( array('http' => array('max_redirects' => 3)));
         //$profile['stream_context'] = $context;
+        unset ($profile['_name']);
 
         return new $client($wsdl, $profile);
     }
