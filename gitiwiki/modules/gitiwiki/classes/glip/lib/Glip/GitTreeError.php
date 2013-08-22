@@ -1,6 +1,7 @@
 <?php
+
 /*
- * Copyright (C) 2009 Patrik Fimml
+ * Copyright (C) 2008, 2009 Patrik Fimml, Sjoerd de Jong
  *
  * This file is part of glip.
  *
@@ -18,7 +19,6 @@
  * along with glip.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-$old_include_path = set_include_path(dirname(__FILE__));
-require_once('git.class.php');
-set_include_path($old_include_path);
+namespace Glip;
 
+class GitTreeError extends \Exception {}

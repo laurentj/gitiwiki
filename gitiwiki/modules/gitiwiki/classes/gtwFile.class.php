@@ -4,7 +4,7 @@
  * @package   gitiwiki
  * @subpackage gitiwiki
  * @author    Laurent Jouanneau
- * @copyright 2012 laurent Jouanneau,  2008 Patrik Fimml
+ * @copyright 2012-2013 laurent Jouanneau,  2008 Patrik Fimml
  * @link      http://jelix.org
  * @license    GNU PUBLIC LICENCE
  */
@@ -16,13 +16,13 @@ class gtwFile extends gtwFileBase {
 
     /**
      * the original git object for the content
-     * @var GitBlob
+     * @var \Glip\GitBlob
      */
     protected $fileGitObject;
 
     /**
      * the git object for the new content
-     * @var GitBlob
+     * @var \Glip\GitBlob
      */
     protected $newFileGitObject;
 
@@ -30,13 +30,13 @@ class gtwFile extends gtwFileBase {
 
     /**
      * @param gtwRepo $repo
-     * @param string $commitId the bin hash of the commit of the version of the file
-     * @param gitTree $treeGitObject
+     * @param \Glip\SHA $commitHash the hash of the commit of the version of the file
+     * @param \Glip\GitTree $treeGitObject
      * @param string $path the path, without ending slash
      * @param string $name the filename (real filename)
      */
-    function __construct($repo, $commitId, $treeGitObject, $path, $name ) {
-        parent::__construct($repo, $commitId, $treeGitObject, $path);
+    function __construct(gtwRepo $repo, \Glip\SHA $commitHash, \Glip\GitTree $treeGitObject, $path, $name ) {
+        parent::__construct($repo, $commitHash, $treeGitObject, $path);
         $this->name = $name;
 
         $pos = strrpos($name, '.');
@@ -48,13 +48,12 @@ class gtwFile extends gtwFileBase {
                 $genParams = explode(',',$generatorsList[$ext]);
                 $class = array_shift($genParams);
                 $this->generator = jClasses::create($class);
-                $this->generator->init($genParams, $conf['branches'][$commitId]);
+                $this->generator->init($genParams, $conf['branches'][$commitHash->hex()]);
             }
         }
 
-        if (isset($treeGitObject->nodes[$name])) {
-            $node = $treeGitObject->nodes[$name];
-            $this->fileGitObject = $this->repo->git()->getObject($node->object);
+        if (isset($treeGitObject[$name])) {
+            $this->fileGitObject = $treeGitObject[$name];
         }
     }
 
@@ -71,28 +70,26 @@ class gtwFile extends gtwFileBase {
     }
 
     /**
-     * @var GitTree
+     * @var \Glip\GitTree
      */
     protected $metaDirObject;
 
     /**
-     * @var GitBlob
+     * @var \Glip\GitBlob
      */
     protected $metaFileObject;
 
     protected $metaContent = array();
 
-    function setMetaDirObject($metaDirObject) {
+    function setMetaDirObject(\Glip\GitTree $metaDirObject) {
         $this->metaDirObject = $metaDirObject;
-        if (!isset($metaDirObject->nodes[$this->name.'.ini']))
+        $this->metaFileObject = $metaDirObject->nodes[$this->name.'.ini'];
+        if (!$this->metaFileObject)
             return;
-        $this->metaFileObject = $this->repo->git()->getObject($metaDirObject->nodes[$this->name.'.ini']->object);
 
-        if ($this->metaFileObject) {
-            $ini = @parse_ini_string($this->metaFileObject->data, true);
-            if ($ini)
-                $this->metaContent = $ini;
-        }
+        $ini = @parse_ini_string($this->metaFileObject->data, true);
+        if ($ini)
+            $this->metaContent = $ini;
     }
 
     function getMeta($name) {
@@ -106,19 +103,22 @@ class gtwFile extends gtwFileBase {
     }
 
     function save($message, $authorName, $authorMail) {
+        throw new Exception('not implemented');
         // FIXME : save also meta data if it has changed
-        if (!$this->newFileGitObject || $this->fileGitObject->getName() != $this->newFileGitObject->getName())
+        if (!$this->newFileGitObject
+            || $this->fileGitObject->getSha() != $this->newFileGitObject->getSha())
             return false;
 
         $conf = $this->repo->config();
         $repo = $this->repo->git();
-        $commit = $repo->getObject($this->commitId);
+        $commit = $repo->getObject($this->commitHash);
 
-        $f = fopen($repo->dir.'/refs/heads/'.$conf['branch'], 'a+b');
-        flock($f, LOCK_EX);
-        $lastCommitId = stream_get_contents($f);
+        $branch = $repo[$conf['branch']];
+        $branchTip = $branch->getTip();
 
-        $howToMerge = $this->_hasNewVersion($repo, $lastCommitId);
+        $howToMerge = $this->_hasNewVersion($repo, $branchTip);
+
+/*
 
         $pending = $this->_createCommit($repo, $commit, $message, $authorName, $authorMail);
 
@@ -134,8 +134,8 @@ class gtwFile extends gtwFileBase {
         if ($showToMerge == self::MERGE_NEEDED) {
             fclose($f);
 
-            /* create conflict branch */
-            $dir = $repo->dir.'/refs/heads/gtwconflict';
+            // create conflict branch
+            $dir = $repo->getDir().'/refs/heads/gtwconflict';
             if (!file_exists($dir))
                 mkdir($dir, 0755);
             if (!is_dir($dir))
@@ -151,14 +151,13 @@ class gtwFile extends gtwFileBase {
                     continue;
                 try
                 {
-                    $f = fopen($repo->dir.'/refs/heads/'.$branch, 'xb');
+                    $f = fopen($repo->getDir().'/refs/heads/'.$branch, 'xb');
                 }
                 catch (Exception $e)
                 {
-                    /*
-                     * fopen() will raise a warning if the file already
-                     * exists, which Core will make into an Exception.
-                     */
+                    
+                    // fopen() will raise a warning if the file already
+                    // exists, which Core will make into an Exception.
                 }
             }
             flock($f, LOCK_EX);
@@ -168,11 +167,12 @@ class gtwFile extends gtwFileBase {
         ftruncate($f, 0);
         fwrite($f, sha1_hex($lastcommit->getName()));
         fclose($f);
+        */
         return true;
     }
 
     protected function _createCommit($repo, $commit, $message, $authorName, $authorMail) {
-
+/*
         // new blob to store the new content
         $blob = new GitBlob($repo);
         $blob->data = $this->fileGitObject->data;
@@ -203,9 +203,11 @@ class gtwFile extends gtwFileBase {
         array_unshift($pending, $blob);
         array_unshift($pending, $newcommit);
         return $pending;
+*/
     }
 
     protected function _createMergeCommit($repo, $newcommit, $tipCommitId, $blob) {
+/*
         $ref = sha1_bin($tipCommitId);
         $tip = $repo->getObject($ref);
 
@@ -222,6 +224,7 @@ class gtwFile extends gtwFileBase {
         $mergecommit->detail = '';
         $mergecommit->rehash();
         return array($mergecommit, $tree);
+*/
     }
 
     function moveTo($newPath, $message, $authorName, $authorMail, $commit = null) {
@@ -264,9 +267,7 @@ class gtwFile extends gtwFileBase {
     }
 
     function setContent($content) {
-        $this->newFileGitObject = new GitBlob($this->repo->git());
-        $this->newFileGitObject->data = $content;
-        $this->newFileGitObject->rehash();
+        $this->newFileGitObject = new \Glip\GitBlob($this->repo->git(), null, null, $content);
     }
 
     function getTitle() {
