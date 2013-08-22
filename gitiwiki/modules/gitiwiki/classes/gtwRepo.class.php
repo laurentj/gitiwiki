@@ -275,7 +275,8 @@ class gtwRepo {
     protected function checkMultiview($treeObject, $path, $name, $commitHash) {
         $metaDirObject = $this->getMetaDirObject($treeObject);
         $file = new gtwFile($this, $commitHash, $treeObject, $path, $name);
-        $file->setMetaDirObject($metaDirObject);
+        if ($metaDirObject)
+            $file->setMetaDirObject($metaDirObject);
 
         $redir = $file->getMeta('redirection');
         if ($redir) {
@@ -289,7 +290,8 @@ class gtwRepo {
             if ($file->exists()) {
                 return $file;
             }
-            $file->setMetaDirObject($metaDirObject);
+            if ($metaDirObject)
+                $file->setMetaDirObject($metaDirObject);
             $redir = $file->getMeta('redirection');
             if ($redir) {
                 return new gtwRedirection($redir, $path);

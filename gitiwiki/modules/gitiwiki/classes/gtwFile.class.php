@@ -83,9 +83,9 @@ class gtwFile extends gtwFileBase {
 
     function setMetaDirObject(\Glip\GitTree $metaDirObject) {
         $this->metaDirObject = $metaDirObject;
-        $this->metaFileObject = $metaDirObject->nodes[$this->name.'.ini'];
-        if (!$this->metaFileObject)
+        if (!isset($metaDirObject->nodes[$this->name.'.ini']))
             return;
+        $this->metaFileObject = $metaDirObject->nodes[$this->name.'.ini'];
 
         $ini = @parse_ini_string($this->metaFileObject->data, true);
         if ($ini)
