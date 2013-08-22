@@ -4,6 +4,7 @@
  * @author     Brice Tencé
  * @contributor Laurent Jouanneau
  */
+use \Gitiwiki\Storage as gtw;
 
 class gtwSphinxSource {
 
@@ -23,14 +24,13 @@ class gtwSphinxSource {
     protected $repository;
 
     public function __construct($repoId, $bookId) {
-        jClasses::inc('gitiwiki~gtwRepo');
-        $this->repo = new gtwRepo($repoId);
+        $this->repo = new gtw\Repo($repoId);
         $repoConfig = $this->repo->config();
         if (isset($repoConfig['locale'])) {
             jApp::config()->locale = $repoConfig['locale'];
         }
         $this->basePath = jUrl::get('gitiwiki~wiki:page@classic', array('repository'=>$this->repo->getName(), 'page'=>''));
-        $books = jClasses::create('gitiwiki~gtwBooks');
+        $books = gtw\Books();
         $bookinfo = $books->getBookInfo($repoId, $bookId);
         if ($bookinfo === false)
             throw new Exception("Unknown book or repository");
@@ -68,9 +68,9 @@ class gtwSphinxSource {
         if ($file == null) {
             trigger_error( "File not found for url " . $urlPage , E_USER_WARNING );
             return array();
-        } elseif ($file instanceof gtwRedirection) {
+        } elseif ($file instanceof gtw\Redirection) {
             return array();
-        } elseif($file instanceof gtwFile) {
+        } elseif($file instanceof gtw\File) {
             if ($file->isStaticContent()) {
                 return array();
             } else {

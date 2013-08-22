@@ -3,10 +3,12 @@
 * @package   gitiwiki
 * @subpackage gitiwiki
 * @author    Laurent Jouanneau
-* @copyright 2012 laurent Jouanneau
+* @copyright 2012-2013 laurent Jouanneau
 * @link      http://jelix.org
 * @license    GNU PUBLIC LICENCE
 */
+
+use \Gitiwiki\Storage as gtw;
 
 class wikiCtrl extends jControllerCmdLine {
 
@@ -34,13 +36,12 @@ class wikiCtrl extends jControllerCmdLine {
     function generateBook() {
         $rep = $this->getResponse();
 
-        jClasses::inc('gtwRepo');
-        $repo = new gtwRepo($this->param('repository'));
+        $repo = new gtw\Repository($this->param('repository'));
         $page = $repo->findFile($this->param('bookindex'));
         if ($page === null) {
             throw new Exception('Book index is not found');
         }        
-        elseif($page instanceof gtwFile) {
+        elseif($page instanceof gtw\File) {
             if ($page->isStaticContent()) {
                 throw new Exception('The given path is not a book index');
             }
@@ -53,7 +54,7 @@ class wikiCtrl extends jControllerCmdLine {
 
             // for book index
             if (isset($extraData['bookContent']) && isset($extraData['bookInfos'])) {
-                $books = jClasses::create('gitiwiki~gtwBooks');
+                $books = new gtw\Books();
                 $books->saveBook($page->getCommitId(), $repo->getName(), $page->getPathFileName(), $extraData, true);
             }
             else {

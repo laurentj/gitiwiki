@@ -8,9 +8,9 @@
  * @link      http://jelix.org
  * @license    GNU PUBLIC LICENCE
  */
+namespace Gitiwiki\Storage;
 
-
-class gtwFile extends gtwFileBase {
+class File extends FileAbstract {
 
     protected $name;
 
@@ -29,13 +29,13 @@ class gtwFile extends gtwFileBase {
     protected $generator = null;
 
     /**
-     * @param gtwRepo $repo
+     * @param \Gitiwiki\Storage\Repository $repo
      * @param \Glip\SHA $commitHash the hash of the commit of the version of the file
      * @param \Glip\GitTree $treeGitObject
      * @param string $path the path, without ending slash
      * @param string $name the filename (real filename)
      */
-    function __construct(gtwRepo $repo, \Glip\SHA $commitHash, \Glip\GitTree $treeGitObject, $path, $name ) {
+    function __construct(Repository $repo, \Glip\SHA $commitHash, \Glip\GitTree $treeGitObject, $path, $name ) {
         parent::__construct($repo, $commitHash, $treeGitObject, $path);
         $this->name = $name;
 
@@ -47,7 +47,7 @@ class gtwFile extends gtwFileBase {
             if (isset($generatorsList[$ext])) {
                 $genParams = explode(',',$generatorsList[$ext]);
                 $class = array_shift($genParams);
-                $this->generator = jClasses::create($class);
+                $this->generator = \jClasses::create($class);
                 $this->generator->init($genParams, $conf['branches'][$commitHash->hex()]);
             }
         }
@@ -103,7 +103,7 @@ class gtwFile extends gtwFileBase {
     }
 
     function save($message, $authorName, $authorMail) {
-        throw new Exception('not implemented');
+        throw new \Exception('not implemented');
         // FIXME : save also meta data if it has changed
         if (!$this->newFileGitObject
             || $this->fileGitObject->getSha() != $this->newFileGitObject->getSha())
@@ -228,11 +228,11 @@ class gtwFile extends gtwFileBase {
     }
 
     function moveTo($newPath, $message, $authorName, $authorMail, $commit = null) {
-        throw new Exception('not implemented');
+        throw new \Exception('not implemented');
     }
 
     function remove($message, $authorName, $authorMail) {
-        throw new Exception('not implemented');
+        throw new \Exception('not implemented');
     }
 
     protected $extraData = array();
@@ -271,19 +271,19 @@ class gtwFile extends gtwFileBase {
     }
 
     function getTitle() {
-        throw new Exception('not implemented');
+        throw new \Exception('not implemented');
     }
 
     function setTitle($title) {
-        throw new Exception('not implemented');
+        throw new \Exception('not implemented');
     }
 
     function getDescription() {
-        throw new Exception('not implemented');
+        throw new \Exception('not implemented');
     }
 
     function setDescription() {
-        throw new Exception('not implemented');
+        throw new \Exception('not implemented');
     }
 
     function getMimeType() {
@@ -291,12 +291,12 @@ class gtwFile extends gtwFileBase {
             return 'text/html';
         }
         else {
-            return jFile::getMimeTypeFromFilename($this->name);
+            return \jFile::getMimeTypeFromFilename($this->name);
         }
     }
 
     function setMimeType($title) {
-        throw new Exception('not implemented');
+        throw new \Exception('not implemented');
     }
 
 }

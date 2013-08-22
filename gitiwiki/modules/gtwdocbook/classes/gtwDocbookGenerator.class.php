@@ -4,6 +4,8 @@
  * @author     Laurent Jouanneau
  */
 
+use \Gitiwiki\Storage as gtw;
+ 
 class gtwDocbookGenerator {
 
     protected $bookPath;
@@ -20,12 +22,12 @@ class gtwDocbookGenerator {
     protected $siteURL;
 
     /**
-     * @var gtwRepo
+     * @var \Gitiwiki\Storage\Repository
      */
     protected $repository;
 
     public function __construct($repoId, $bookId) {
-        $books = jClasses::create('gitiwiki~gtwBooks');
+        $books = new gtw\Books();
         $bookinfo = $books->getBookInfo($repoId, $bookId);
         if ($bookinfo === false)
             throw new Exception("Unknown book or repository");
@@ -34,8 +36,8 @@ class gtwDocbookGenerator {
 
         $conf = jApp::config();
         $this->siteURL = 'http://'.$conf->domainName.$conf->urlengine['basePath'];
-        jClasses::inc('gitiwiki~gtwRepo');
-        $this->repository = new gtwRepo($repoId);
+
+        $this->repository = new gtw\Repository($repoId);
         $config = $this->repository->getBranchConfig();
         $this->protocolAliases = $config['protocol-aliases'];
     }
@@ -95,10 +97,10 @@ class gtwDocbookGenerator {
         if ($file == null)
             $c .= '<para> </para>';
 
-        elseif ($file instanceof gtwRedirection) {
+        elseif ($file instanceof gtw\Redirection) {
             $c .= '<para> </para>';
         }
-        elseif($file instanceof gtwFile) {
+        elseif($file instanceof gtw\File) {
             if ($file->isStaticContent()) {
                 $c .= '<para> </para>';
             }
@@ -207,7 +209,7 @@ class gtwDocbookGenerator {
         if ($image == null) {
             return '';
         }
-        elseif($image instanceof gtwRedirection) {
+        elseif($image instanceof gtw\Redirection) {
             if (!$image->isWikiUrl()) {
                 return $this->downloadImage($image->url);
             }
@@ -216,7 +218,7 @@ class gtwDocbookGenerator {
                     return $this->loadImage($image->url, $recurCounter+1);
             }
         }
-        elseif($image instanceof gtwFile) {
+        elseif($image instanceof gtw\File) {
             if ($image->isStaticContent()) {
                 $filename = $this->bookPath.'medias/'.$image->getPathFileName();
                 jFile::createDir(dirname($filename));

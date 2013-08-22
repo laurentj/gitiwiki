@@ -3,18 +3,18 @@
 * @package   gitiwiki
 * @subpackage gitiwiki
 * @author    Laurent Jouanneau
-* @copyright 2012 laurent Jouanneau
+* @copyright 2012-2013 laurent Jouanneau
 * @link      http://jelix.org
 * @license    GNU PUBLIC LICENCE
 */
 
+use \Gitiwiki\Storage as gtw;
 
 class wikiCtrl extends jController {
 
     function page() {
 
-        jClasses::inc('gtwRepo');
-        $repo = new gtwRepo($this->param('repository'));
+        $repo = new gtw\Repository($this->param('repository'));
         $repoConfig = $repo->config();
         if (isset($repoConfig['locale']))
             jApp::config()->locale = $repoConfig['locale'];
@@ -25,7 +25,7 @@ class wikiCtrl extends jController {
             $rep->body->assign('MAIN', '<p>not found</p>');
             $rep->setHttpStatus('404', 'Not Found');
         }
-        elseif($page instanceof gtwRedirection) {
+        elseif($page instanceof gtw\Redirection) {
             if (!$page->isWikiUrl()) {
                 $rep = $this->getResponse('redirectUrl');
                 $rep->url = $page->url;
@@ -36,7 +36,7 @@ class wikiCtrl extends jController {
                 $rep->params = array('repository'=>  $this->param('repository') ,'page'=> $page->url);
             }
         }
-        elseif($page instanceof gtwFile) {
+        elseif($page instanceof gtw\File) {
             if ($page->isStaticContent()) {
                 $resp = $this->getResponse('binary');
                 $resp->fileName = $page->getName();
@@ -53,7 +53,7 @@ class wikiCtrl extends jController {
             $html = $page->getHtmlContent($basePath);
 
             $extraData = $page->getExtraData();
-            $books = jClasses::create('gitiwiki~gtwBooks');
+            $books = new gtw\Books;
 
             // for book index
             if (isset($extraData['bookContent']) && isset($extraData['bookInfos'])) {

@@ -8,8 +8,9 @@
 * @link      http://jelix.org
 * @license    GNU PUBLIC LICENCE
 */
+namespace Gitiwiki\Storage;
 
-abstract class gtwFileBase {
+abstract class FileAbstract {
 
     /**
      * the path of the file into the repository
@@ -40,12 +41,12 @@ abstract class gtwFileBase {
     protected $commitHash;
 
     /**
-     * @param gtwRepo $repo
+     * @param \Gitiwiki\Storage\Repository $repo
      * @param \Glip\SHA $commitHash the hash of the commit of the version of the file
      * @param \Glip\GitTree $treeGitObject The tree git object on which the blob object of the file is attached
      * @param string $path The directory path
      */
-    function __construct(gtwRepo $repo, \Glip\SHA $commitHash, \Glip\GitTree $treeGitObject, $path ) {
+    function __construct(Repository $repo, \Glip\SHA $commitHash, \Glip\GitTree $treeGitObject, $path ) {
         $this->path = $path;
         $this->repo = $repo;
         $this->commitHash = $commitHash;
@@ -147,7 +148,7 @@ abstract class gtwFileBase {
      */
     const MERGE_NEEDED = 0;
 
-    protected function _hasNewVersion($repo, \Glip\GitCommit $lastCommit) {
+    protected function _hasNewVersion(\Glip\Git $repo, \Glip\GitCommit $lastCommit) {
 
         $lastCommitHash = $lastCommit->getSha();
         $hash = $lastCommitHash->hex();

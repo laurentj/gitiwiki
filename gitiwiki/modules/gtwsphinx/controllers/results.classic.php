@@ -7,6 +7,7 @@
 * @link      http://jelix.org
 * @license    GNU PUBLIC LICENCE
 */
+use \Gitiwiki\Storage as gtw;
 
 class resultsCtrl extends jController {
     /**
@@ -28,8 +29,7 @@ class resultsCtrl extends jController {
 
         $rep = $this->getResponse('html');
 
-        jClasses::inc('gitiwiki~gtwRepo');
-        $repo = new gtwRepo($repoName);
+        $repo = new gtw\Repo($repoName);
         $repoConfig = $repo->config();
         $basePath = jUrl::get('gitiwiki~wiki:page@classic', array('repository'=>$repo->getName(), 'page'=>''));
 
@@ -46,7 +46,7 @@ class resultsCtrl extends jController {
                 continue;
             }
             $file = $repo->findFile( $resInfos['path'] );
-            if( ! $file instanceof gtwFile ) {
+            if( ! $file instanceof gtw\File ) {
                 trigger_error( "Got path '".$resInfos['path']."' in search results (repo : '$repoName', search string '$searchString') and it does not correspond to a gtwFile.This should not happen !" , E_USER_WARNING );
                 continue;
             } else {

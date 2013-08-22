@@ -8,9 +8,9 @@
 * @link      http://jelix.org
 * @license    GNU PUBLIC LICENCE
 */
+namespace Gitiwiki\ContentRender;
 
-
-class gtwWikiRenderer {
+class WikiRenderer {
     
     protected $config;
     
@@ -34,7 +34,7 @@ class gtwWikiRenderer {
      * @param string $pagePath the path to the current page (without page name), relative to $basePath (ends with a slash)
      */
     function generate($source, $basePath, $pagePath) {
-        $wr = new jWiki($this->rules);
+        $wr = new \jWiki($this->rules);
         $conf = $wr->getConfig();
         $conf->basePath = $basePath;
         $conf->pagePath = $pagePath;

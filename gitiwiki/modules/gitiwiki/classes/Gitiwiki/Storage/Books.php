@@ -3,22 +3,23 @@
 * @package   gitiwiki
 * @subpackage gitiwiki
 * @author    Laurent Jouanneau
-* @copyright 2012 laurent Jouanneau
+* @copyright 2012-2013 laurent Jouanneau
 * @link      http://jelix.org
 * @license    GNU PUBLIC LICENCE
 */
+namespace Gitiwiki\Storage;
 
-class gtwBooks {
+class Books {
 
     protected $booksPath = '';
 
     function __construct() {
-        if (isset(jApp::config()->gitiwiki)) {
-            $this->booksPath = jApp::config()->gitiwiki['booksPath'];
-            $this->booksPath = rtrim(str_replace(array('app:'), array(jApp::appPath()), $this->booksPath), '/');
+        if (isset(\jApp::config()->gitiwiki)) {
+            $this->booksPath = \jApp::config()->gitiwiki['booksPath'];
+            $this->booksPath = rtrim(str_replace(array('app:'), array(\jApp::appPath()), $this->booksPath), '/');
         }
         else {
-            $this->booksPath = jApp::appPath('var/books');
+            $this->booksPath = \jApp::appPath('var/books');
         }
     }
 
@@ -41,10 +42,10 @@ class gtwBooks {
         if (file_exists($bookPath) && !$force)
             return true; // already saved
 
-        jFile::removeDir($bookPath, false);
+        \jFile::removeDir($bookPath, false);
         
         $bookPagesPath =   $this->booksPath.'/'.$repoName.'/pages/';
-        jFile::removeDir($bookPagesPath, false);
+        \jFile::removeDir($bookPagesPath, false);
 
         if (isset($data['bookPageLegalNotice'])) {
            $data['bookInfos']['bookPageLegalNotice'] = $data['bookPageLegalNotice'];
@@ -66,7 +67,7 @@ class gtwBooks {
         }
 
         $fileContent = '<'."?php\n".'$BOOK='.var_export($data['bookInfos'], true).";\n";
-        jFile::createDir($bookPath);
+        \jFile::createDir($bookPath);
         file_put_contents($bookPath.'book.php', $fileContent);
 
         $fileContent = '<'."?php\n".'$BOOKINDEX='.var_export($data['bookContent'], true).";\n";
@@ -76,13 +77,13 @@ class gtwBooks {
         $this->bookId = ltrim($indexPath, '/');
         $this->bookBasePath = dirname($indexPath);
         $this->preparePageContents($data['bookInfos'], $data['bookContent']);
-        jFile::createDir($bookPagesPath);
+        \jFile::createDir($bookPagesPath);
         foreach ($this->pages as $path=>$info) {
             $fileContent = '<'."?php\n".'$PAGE='.var_export($info, true).";\n";
             $pagePath = $bookPagesPath.ltrim($path, '/');
-            jFile::createDir($pagePath);
+            \jFile::createDir($pagePath);
             file_put_contents($pagePath.'/page.php', $fileContent);
-            jFile::createDir($pagePath.'/index/');
+            \jFile::createDir($pagePath.'/index/');
             file_put_contents($pagePath.'/index/page.php', $fileContent);
         }
         return true;
@@ -232,8 +233,9 @@ array(
 
         $bookBasePath = $this->booksPath.'/'.$repoName.'/books/'.$bookId.'/';
 
-        if (!file_exists($bookBasePath))
+        if (!file_exists($bookBasePath)) {
             return false;
+        }
 
         $bookInfoPath = $bookBasePath.'book.php';
         if (!file_exists($bookInfoPath)) {

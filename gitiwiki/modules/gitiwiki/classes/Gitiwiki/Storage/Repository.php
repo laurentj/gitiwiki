@@ -7,13 +7,9 @@
 * @link      http://jelix.org
 * @license    GNU PUBLIC LICENCE
 */
-$dirname = dirname(__FILE__);
-require_once($dirname.'/gtwFilebase.class.php');
-require_once($dirname.'/gtwFile.class.php');
-require_once($dirname.'/gtwDirectory.class.php');
-require_once($dirname.'/gtwRedirection.class.php');
+namespace Gitiwiki\Storage;
 
-class gtwRepo {
+class Repository {
     /**
      * @var array
      * configuration parameters of the repository
@@ -37,9 +33,10 @@ class gtwRepo {
      * @param string $repoName the name of the repository as registered in the configuration
      */
     function __construct($repoName) {
-        $conf = jApp::config();
 
-        $this->config = jProfiles::get('gtwrepo', $repoName, true);
+        $conf = \jApp::config();
+
+        $this->config = \jProfiles::get('gtwrepo', $repoName, true);
 
         if (isset($this->config['generators']) && isset($conf->{$this->config['generators']})) {
             $this->config['generators'] = $conf->{$this->config['generators']};
@@ -62,7 +59,7 @@ class gtwRepo {
             $this->config['basepath'] = trim($this->config['basepath'],'/').'/';
         }
 
-        $this->config['path'] = str_replace(array('app:'), array(jApp::appPath()), $this->config['path']);
+        $this->config['path'] = str_replace(array('app:'), array(\jApp::appPath()), $this->config['path']);
         $this->repo = new \Glip\Git($this->config['path']);
         $this->repoName = $repoName;
     }
@@ -122,7 +119,7 @@ class gtwRepo {
         else {
             $commit = $this->repo[$commitId];
             if (! ($commit instanceof \Glip\GitCommit))
-                throw new Exception("Bad Commit Id");
+                throw new \Exception("Bad Commit Id");
             $commitHash = new \Glip\SHA($commitId);
         }
 
@@ -138,10 +135,10 @@ class gtwRepo {
                 if (count($m) > 1) {
                     array_shift($m);
                     array_unshift($m, $target);
-                    return new gtwRedirection(call_user_func_array('sprintf',$m));
+                    return new Redirection(call_user_func_array('sprintf',$m));
                 }
                 else {
-                    return new gtwRedirection($target);
+                    return new Redirection($target);
                 }
             }
         }
@@ -196,11 +193,11 @@ class gtwRepo {
                 if (!$treeObject) {
                     return null;
                 }
-                return new gtwFile($this, $commitHash, $treeObject, $path, $name);
+                return new File($this, $commitHash, $treeObject, $path, $name);
             }
             else {
                 // the directory of the file is not a directory. Error
-                throw new Exception ('Unexpected content at this path');
+                throw new \Exception ('Unexpected content at this path');
             }
         }
 
@@ -213,14 +210,14 @@ class gtwRepo {
             if (! ($node instanceof \Glip\GitTree)) {
                 // this is a file, good !
                 //jLog::log("get $path/$name : it is a file, good");
-                return new gtwFile($this, $commitHash, $treeObject, $path, $name);
+                return new File($this, $commitHash, $treeObject, $path, $name);
             }
 
             // the given "path/name" is a directory
 
             if ($implicitName)
                 // error we don't expect to find a directory 'index' under the given path
-                throw new Exception ('Unexpected content at this path');
+                throw new \Exception ('Unexpected content at this path');
 
             //jLog::log("get $path/$name : it is a directory. Try multiview for $path/$name to get index (dokuwiki compatibility)");
 
@@ -269,24 +266,24 @@ class gtwRepo {
         if ($fileResult || ! $implicitName)
             return $fileResult;
         //jLog::log("get $originalPath: directory view");
-        return new gtwDirectory($this, $commitHash, $originalTreeObject, $originalPath);
+        return new Directory($this, $commitHash, $originalTreeObject, $originalPath);
     }
 
     protected function checkMultiview($treeObject, $path, $name, $commitHash) {
         $metaDirObject = $this->getMetaDirObject($treeObject);
-        $file = new gtwFile($this, $commitHash, $treeObject, $path, $name);
+        $file = new File($this, $commitHash, $treeObject, $path, $name);
         if ($metaDirObject)
             $file->setMetaDirObject($metaDirObject);
 
         $redir = $file->getMeta('redirection');
         if ($redir) {
-            return new gtwRedirection($redir, $path);
+            return new Redirection($redir, $path);
         }
 
         $extList = $this->config['branches'][$commitHash->hex()]['multiviews'];
         foreach($extList as $ext) {
             $n = $name.$ext;
-            $file = new gtwFile($this, $commitHash, $treeObject, $path, $n);
+            $file = new File($this, $commitHash, $treeObject, $path, $n);
             if ($file->exists()) {
                 return $file;
             }
@@ -294,7 +291,7 @@ class gtwRepo {
                 $file->setMetaDirObject($metaDirObject);
             $redir = $file->getMeta('redirection');
             if ($redir) {
-                return new gtwRedirection($redir, $path);
+                return new Redirection($redir, $path);
             }
         }
         return null;

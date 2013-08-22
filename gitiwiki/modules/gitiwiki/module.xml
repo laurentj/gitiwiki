@@ -15,5 +15,6 @@
     </dependencies>
     <autoload>
         <namespace name="Glip" dir="classes/glip/lib/" />
+        <namespace name="Gitiwiki" dir="classes/" />
     </autoload>
 </module>
