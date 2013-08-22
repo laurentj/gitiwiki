@@ -371,7 +371,7 @@ class GitTree extends GitPathObject implements \ArrayAccess, \IteratorAggregate,
    **/
   public function getIterator() {
     $beSureDataIsLoaded = $this->nodes;
-    return new ArrayIterator($this->data['nodes']);
+    return new \ArrayIterator($this->data['nodes']);
   }
 
   /**

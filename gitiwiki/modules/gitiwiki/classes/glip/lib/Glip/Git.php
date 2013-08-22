@@ -96,8 +96,15 @@ class Git implements \ArrayAccess
    **/
   public function __construct($dir, &$stashSource = null, $stashKey = 'git_stash')
   {
-    $this->dir = $dir.'/.git';
-
+    $this->dir = rtrim($dir, '/');
+    if (!(file_exists($this->dir.'/refs')
+         && file_exists($this->dir.'/objects'))) {
+        if (file_exists($this->dir.'/.git'))
+            $this->dir .= '/.git';
+        else
+            throw new \Exception("$dir is not a Git repository");
+    }
+    
     if (is_array($stashSource))
     {
       if (isset($stashSource[$stashKey]))

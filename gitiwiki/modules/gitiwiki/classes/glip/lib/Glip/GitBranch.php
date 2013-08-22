@@ -185,7 +185,7 @@ class GitBranch implements \ArrayAccess
         return $this->tipCache;
       }
     }
-    throw new \Exception(sprintf('no such branch: %s', $branch));
+    throw new \Exception(sprintf('no such branch: %s', $this->branchName));
   }
 
   /**
