@@ -56,9 +56,9 @@ plugins =
 [error_handling]
 ;errorMessage="A technical error has occured (code: %code%). Sorry for this inconvenience."
 
-;[compilation]
-;checkCacheFiletime  = on
-force  = on
+[compilation]
+;checkCacheFiletime=on
+;force=on
 
 [urlengine]
 ; name of url engine :  "simple", "basic_significant" or "significant"
@@ -118,12 +118,6 @@ index="@classic"
 ; for each entry point, it indicates if the entry point name
 ; should be include in the url or not
 index=on
-xmlrpc=on
-jsonrpc=on
-rdf=on
-
-
-
 
 [fileLogger]
 default=messages.log
@@ -166,12 +160,6 @@ smtpPassword=
 ; SMTP server timeout in seconds
 smtpTimeout=10
 
-
-
-[acl2]
-; example of driver: "db"
-driver=
-
 [sessions]
 ; If several applications are installed in the same documentRoot but with
 ; a different basePath, shared_session indicates if these application
@@ -192,22 +180,9 @@ name=
 ;dao_selector = "jelix~jsession"
 ;dao_db_profile = ""
 
-
-[forms]
-; define input type for datetime widgets : "textboxes" or "menulists"
-;controls.datetime.input = "menulists"
-; define the way month labels are displayed widgets: "numbers", "names" or "shortnames"
-;controls.datetime.months.labels = "names"
-; define the default config for datepickers in jforms
-;datepicker = default
-
-[datepickers]
-;default = jelix/js/jforms/datepickers/default/init.js
-
-
 [gitiwiki]
-booksPath = "app:var/books"
+booksPath="app:var/books"
 
 [gitiwikiGenerators]
-gtw = "gitiwiki~gtwWikiRenderer,gitiwiki_to_xhtml"
-wiki = "gitiwiki~gtwWikiRenderer,gitiwiki_to_xhtml"
+gtw="gitiwiki~gtwWikiRenderer,gitiwiki_to_xhtml"
+wiki="gitiwiki~gtwWikiRenderer,gitiwiki_to_xhtml"
