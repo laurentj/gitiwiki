@@ -63,6 +63,12 @@ class jConfigCompiler {
         // read the main configuration of the app
         @jelix_read_ini(jApp::mainConfigFile(), $config);
 
+        // read the local configuration of the app
+        if (file_exists($configPath.'localconfig.ini.php')) {
+            @jelix_read_ini($configPath.'localconfig.ini.php', $config);
+        }
+
+        // read the configuration specific to the entry point
         if ($configFile != 'mainconfig.ini.php' && $configFile != 'defaultconfig.ini.php') {
             if(!file_exists($configPath.$configFile))
                 throw new Exception("Configuration file is missing -- $configFile", 5);
@@ -89,7 +95,7 @@ class jConfigCompiler {
 
         $config = self::read($configFile, false, $isCli, $pseudoScriptName);
         $tempPath = jApp::tempPath();
-        jFile::createDir($tempPath);
+        jFile::createDir($tempPath, $config->chmodDir);
         $filename = $tempPath.str_replace('/','~',$configFile);
 
         if(BYTECODE_CACHE_EXISTS){
@@ -97,11 +103,12 @@ class jConfigCompiler {
             if ($f = @fopen($filename, 'wb')) {
                 fwrite($f, '<?php $config = '.var_export(get_object_vars($config),true).";\n?>");
                 fclose($f);
+                chmod($filename, $config->chmodFile);
             } else {
                 throw new Exception('Error while writing configuration cache file -- '.$filename);
             }
         }else{
-            jIniFile::write(get_object_vars($config), $filename.'.resultini.php', ";<?php die('');?>\n");
+            jIniFile::write(get_object_vars($config), $filename.'.resultini.php', ";<?php die('');?>\n", '', $config->chmodFile);
         }
         return $config;
     }
@@ -139,11 +146,18 @@ class jConfigCompiler {
 
         if ($config->urlengine['engine'] == 'simple')
             trigger_error("The 'simple' url engine is deprecated. use 'basic_significant' or 'significant' url engine", E_USER_NOTICE);
+
+        $config->chmodFile = octdec($config->chmodFile);
+        $config->chmodDir = octdec($config->chmodDir);
     }
 
     static protected function checkCoordPluginsPath($config) {
         $coordplugins = array();
         foreach ($config->coordplugins as $name=>$conf) {
+            if (strpos($name, '.') !== false)  {
+                $coordplugins[$name] = $conf;
+                continue;
+            }
             if (!isset($config->_pluginsPathList_coord[$name])) {
                 throw new Exception("Error in the main configuration. A plugin doesn't exist -- The coord plugin $name is unknown.", 7);
             }
@@ -231,7 +245,7 @@ class jConfigCompiler {
 
         foreach($list as $k=>$path){
             if(trim($path) == '') continue;
-            $p = str_replace(array('lib:','app:'), array(LIB_PATH, jApp::appPath()), $path);
+            $p = jFile::parseJelixPath( $path );
             if (!file_exists($p)) {
                 throw new Exception('Error in the configuration file -- The path, '.$path.' given in the jelix config, doesn\'t exist', 10);
             }
@@ -353,7 +367,7 @@ class jConfigCompiler {
                 }
             }
             else {
-                $p = str_replace(array('lib:','app:'), array(LIB_PATH, jApp::appPath()), $path);
+                $p = jFile::parseJelixPath( $path );
             }
             if(!file_exists($p)){
                 trigger_error('Error in main configuration on pluginsPath -- The path, '.$path.' given in the jelix config, doesn\'t exists !',E_USER_ERROR);
@@ -370,9 +384,11 @@ class jConfigCompiler {
                                $config->_allBasePath[]=$p.$f.'/';
                             while (false !== ($subf = readdir($subdir))) {
                                 if ($subf[0] != '.' && is_dir($p.$f.'/'.$subf)) {
-                                    if($f == 'tpl'){
+                                    if ($f == 'tpl') {
                                         $prop = '_tplpluginsPathList_'.$subf;
-                                        $config->{$prop}[] = $p.$f.'/'.$subf.'/';
+                                        if (!isset($config->{$prop}))
+                                            $config->{$prop} = array();
+                                        array_unshift($config->{$prop}, $p.$f.'/'.$subf.'/');
                                     }else{
                                         $prop = '_pluginsPathList_'.$f;
                                         $config->{$prop}[$subf] = $p.$f.'/'.$subf.'/';
@@ -408,10 +424,10 @@ class jConfigCompiler {
             }
             $urlconf['urlScript'] = $_SERVER[$urlconf['scriptNameServerVariable']];
         }
-        $lastslash = strrpos ($urlconf['urlScript'], '/');
 
         // now we separate the path and the name of the script, and then the basePath
         if ($isCli) {
+            $lastslash = strrpos ($urlconf['urlScript'], DIRECTORY_SEPARATOR);
             if ($lastslash === false) {
                 $urlconf['urlScriptPath'] = ($pseudoScriptName? jApp::appPath('/scripts/'): getcwd().'/');
                 $urlconf['urlScriptName'] = $urlconf['urlScript'];
@@ -425,6 +441,7 @@ class jConfigCompiler {
             $urlconf['urlScript'] = $basepath.$snp;
         }
         else {
+            $lastslash = strrpos ($urlconf['urlScript'], '/');
             $urlconf['urlScriptPath'] = substr ($urlconf['urlScript'], 0, $lastslash ).'/';
             $urlconf['urlScriptName'] = substr ($urlconf['urlScript'], $lastslash+1);
 

@@ -7,7 +7,7 @@
 * @author   Laurent Jouanneau
 * @contributor Bastien Jaillot
 * @contributor Olivier Demah, Brice Tence, Julien Issler
-* @copyright 2007-2011 Laurent Jouanneau, 2008 Bastien Jaillot, 2009 Olivier Demah, 2010 Brice Tence, 2011 Julien Issler
+* @copyright 2007-2014 Laurent Jouanneau, 2008 Bastien Jaillot, 2009 Olivier Demah, 2010 Brice Tence, 2011 Julien Issler
 * @link     http://www.jelix.org
 * @licence  GNU Lesser General Public Licence see LICENCE file or http://www.gnu.org/licenses/lgpl.html
 * @since 1.0b2
@@ -139,9 +139,6 @@ class jInstallCheck {
         $extensions = array( 'dom', 'SPL', 'SimpleXML', 'pcre', 'session',
             'tokenizer', 'iconv', 'filter', 'json');
 
-        if($this->buildProperties['ENABLE_PHP_JELIX'] == '1')
-            $extensions[] = 'jelix';
-
         foreach($extensions as $name){
             if(!extension_loaded($name)){
                 $this->error('extension.required.not.installed', $name);
@@ -243,8 +240,8 @@ class jInstallCheck {
                 $this->error('path.profiles.writable');
                 $ok = false;
             }
-            if (file_exists(jApp::configPath('mainconfig.ini.php'))
-                && !is_writable(jApp::configPath('mainconfig.ini.php'))) {
+            if (file_exists(jApp::mainConfigFile())
+                && !is_writable(jApp::mainConfigFile())) {
                 $this->error('path.mainconfig.writable');
                 $ok = false;
             }
@@ -267,7 +264,7 @@ class jInstallCheck {
         }
 
         foreach($this->otherPaths as $path) {
-            $realPath = str_replace(array('app:','lib:','var:', 'www:'), array(jApp::appPath(), LIB_PATH, jApp::varPath(), jApp::wwwPath()), $path);
+            $realPath = jFile::parseJelixPath( $path );
             if (!file_exists($realPath)) {
                 $this->error('path.custom.not.exists', array($path));
                 $ok = false;
