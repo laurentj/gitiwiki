@@ -129,9 +129,11 @@ class gtwdbk_notinbook extends WikiRendererBloc {
     protected $_closeTag='';
     protected $isOpen = false;
     protected $dktag='notinbook';
+    protected $closeTagDetected = false;
 
     public function open(){
         $this->isOpen = true;
+        $this->closeTagDetected = false;
         return $this->_openTag;
     }
 
@@ -141,10 +143,14 @@ class gtwdbk_notinbook extends WikiRendererBloc {
     }
 
     public function detect($string){
+        if ($this->closeTagDetected) {
+            return false;
+        }
         $this->_detectMatch = '';
         if($this->isOpen){
             if(preg_match('/(.*)<\/'.$this->dktag.'>\s*$/',$string,$m)){
                 $this->isOpen=false;
+                $this->closeTagDetected = true;
             }
             return true;
 
@@ -152,6 +158,7 @@ class gtwdbk_notinbook extends WikiRendererBloc {
             if(preg_match('/^\s*<'.$this->dktag.'( \w+)?>(.*)/',$string,$m)){
                 if(preg_match('/(.*)<\/'.$this->dktag.'>\s*$/',$m[2],$m2)){
                     $this->_closeNow = true;
+                    $this->closeTagDetected = true;
                 }
                 else {
                     $this->_closeNow = false;
@@ -209,22 +216,13 @@ class gtwdbk_list extends dkdbk_list {
 
     public function getRenderedLine(){
         if ($this->_detectMatch[2] != '*' && $this->_detectMatch[2] != '-') {
-            return $this->_renderInlineTag(trim($this->_detectMatch[2].$this->_detectMatch[3]));
+            return '<para>'.$this->_renderInlineTag(trim($this->_detectMatch[2].$this->_detectMatch[3])).'</para>';
         }
         return parent::getRenderedLine();
     }
 }
 
 
-/*
-';
-   protected $_closeTag='</variablelist>';
-
-   public function getRenderedLine(){
-      $dt=$this->_renderInlineTag($this->_detectMatch[1]);
-      $dd=$this->_renderInlineTag($this->_detectMatch[2]);
-      return "<varlistentry><term>$dt</term>\n<listitem>$dd</listitem></varlistentry>\n";
-*/
 class gtwdbk_definition extends WikiRendererBloc {
 
     public $type='dfn';
@@ -266,7 +264,7 @@ class gtwdbk_definition extends WikiRendererBloc {
 
     public function close(){
         $this->_opened = false;
-        return "</listitem></varlistentry>\n".parent::close();
+        return "</para></listitem></varlistentry>\n".parent::close();
     }
 
     public function getRenderedLine(){
@@ -277,10 +275,10 @@ class gtwdbk_definition extends WikiRendererBloc {
         $dd = $this->_renderInlineTag($this->_detectMatch[3]);
 
         if (!$this->_firstItem) {
-            return "</listitem></varlistentry>\n<varlistentry><term>$dt</term>\n<listitem>$dd\n";
+            return "</para></listitem></varlistentry>\n<varlistentry><term>$dt</term>\n<listitem><para>$dd\n";
         }
         $this->_firstItem = false;
-        return "<varlistentry><term>$dt</term>\n<listitem>$dd\n";
+        return "<varlistentry><term>$dt</term>\n<listitem><para>$dd\n";
     }
 }
 

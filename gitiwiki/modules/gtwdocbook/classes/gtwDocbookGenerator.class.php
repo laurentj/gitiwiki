@@ -89,20 +89,21 @@ class gtwDocbookGenerator {
             $title = $urlPage;
 
         $id = $this->getSectionId($urlPage);
-        $c = $indent.'<'.$tag. ' id="'.$id.'"><title>'. htmlspecialchars($title, ENT_NOQUOTES)."</title>\n";
+        $c = $indent.'<'.$tag. ' xml:id="'.$id.'"><title>'. htmlspecialchars($title, ENT_NOQUOTES)."</title>\n";
 
+        $emptyContent = ($tag == 'part'? '':'<para> </para>');
         // here insert content of the item
         $file = $this->repository->findFile($urlPage);
 
         if ($file == null)
-            $c .= '<para> </para>';
+            $c .= $emptyContent;
 
-        elseif ($file instanceof gtw\Redirection) {
-            $c .= '<para> </para>';
+        elseif ($file instanceof gtwRedirection) {
+            $c .= $emptyContent;
         }
-        elseif($file instanceof gtw\File) {
+        elseif($file instanceof gtwFile) {
             if ($file->isStaticContent()) {
-                $c .= '<para> </para>';
+                $c .= $emptyContent;
             }
             else {
                 $content = $file->getContent();
@@ -113,8 +114,19 @@ class gtwDocbookGenerator {
                 $conf->pagePath = $file->getPath().'/';
                 $conf->pageName = $file->getName();
                 $dbk = $wiki->render($content);
-                if (trim($dbk) == '')
-                    $dbk = '<para> </para>';
+                if (trim($dbk) == '') {
+                    if ($tag == 'part') {
+                        $dbk = '';
+                    }
+                    else {
+                        $dbk = $emptyContent;
+                    }
+                }
+                else {
+                    if ($tag == 'part') {
+                        $dbk = '<partintro>'.$dbk.'</partintro>';
+                    }
+                }
                 $c .= $dbk;
             }
         }
