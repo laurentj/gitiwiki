@@ -2,6 +2,10 @@
 ;for security reasons , don't remove or modify the first line
 ;this file doesn't list all possible properties. See lib/jelix/core/defaultconfig.ini.php for that
 
+[jResponseHtml]
+; list of active plugins for jResponseHtml
+plugins=debugbar
+
 [mailer]
 webmasterEmail="root@localhost"
 webmasterName=
@@ -26,7 +30,7 @@ soap=
 
 
 [gitiwiki]
-booksPath="app:var/books"
+booksPath="/home/vagrant/books"
 
 [gitiwikiGenerators]
 gtw="gitiwiki~gtwWikiRenderer,gitiwiki_to_xhtml"

@@ -4,12 +4,19 @@
 [gtwrepo]
 
 [gtwrepo:default]
-path = app:var/repositories/default/
+path = /home/vagrant/repositories/default/
 generators = gitiwikiGenerators
 branch = master
-title= "My Wiki"
+title= "Test repository"
 sphinxIndex= "gitiwikiTest"
-basepath=/
+
+
+[gtwrepo:defaultwithbasepath]
+path="/home/vagrant/repositories/default/"
+generators=gitiwikiGenerators
+branch=master
+title="Test repository 2"
+basepath=/rootmanual/
 
 
 [jcache]

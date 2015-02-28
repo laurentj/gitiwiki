@@ -130,7 +130,7 @@ However, if you use the first way, cached informations should be deleted,
 and you need to generate book informations again. Books informations
 are stored by default into gitiwiki/var/books/.
 
-The cache path is indicated in gitiwiki/var/config/defaultconfig.ini.php,
+The cache path is indicated in gitiwiki/var/config/localconfig.ini.php,
 in the parameter `booksPath`, under the section `[gitiwiki]`. Indicate the
 full path of the directory. You can indicate a relative path to the gitiwiki
 directory, by indicating first `app:`. Here is an example:

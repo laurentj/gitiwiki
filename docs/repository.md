@@ -7,14 +7,14 @@ This chapter explain how to register a Git repository  and what it should contai
 
 1. give a name to this repository (ex: mywiki)
 2. create a new section in profiles.ini.php, with this name and a prefix
-"gtwrepo:" (ex: "gtwrepo:mywiki")
+   "gtwrepo:" (ex: "gtwrepo:mywiki")
 3. indicate the path to this repository in a "path" parameter. This should be a
-bare repository or the .git directory of your repository. You can use the alias "app:" as
-prefix to indicate a path relative to the gitiwiki directory. There is a gitiwiki/var/repositories/
-where you can put your repository. However it can be anywhere on your hard drive.
+   bare repository or the .git directory of your repository. You can use the alias "app:" as
+   prefix to indicate a path relative to the gitiwiki directory. There is a gitiwiki/var/repositories/
+   where you can put your repository. However it can be anywhere on your hard drive.
 4. in the "branch" parameter, indicate the branch that gitiwiki should use
 5. in the "basepath" parameter, indicate the directory inside the repository from which file
-  will be retrieve. By default, its value is "/".
+   will be retrieve. By default, its value is "/".
   
 
 ```ini
@@ -142,7 +142,7 @@ Meta files are files containing extra-information about a specific file. A meta
 file is stored in a `.meta` directory in the same directory of the target file.
 its name is the same name of the target file + '.ini'.
 
-For example, the meta file of mydir/article.wiki, is in mydir/.meta/article.wiki.ini.
+For example, the meta file of mydir/article.wiki is mydir/.meta/article.wiki.ini.
 
 You can have meta file for any file: images, pdf, text etc.
 
