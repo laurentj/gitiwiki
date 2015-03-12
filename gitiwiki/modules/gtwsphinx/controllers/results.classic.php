@@ -29,7 +29,7 @@ class resultsCtrl extends jController {
 
         $rep = $this->getResponse('html');
 
-        $repo = new gtw\Repo($repoName);
+        $repo = new gtw\Repository($repoName);
         $repoConfig = $repo->config();
         $basePath = jUrl::get('gitiwiki~wiki:page@classic', array('repository'=>$repo->getName(), 'page'=>''));
 

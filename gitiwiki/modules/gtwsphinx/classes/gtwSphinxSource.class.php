@@ -24,13 +24,13 @@ class gtwSphinxSource {
     protected $repository;
 
     public function __construct($repoId, $bookId) {
-        $this->repo = new gtw\Repo($repoId);
+        $this->repo = new gtw\Repository($repoId);
         $repoConfig = $this->repo->config();
         if (isset($repoConfig['locale'])) {
             jApp::config()->locale = $repoConfig['locale'];
         }
         $this->basePath = jUrl::get('gitiwiki~wiki:page@classic', array('repository'=>$this->repo->getName(), 'page'=>''));
-        $books = gtw\Books();
+        $books = new gtw\Books();
         $bookinfo = $books->getBookInfo($repoId, $bookId);
         if ($bookinfo === false)
             throw new Exception("Unknown book or repository");
