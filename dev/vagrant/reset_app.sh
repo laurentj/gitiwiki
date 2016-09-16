@@ -8,12 +8,15 @@ APPNAME="gitiwiki"
 DISTFILESUFFIX="dev"
 HOMEUSER=/home/vagrant
 
-#mysql -u root -pjelix -e "drop table jlx_cache;drop table jlx_user;" docjelix;
-
 echo "Install configuration file"
 # create  profiles.ini.php
 cp -a $APPDIR/$APPNAME/var/config/profiles.ini.php.$DISTFILESUFFIX $APPDIR/$APPNAME/var/config/profiles.ini.php
 cp -a $APPDIR/$APPNAME/var/config/localconfig.ini.php.$DISTFILESUFFIX $APPDIR/$APPNAME/var/config/localconfig.ini.php
+
+if [ -f $APPDIR/$APPNAME/var/config/installer.ini.php ]; then
+    rm $APPDIR/$APPNAME/var/config/installer.ini.php
+fi
+
 
 # create temp directory
 echo "Prepare temp dir"
@@ -41,9 +44,10 @@ else
     rm -rf $HOMEUSER/repositories/*
 fi
 
-cd $HOMEUSER/repositories && unzip $VAGRANTDIR/testrepos.zip
+(cd $HOMEUSER/repositories && unzip $VAGRANTDIR/testrepos.zip)
 
-cd $APPDIR/$APPNAME && composer install
+(cd $APPDIR/$APPNAME && composer install)
+
 
 php $APPDIR/$APPNAME/install/installer.php
 
