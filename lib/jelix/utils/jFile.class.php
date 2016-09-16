@@ -95,6 +95,9 @@ class jFile {
         if (!file_exists($dir)) {
             self::createDir(dirname($dir), $chmod);
             mkdir($dir, ($chmod?$chmod:jApp::config()->chmodDir));
+            // php mkdir apply umask on the given mode, so we must to
+            // do a chmod manually.
+            chmod($dir, ($chmod?$chmod:jApp::config()->chmodDir));
         }
     }
 
@@ -227,6 +230,10 @@ class jFile {
         elseif (strpos($path, jApp::wwwPath()) === 0) {
             $shortcutPath = jApp::wwwPath();
             $shortcut = 'www:';
+        }
+        elseif (strpos($path, jApp::varPath()) === 0) {
+            $shortcutPath = jApp::varPath();
+            $shortcut = 'var:';
         }
         elseif (strpos($path, jApp::appPath()) === 0) {
             $shortcutPath = jApp::appPath();

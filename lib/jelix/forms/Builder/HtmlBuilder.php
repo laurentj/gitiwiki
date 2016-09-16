@@ -5,7 +5,7 @@
 * @author      Laurent Jouanneau
 * @contributor Julien Issler, Dominique Papin, Claudio Bernardes
 * @copyright   2006-2012 Laurent Jouanneau
-* @copyright   2008-2011 Julien Issler, 2008 Dominique Papin, 2012 Claudio Bernardes
+* @copyright   2008-2016 Julien Issler, 2008 Dominique Papin, 2012 Claudio Bernardes
 * @link        http://www.jelix.org
 * @licence     http://www.gnu.org/licenses/lgpl.html GNU Lesser General Public Licence, see LICENCE file
 */
@@ -89,9 +89,10 @@ class HtmlBuilder extends BuilderBase {
         }
         echo '</table> <div class="jforms-submit-buttons">';
         if ( $ctrl = $this->_form->getReset() ) {
-            if(!$this->_form->isActivated($ctrl->ref)) continue;
-            $this->outputControl($ctrl);
-            echo ' ';
+            if($this->_form->isActivated($ctrl->ref)) {
+                $this->outputControl($ctrl);
+                echo ' ';
+            }
         }
         foreach( $this->_form->getSubmits() as $ctrlref=>$ctrl){
             if(!$this->_form->isActivated($ctrlref)) continue;
@@ -169,39 +170,37 @@ class HtmlBuilder extends BuilderBase {
         if($hiddens){
             echo '<div class="jforms-hiddens">',$hiddens,'</div>';
         }
+        $this->outputErrors();
+    }
 
+    protected function outputErrors() {
         $errors = $this->_form->getContainer()->errors;
-        if(count($errors)){
+        if(count($errors)) {
             $ctrls = $this->_form->getControls();
-            echo '<ul id="'.$this->_name.'_errors" class="jforms-error-list">';
-            $errRequired='';
-            foreach($errors as $cname => $err){
-                if(!$this->_form->isActivated($ctrls[$cname]->ref)) continue;
+            echo '<ul id="' . $this->_name . '_errors" class="jforms-error-list">';
+            $errRequired = '';
+            foreach ($errors as $cname => $err) {
+                if (!$this->_form->isActivated($ctrls[$cname]->ref)) continue;
                 if ($err === \jForms::ERRDATA_REQUIRED) {
-                    if ($ctrls[$cname]->alertRequired){
-                        echo '<li>', $ctrls[$cname]->alertRequired,'</li>';
+                    if ($ctrls[$cname]->alertRequired) {
+                        echo '<li>', $ctrls[$cname]->alertRequired, '</li>';
+                    } else {
+                        echo '<li>', \jLocale::get('jelix~formserr.js.err.required', $ctrls[$cname]->label), '</li>';
                     }
-                    else {
-                        echo '<li>', \jLocale::get('jelix~formserr.js.err.required', $ctrls[$cname]->label),'</li>';
+                } else if ($err === \jForms::ERRDATA_INVALID) {
+                    if ($ctrls[$cname]->alertInvalid) {
+                        echo '<li>', $ctrls[$cname]->alertInvalid, '</li>';
+                    } else {
+                        echo '<li>', \jLocale::get('jelix~formserr.js.err.invalid', $ctrls[$cname]->label), '</li>';
                     }
-                }else if ($err === \jForms::ERRDATA_INVALID) {
-                    if($ctrls[$cname]->alertInvalid){
-                        echo '<li>', $ctrls[$cname]->alertInvalid,'</li>';
-                    }else{
-                        echo '<li>', \jLocale::get('jelix~formserr.js.err.invalid', $ctrls[$cname]->label),'</li>';
-                    }
-                }
-                elseif ($err === \jForms::ERRDATA_INVALID_FILE_SIZE) {
-                    echo '<li>', \jLocale::get('jelix~formserr.js.err.invalid.file.size', $ctrls[$cname]->label),'</li>';
-                }
-                elseif ($err === \jForms::ERRDATA_INVALID_FILE_TYPE) {
-                    echo '<li>', \jLocale::get('jelix~formserr.js.err.invalid.file.type', $ctrls[$cname]->label),'</li>';
-                }
-                elseif ($err === \jForms::ERRDATA_FILE_UPLOAD_ERROR) {
-                    echo '<li>', \jLocale::get('jelix~formserr.js.err.file.upload', $ctrls[$cname]->label),'</li>';
-                }
-                elseif ($err != '') {
-                    echo '<li>', $err,'</li>';
+                } elseif ($err === \jForms::ERRDATA_INVALID_FILE_SIZE) {
+                    echo '<li>', \jLocale::get('jelix~formserr.js.err.invalid.file.size', $ctrls[$cname]->label), '</li>';
+                } elseif ($err === \jForms::ERRDATA_INVALID_FILE_TYPE) {
+                    echo '<li>', \jLocale::get('jelix~formserr.js.err.invalid.file.type', $ctrls[$cname]->label), '</li>';
+                } elseif ($err === \jForms::ERRDATA_FILE_UPLOAD_ERROR) {
+                    echo '<li>', \jLocale::get('jelix~formserr.js.err.file.upload', $ctrls[$cname]->label), '</li>';
+                } elseif ($err != '') {
+                    echo '<li>', $err, '</li>';
                 }
             }
             echo '</ul>';

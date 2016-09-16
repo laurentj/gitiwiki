@@ -6,8 +6,6 @@ VAGRANTDIR="$ROOTDIR/dev/vagrant"
 APPNAME="gitiwiki"
 HOSTNAME="$APPNAME.local"
 APACHEPORT="8051"
-#DISTFILESUFFIX="dist"
-DISTFILESUFFIX="dev"
 
 # create hostname
 HOST=`grep "$HOSTNAME" /etc/hosts`
