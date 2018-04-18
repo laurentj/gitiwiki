@@ -67,11 +67,11 @@
 
 
 {if isset($extraData['toc'])}
-<div class="toc">
-    <div class="tocheader toctoggle">
-        <span class="toc_close"><span>−</span></span>
+<div id="dw__toc">
+    <h3 class="tocheader toctoggle">
+        <strong><span>−</span></strong>
         {@gitiwiki~wikipage.toc.header@}
-    </div>
+    </h3>
     <div>
             {assign $currentLevel = 0}
             {foreach $extraData['toc'] as $toc}
