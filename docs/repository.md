@@ -18,13 +18,13 @@ This chapter explain how to register a Git repository  and what it should contai
   
 
 ```ini
-    [gtwrepo:mywiki]
-    path=app:var/repositories/mywiki/.git
-    ; is equals to 
-    ; path=/home/myaccount/mysite/mywiki/gitiwiki/var/repositories/mywiki/.git
-    branch=master
-    title= A title
-    basepath="/"
+[gtwrepo:mywiki]
+path=app:var/repositories/mywiki/.git
+; is equals to 
+; path=/home/myaccount/mysite/mywiki/gitiwiki/var/repositories/mywiki/.git
+branch=master
+title= A title
+basepath="/"
 ```
 
 You can also indicate a title for the list of wikis.
@@ -60,7 +60,7 @@ the root of your repository.
 Here is an example of `.config.ini`
 
 ```ini
-    multiviews=".wiki, .html, .txt"
+multiviews=".wiki, .html, .txt"
 ```
 
 With this configuration, when the url `myarticle` is given, Gitiwiki try to load first
@@ -101,10 +101,10 @@ this parameter will be filled automatically of course.
 Here an example (since there are several redirection parameters, you should use `[]`):
 
 ```ini
-    redirection[] = "^manual2\.old/(.*)$ -> manual2/%s"
-    redirection[] = "^manual2/unexistant -> manual2/article2"
-    redirection[] = "^manual/moved-page-outside.txt -> //new-page.txt"
-    redirection[] = "^something/elsewhere.txt -> http://jelix.org/new-page.txt"
+redirection[] = "^manual2\.old/(.*)$ -> manual2/%s"
+redirection[] = "^manual2/unexistant -> manual2/article2"
+redirection[] = "^manual/moved-page-outside.txt -> //new-page.txt"
+redirection[] = "^something/elsewhere.txt -> http://jelix.org/new-page.txt"
 ```
 
 A redirection information begins with a regular expression that matches the old url,
@@ -157,5 +157,5 @@ For example, you moved a file mydir/article.wiki to otherdir/article.wiki, you
 can have a mydir/.meta/article.wiki.ini file indicating:
 
 ```ini
-     redirection="/otherdir/article.wiki"
+redirection="/otherdir/article.wiki"
 ```

@@ -49,8 +49,10 @@ class Repository {
         }
         $this->config['branches'] = array();
 
-        if (!isset($this->config['title']))
+
+        if (!isset($this->config['title'])) {
             $this->config['title'] = $repoName;
+        }
 
         if (!isset($this->config['basepath']) || $this->config['basepath'] == '/') {
             $this->config['basepath'] = '';
@@ -59,13 +61,17 @@ class Repository {
             $this->config['basepath'] = trim($this->config['basepath'],'/').'/';
         }
 
+        if (!isset($this->config['robotsNoIndex'])) {
+            $this->config['robotsNoIndex'] = false;
+        }
+
         $this->config['path'] = str_replace(array('app:'), array(\jApp::appPath()), $this->config['path']);
         $this->repo = new \Glip\Git($this->config['path']);
         $this->repoName = $repoName;
     }
 
     /**
-     * @return Git
+     * @return \Glip\Git
      */
     function git() {
         return $this->repo;

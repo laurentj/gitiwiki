@@ -29,6 +29,7 @@ class wikiCtrl extends jController {
             jApp::config()->locale = $repoConfig['locale'];
 
         $page = $repo->findFile($this->param('page'));
+
         if ($page === null) {
             $rep = $this->getResponse('html');
             $rep->body->assign('MAIN', '<p>not found</p>');
@@ -54,6 +55,9 @@ class wikiCtrl extends jController {
                 $resp->content = $page->getContent();
                 $resp->mimeType = $page->getMimeType();
                 $resp->doDownload = false;
+                if ($repoConfig['robotsNoIndex']) {
+                    $resp->addHttpHeader("X-Robots-Tag", "noindex");
+                }
                 return $resp;
             }
 
@@ -109,6 +113,9 @@ class wikiCtrl extends jController {
             $rep = $this->getResponse('html');
             $rep->title = $page->getName(). ' - '.$repoConfig['title'];
             $rep->body->assign('MAIN', '<h2>'.htmlspecialchars($page->getName()).'</h2>'.$page->getHtmlContent($basePath));
+        }
+        if ($repoConfig['robotsNoIndex']) {
+            $rep->addHttpHeader("X-Robots-Tag", "noindex");
         }
         return $rep;
     }
