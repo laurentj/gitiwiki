@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module xmlns="http://jelix.org/ns/module/1.0">
     <info id="gitiwiki@jelix.org" name="gitiwiki" createdate="2012-03-03">
-        <version date="2013-08-22">0.2a1</version>
+        <version date="2018-04-18">0.3</version>
         <label lang="en_US">gitiwiki</label>
         <description lang="en_US" />
         <license URL="">GPL</license>
-        <copyright>2012-2013 Laurent Jouanneau</copyright>
-        <creator name="Laurent Jouanneau" email="laurent@jelix.org" active="true"/>
-        <!--<contributor name="hisname" email="hisemail@yoursite.undefined" active="true" since="" role=""/>-->
+        <copyright>2012-2018 Laurent Jouanneau</copyright>
+        <creator name="Laurent Jouanneau" email="laurent@jelix.org"/>
         <homepageURL>http://jelix.org</homepageURL>
     </info>
     <dependencies>
