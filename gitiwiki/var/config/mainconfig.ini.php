@@ -182,6 +182,7 @@ name=
 
 [gitiwiki]
 booksPath="app:var/books"
+showRepositoriesList=on
 
 [gitiwikiGenerators]
 gtw="gitiwiki~gtwWikiRenderer,gitiwiki_to_xhtml"

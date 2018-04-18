@@ -13,6 +13,22 @@ class defaultCtrl extends jController {
     *
     */
     function index() {
+
+        $config = jApp::config()->gitiwiki;
+        if (!isset($config['showRepositoriesList']) || !$config['showRepositoriesList']) {
+            try {
+                $defaultRepo = \jProfiles::get('gtwrepo', 'default');
+                if ($defaultRepo && $defaultRepo['_name']) {
+                    $rep = $this->getResponse('redirect');
+                    $rep->action = 'gitiwiki~wiki:page';
+                    $rep->params = array('repository'=>  $defaultRepo['_name'] ,'page'=> '/');
+                    return $rep;
+                }
+            }
+            catch (Exception $e) {
+            }
+        }
+
         $rep = $this->getResponse('html');
 
         $conf = jIniFile::read(jApp::configPath('profiles.ini.php'));
