@@ -3,7 +3,7 @@
 * @package   gitiwiki
 * @subpackage gitiwiki
 * @author    Laurent Jouanneau
-* @copyright 2012-2013 laurent Jouanneau
+* @copyright 2012-2018 laurent Jouanneau
 * @link      http://jelix.org
 * @license    GNU PUBLIC LICENCE
 */
@@ -17,7 +17,7 @@ class Repository {
     protected $config;
 
     /**
-     * @var Glip\Git
+     * @var \Glip\Git
      * the git object representing the repository
      */
     protected $repo;
