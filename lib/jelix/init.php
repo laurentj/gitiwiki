@@ -16,7 +16,7 @@
  * Version number of Jelix
  * @name  JELIX_VERSION
  */
-define ('JELIX_VERSION', '1.6.10pre.3305');
+define ('JELIX_VERSION', '1.6.10pre.3307');
 
 /**
  * base of namespace path used in xml files of jelix
@@ -41,6 +41,7 @@ require (JELIX_LIB_CORE_PATH . 'jISelector.iface.php');
 require (JELIX_LIB_CORE_PATH . 'jIUrlEngine.iface.php');
 require (JELIX_LIB_CORE_PATH . 'jBasicErrorHandler.class.php');
 require (JELIX_LIB_CORE_PATH . 'jException.class.php');
+require (JELIX_LIB_CORE_PATH . 'jConfig.class.php');
 require (JELIX_LIB_CORE_PATH . 'jSelector.class.php');
 require (JELIX_LIB_CORE_PATH . 'jServer.class.php');
 require (JELIX_LIB_CORE_PATH . 'selector/jSelectorModule.class.php');

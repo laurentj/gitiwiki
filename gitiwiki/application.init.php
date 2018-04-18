@@ -8,8 +8,8 @@
 * @license    GNU PUBLIC LICENCE
 */
 
-$appPath = dirname (__FILE__).'/';
-require (realpath($appPath.'../lib/jelix/').'/'.'init.php');
+$appPath = __DIR__.'/';
+require (__DIR__.'/../lib/jelix/init.php');
 
 jApp::initPaths(
     $appPath,
