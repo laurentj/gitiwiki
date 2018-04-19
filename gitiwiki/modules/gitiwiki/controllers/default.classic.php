@@ -19,9 +19,15 @@ class defaultCtrl extends jController {
             try {
                 $defaultRepo = \jProfiles::get('gtwrepo', 'default');
                 if ($defaultRepo && $defaultRepo['_name']) {
+                    if (isset($defaultRepo['urlName']) && $defaultRepo['urlName']) {
+                        $name = $defaultRepo['urlName'];
+                    }
+                    else {
+                        $name = $defaultRepo['_name'];
+                    }
                     $rep = $this->getResponse('redirect');
                     $rep->action = 'gitiwiki~wiki:page';
-                    $rep->params = array('repository'=>  $defaultRepo['_name'] ,'page'=> '/');
+                    $rep->params = array('repository'=> $name,'page'=> '/');
                     return $rep;
                 }
             }
