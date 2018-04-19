@@ -24,19 +24,32 @@ class Repository {
 
     protected $repoName;
 
+    protected $repoUrlName;
+
     static protected $DEFAULT_CONFIG = array('multiviews'=>array('.gtw'),
                                 'redirection'=>array(),
                                 'ignore'=>array(),
                                 'protocol-aliases'=>array());
     
     /**
-     * @param string $repoName the name of the repository as registered in the configuration
+     * @param string $repoName the name of the repository as registered in the
+     *                         configuration. It can be its name or its url name.
      */
     function __construct($repoName) {
 
         $conf = \jApp::config();
 
         $this->config = \jProfiles::get('gtwrepo', $repoName, true);
+
+        $this->repoUrlName = $repoName;
+        $this->repoName = $this->config['_name'];
+
+        if (isset($this->config['urlName']) && $this->config['urlName']) {
+            $this->repoUrlName = $this->config['urlName'];
+        }
+        else {
+            $this->config['urlName'] = $this->repoUrlName;
+        }
 
         if (isset($this->config['generators']) && isset($conf->{$this->config['generators']})) {
             $this->config['generators'] = $conf->{$this->config['generators']};
@@ -51,7 +64,7 @@ class Repository {
 
 
         if (!isset($this->config['title'])) {
-            $this->config['title'] = $repoName;
+            $this->config['title'] = $this->repoName;
         }
 
         if (!isset($this->config['basepath']) || $this->config['basepath'] == '/') {
@@ -67,7 +80,7 @@ class Repository {
 
         $this->config['path'] = str_replace(array('app:'), array(\jApp::appPath()), $this->config['path']);
         $this->repo = new \Glip\Git($this->config['path']);
-        $this->repoName = $repoName;
+
     }
 
     /**
@@ -93,6 +106,10 @@ class Repository {
 
     function getName() {
         return $this->repoName;
+    }
+
+    function getNameForUrl() {
+        return $this->repoUrlName;
     }
 
     /**

@@ -22,10 +22,16 @@ class reposListZone extends jZone {
         $list = array();
         foreach($conf as $prop=> $val) {
             if (is_array($val) && preg_match('/^gtwrepo\:(.*)$/', $prop, $m)) {
+                if (isset($val['urlName']) && $val['urlName']) {
+                    $name = $val['urlName'];
+                }
+                else {
+                    $name = $m[1];
+                }
                 if (isset($val[$labelAttr]))
-                    $list[] = array( 'order'=>$val['order'], 'name'=>$m[1], 'label'=>$val[$labelAttr] );
+                    $list[] = array( 'order'=>$val['order'], 'name'=>$name, 'label'=>$val[$labelAttr] );
                 else
-                    $list[] = array( 'order'=>$val['order'], 'name'=>$m[1], 'label'=>$m[1] );
+                    $list[] = array( 'order'=>$val['order'], 'name'=>$name, 'label'=>$m[1] );
             }
         }
 

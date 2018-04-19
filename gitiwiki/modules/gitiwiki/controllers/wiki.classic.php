@@ -13,11 +13,19 @@ use \Gitiwiki\Storage as gtw;
 class wikiCtrl extends jController {
 
     function page() {
-
+        $repoName = $this->param('repository');
+        $pageName = $this->param('page');
         try {
-            $repo = new gtw\Repository($this->param('repository'));
+            $repo = new gtw\Repository($repoName);
+            if ($repoName != $repo->getNameForUrl()) {
+                // redirect to the official url of the repository
+                $rep = $this->getResponse( 'redirect' );
+                $rep->action = 'gitiwiki~wiki:page';
+                $rep->params = array( 'repository'=>$repo->getNameForUrl(), 'page'=>$pageName,);
+                return $rep;
+            }
         }
-        catch(Exception $e) {
+        catch(jException $e) {
             $rep = $this->getResponse('html');
             $rep->body->assign('MAIN', '<p>not found</p>');
             $rep->setHttpStatus('404', 'Not Found');
@@ -28,7 +36,7 @@ class wikiCtrl extends jController {
         if (isset($repoConfig['locale']))
             jApp::config()->locale = $repoConfig['locale'];
 
-        $page = $repo->findFile($this->param('page'));
+        $page = $repo->findFile($pageName);
 
         if ($page === null) {
             $rep = $this->getResponse('html');
@@ -45,7 +53,7 @@ class wikiCtrl extends jController {
             else {
                 $rep = $this->getResponse('redirect');
                 $rep->action = 'gitiwiki~wiki:page';
-                $rep->params = array('repository'=>  $this->param('repository') ,'page'=> $page->url);
+                $rep->params = array('repository'=>  $repoName ,'page'=> $page->url);
             }
         }
         elseif($page instanceof gtw\File) {
@@ -64,7 +72,7 @@ class wikiCtrl extends jController {
             $rep = $this->getResponse('html');
 
             // let's generate the HTML content
-            $basePath = jUrl::get('gitiwiki~wiki:page', array('repository'=>$this->param('repository'), 'page'=>''));
+            $basePath = jUrl::get('gitiwiki~wiki:page', array('repository'=>$repoName, 'page'=>''));
             $html = $page->getHtmlContent($basePath);
 
             $extraData = $page->getExtraData();
@@ -86,7 +94,7 @@ class wikiCtrl extends jController {
             }
 
             $tpl = new jTpl();
-            $tpl->assign('repository', $repo->getName());
+            $tpl->assign('repository', $repo->getNameForUrl());
             $tpl->assign('pageName', $page->getName());
             $tpl->assign('pageContent', $html);
             $tpl->assign('extraData', $page->getExtraData());
@@ -106,10 +114,10 @@ class wikiCtrl extends jController {
             $tpl->assign('sourceViewURL', $sourceViewURL);
 
             $rep->body->assign('MAIN', $tpl->fetch('wikipage'));
-            $rep->body->assign('currentRepoName', $repo->getName());
+            $rep->body->assign('currentRepoName', $repo->getNameForUrl());
         }
         else { // directory index
-            $basePath = jUrl::get('gitiwiki~wiki:page', array('repository'=>$this->param('repository'), 'page'=>''));
+            $basePath = jUrl::get('gitiwiki~wiki:page', array('repository'=>$repoName, 'page'=>''));
             $rep = $this->getResponse('html');
             $rep->title = $page->getName(). ' - '.$repoConfig['title'];
             $rep->body->assign('MAIN', '<h2>'.htmlspecialchars($page->getName()).'</h2>'.$page->getHtmlContent($basePath));

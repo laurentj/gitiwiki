@@ -2,6 +2,7 @@
 ;for security reasons, don't remove or modify the first line
 
 [gtwrepo]
+current-manual=mymanual
 
 [gtwrepo:default]
 path = /home/vagrant/repositories/default/
@@ -18,6 +19,15 @@ branch=master
 title="Test repository 2"
 basepath=/rootmanual/
 
+
+[gtwrepo:mymanual]
+path = /home/vagrant/repositories/default/
+generators = gitiwikiGenerators
+branch = master
+title= "Test repository"
+sphinxIndex= "gitiwikiTest"
+robotsNoIndex=off
+urlName=current-manual
 
 [jcache]
 

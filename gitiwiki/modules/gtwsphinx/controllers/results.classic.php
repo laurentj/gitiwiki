@@ -29,9 +29,16 @@ class resultsCtrl extends jController {
 
         $rep = $this->getResponse('html');
 
-        $repo = new gtw\Repo($repoName);
+        $repo = new gtw\Repository($repoName);
+        if ($repoName != $repo->getNameForUrl()) {
+            $rep = $this->getResponse( 'redirect' );
+            $rep->action = 'gtwsphinx~results:page';
+            $rep->params = array( 'repository'=>$repo->getNameForUrl(), 'search'=>$searchString, 'page'=>$page, 'limit'=>$limit );
+            return $rep;
+        }
+
         $repoConfig = $repo->config();
-        $basePath = jUrl::get('gitiwiki~wiki:page@classic', array('repository'=>$repo->getName(), 'page'=>''));
+        $basePath = jUrl::get('gitiwiki~wiki:page@classic', array('repository'=>$repo->getNameForUrl(), 'page'=>''));
 
         $sphinxIndex = $repoConfig['sphinxIndex'];
 
@@ -41,8 +48,8 @@ class resultsCtrl extends jController {
         $titles = array();
         $docs = array();
         foreach( $resultsInfos as $resInfos ) {
-            if( $resInfos['repo'] != $repoName ) {
-                trigger_error( "Got repo '".$resInfos['repo']."' but asked for '$repoName'.This should not happen !" , E_USER_WARNING );
+            if( $resInfos['repo'] != $repo->getName() ) {
+                trigger_error( "Got repo '".$resInfos['repo']."' but asked for '".$repo->getName()."'.This should not happen !" , E_USER_WARNING );
                 continue;
             }
             $file = $repo->findFile( $resInfos['path'] );
@@ -54,7 +61,7 @@ class resultsCtrl extends jController {
                 $docs[] = $file->getHtmlContent($basePath);
                 $results[] = array(
                     'url' => jUrl::get('gitiwiki~wiki:page@classic',
-                                            array('repository'=>$repo->getName(), 'page'=>$resInfos['path'])),
+                                            array('repository'=>$repo->getNameForUrl(), 'page'=>$resInfos['path'])),
                     );
             }
         }

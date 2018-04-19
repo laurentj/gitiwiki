@@ -6,8 +6,11 @@ use \Gitiwiki\Storage as gtw;
 
 class getFileTest extends PHPUnit_Framework_TestCase {
 
+    protected $repoName = 'default';
+
+
     public function testGetImplicitHome() {
-        $repo = new gtw\Repository('default');
+        $repo = new gtw\Repository($this->repoName);
         $page = $repo->findFile('/');
         $this->assertNotNull($page);
         $this->assertInstanceOf("Gitiwiki\\Storage\\File", $page);
@@ -21,7 +24,7 @@ Hello world !
     }
 
     public function testGetHome() {
-        $repo = new gtw\Repository('default');
+        $repo = new gtw\Repository($this->repoName);
         $page = $repo->findFile('/index.wiki');
         $this->assertNotNull($page);
         $this->assertInstanceOf("Gitiwiki\\Storage\\File", $page);
@@ -35,7 +38,7 @@ Hello world !
     }
 
     public function testGetMultiviewHome() {
-        $repo = new gtw\Repository('default');
+        $repo = new gtw\Repository($this->repoName);
         $page = $repo->findFile('/index');
         $this->assertNotNull($page);
         $this->assertInstanceOf("Gitiwiki\\Storage\\File", $page);
@@ -49,7 +52,7 @@ Hello world !
     }
 
     public function testGetArticle() {
-        $repo = new gtw\Repository('default');
+        $repo = new gtw\Repository($this->repoName);
         $page = $repo->findFile('/article.wiki');
         $this->assertNotNull($page);
         $this->assertInstanceOf("Gitiwiki\\Storage\\File", $page);
@@ -58,7 +61,7 @@ Hello world !
     }
 
     public function testGetMultiviewArticle() {
-        $repo = new gtw\Repository('default');
+        $repo = new gtw\Repository($this->repoName);
         $page = $repo->findFile('/article');
         $this->assertNotNull($page);
         $this->assertInstanceOf("Gitiwiki\\Storage\\File", $page);
@@ -67,13 +70,13 @@ Hello world !
     }
 
     public function testGetUnknowFile() {
-        $repo = new gtw\Repository('default');
+        $repo = new gtw\Repository($this->repoName);
         $page = $repo->findFile('/foo.txt');
         $this->assertNull($page);
     }
 
     public function testGetImplicitDirIndex() {
-        $repo = new gtw\Repository('default');
+        $repo = new gtw\Repository($this->repoName);
         $page = $repo->findFile('/manual/');
         $this->assertNotNull($page);
         $this->assertInstanceOf("Gitiwiki\\Storage\\File", $page);
@@ -85,7 +88,7 @@ Hello world !
     }
 
     public function testGetImplicitDirIndexNoTrailingSlash() {
-        $repo = new gtw\Repository('default');
+        $repo = new gtw\Repository($this->repoName);
         $page = $repo->findFile('/manual');
         $this->assertNotNull($page);
         $this->assertInstanceOf("Gitiwiki\\Storage\\File", $page);
@@ -97,7 +100,7 @@ Hello world !
     }
 
     public function testGetDirIndex() {
-        $repo = new gtw\Repository('default');
+        $repo = new gtw\Repository($this->repoName);
         $page = $repo->findFile('/manual/index.wiki');
         $this->assertNotNull($page);
         $this->assertInstanceOf("Gitiwiki\\Storage\\File", $page);
@@ -106,7 +109,7 @@ Hello world !
     }
 
     public function testGetMultiviewDirIndex() {
-        $repo = new gtw\Repository('default');
+        $repo = new gtw\Repository($this->repoName);
         $page = $repo->findFile('/manual/index');
         $this->assertNotNull($page);
         $this->assertInstanceOf("Gitiwiki\\Storage\\File", $page);
@@ -115,7 +118,7 @@ Hello world !
     }
 
     public function testGetImplicitDirDkIndex() {
-        $repo = new gtw\Repository('default');
+        $repo = new gtw\Repository($this->repoName);
         $page = $repo->findFile('/manual2/');
         $this->assertNotNull($page);
         $this->assertInstanceOf("Gitiwiki\\Storage\\File", $page);
@@ -125,7 +128,7 @@ Hello world !
     }
 
     public function testGetImplicitDirDkIndex2() {
-        $repo = new gtw\Repository('default');
+        $repo = new gtw\Repository($this->repoName);
         $page = $repo->findFile('/manual2');
         $this->assertNotNull($page);
         $this->assertInstanceOf("Gitiwiki\\Storage\\File", $page);
@@ -135,7 +138,7 @@ Hello world !
     }
 
     public function testGetDirArticle() {
-        $repo = new gtw\Repository('default');
+        $repo = new gtw\Repository($this->repoName);
         $page = $repo->findFile('/manual2/article2.wiki');
         $this->assertNotNull($page);
         $this->assertInstanceOf("Gitiwiki\\Storage\\File", $page);
@@ -144,7 +147,7 @@ Hello world !
     }
 
     public function testGetDirWithoutIndex() {
-        $repo = new gtw\Repository('default');
+        $repo = new gtw\Repository($this->repoName);
         $page = $repo->findFile('/manual_no_index/');
         $this->assertNotNull($page);
         $this->assertInstanceOf("Gitiwiki\\Storage\\Directory", $page);
@@ -153,7 +156,7 @@ Hello world !
     }
 
     public function testMetaRedirectionAtRoot() {
-        $repo = new gtw\Repository('default');
+        $repo = new gtw\Repository($this->repoName);
         $page = $repo->findFile('/truc.html');
         $this->assertNotNull($page);
         $this->assertInstanceOf("Gitiwiki\\Storage\\Redirection", $page);
@@ -162,7 +165,7 @@ Hello world !
     }
 
     public function testMetaRedirectionInDirectory() {
-        $repo = new gtw\Repository('default');
+        $repo = new gtw\Repository($this->repoName);
         $page = $repo->findFile('/manual/movedpage.wiki');
         $this->assertNotNull($page);
         $this->assertInstanceOf("Gitiwiki\\Storage\\Redirection", $page);
@@ -177,7 +180,7 @@ Hello world !
     }
 
     public function testMetaRedirectionOutsideWiki() {
-        $repo = new gtw\Repository('default');
+        $repo = new gtw\Repository($this->repoName);
         $page = $repo->findFile('/manual/movedpage-outside.wiki');
         $this->assertNotNull($page);
         $this->assertInstanceOf("Gitiwiki\\Storage\\Redirection", $page);
@@ -187,7 +190,7 @@ Hello world !
 
     
     public function testGlobalRedirection() {
-        $repo = new gtw\Repository('default');
+        $repo = new gtw\Repository($this->repoName);
         $page = $repo->findFile('/manual2.old/foo.txt');
         $this->assertNotNull($page);
         $this->assertInstanceOf("Gitiwiki\\Storage\\Redirection", $page);
@@ -202,7 +205,7 @@ Hello world !
     }
 
     public function testGlobalRedirection2() {
-        $repo = new gtw\Repository('default');
+        $repo = new gtw\Repository($this->repoName);
         $page = $repo->findFile('/manual2/unexistant');
         $this->assertNotNull($page);
         $this->assertInstanceOf("Gitiwiki\\Storage\\Redirection", $page);
@@ -211,7 +214,7 @@ Hello world !
     }
 
     public function testGlobalRedirectionOutsideWiki() {
-        $repo = new gtw\Repository('default');
+        $repo = new gtw\Repository($this->repoName);
         $page = $repo->findFile('/manual/moved-page-outside.txt');
         $this->assertNotNull($page);
         $this->assertInstanceOf("Gitiwiki\\Storage\\Redirection", $page);
@@ -220,7 +223,7 @@ Hello world !
     }
 
     public function testGlobalRedirectionOutsideSite() {
-        $repo = new gtw\Repository('default');
+        $repo = new gtw\Repository($this->repoName);
         $page = $repo->findFile('/something/elsewhere.txt');
         $this->assertNotNull($page);
         $this->assertInstanceOf("Gitiwiki\\Storage\\Redirection", $page);
@@ -229,7 +232,7 @@ Hello world !
     }
 
     public function testGetTestAlias() {
-        $repo = new gtw\Repository('default');
+        $repo = new gtw\Repository($this->repoName);
         $page = $repo->findFile('testalias');
         $this->assertNotNull($page);
         $this->assertInstanceOf("Gitiwiki\\Storage\\File", $page);
