@@ -52,7 +52,9 @@ class GitCommitStamp
 
   public function unserialize($data)
   {
-  	assert(preg_match('/^(.+?)\s+<(.+?)>\s+(\d+)\s+([+-]\d{4})$/', $data, $m));
+  	if (!preg_match('/^(.+?)\s+<(.+?)>\s+(\d+)\s+([+-]\d{4})$/', $data, $m)) {
+  	    return;
+    }
   	$this->name = $m[1];
   	$this->email = $m[2];
   	$this->time = intval($m[3]);

@@ -32,7 +32,7 @@ class SHA
   {
     if (!is_null($sha))
     {
-      if (is_numeric("0x".$sha) && strlen($sha) == 40)
+      if (preg_match("/^[a-f0-9A-F]{40}$/", $sha))
       {
         // hex sha value
         $this->bin = (string)pack('H40', $sha);
@@ -40,7 +40,7 @@ class SHA
       else
       {
         $hex = bin2hex($sha);
-        if (is_numeric("0x".$hex) && strlen($hex) == 40)
+        if (preg_match("/^[a-f0-9A-F]{40}$/", $hex))
         {
           $this->bin = (string)$sha;
         }

@@ -8,6 +8,10 @@ APPNAME="gitiwiki"
 DISTFILESUFFIX="dev"
 HOMEUSER=/home/vagrant
 
+
+
+source $VAGRANTDIR/system.sh
+
 echo "Install configuration file"
 # create  profiles.ini.php
 cp -a $APPDIR/$APPNAME/var/config/profiles.ini.php.$DISTFILESUFFIX $APPDIR/$APPNAME/var/config/profiles.ini.php
@@ -16,7 +20,6 @@ cp -a $APPDIR/$APPNAME/var/config/localconfig.ini.php.$DISTFILESUFFIX $APPDIR/$A
 if [ -f $APPDIR/$APPNAME/var/config/installer.ini.php ]; then
     rm $APPDIR/$APPNAME/var/config/installer.ini.php
 fi
-
 
 # create temp directory
 echo "Prepare temp dir"
@@ -48,6 +51,6 @@ fi
 
 (cd $APPDIR/$APPNAME && composer install)
 
+initapp $APPDIR
 
-php $APPDIR/$APPNAME/install/installer.php
 
