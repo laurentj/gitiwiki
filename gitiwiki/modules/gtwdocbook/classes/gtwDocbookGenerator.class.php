@@ -243,7 +243,7 @@ class gtwDocbookGenerator {
     }
 
     protected function downloadImage($url) {
-
+        //FIXME use guzzlehttp
         if(!jHttp::readURL($url,$ssl,$host,$port,$path,$user,$pass))
             return false;
         $url= parse_url($url);

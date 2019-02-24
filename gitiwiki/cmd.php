@@ -8,4 +8,5 @@
 * @licence  http://www.gnu.org/licenses/gpl.html GNU General Public Licence, see LICENCE file
 */
 require (__DIR__.'/application.init.php');
-require(LIB_PATH.'jelix-scripts/includes/cmd.inc.php');
+
+\Jelix\DevHelper\JelixCommands::launch();

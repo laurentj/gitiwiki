@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module xmlns="http://jelix.org/ns/module/1.0">
     <info id="mainjelix.org" name="main" createdate="2012-03-09">
-        <version date="2012-03-09">0.2pre</version>
+        <version date="2019-02-24">0.3</version>
         <label lang="en_US">main</label>
         <description lang="en_US" />
         <license URL="">All rights reserved</license>
-        <copyright>2012-2013 Laurent Jouanneau</copyright>
+        <copyright>2012-2019 Laurent Jouanneau</copyright>
         <creator name="Laurent Jouanneau" email="laurent@jelix.org" active="true"/>
         <!--<contributor name="hisname" email="hisemail@yoursite.undefined" active="true" since="" role=""/>-->
         <homepageURL>http://innophi.com</homepageURL>
     </info>
     <dependencies>
-        <jelix minversion="1.4pre.2287" maxversion="1.6.*"/>
+        <jelix minversion="1.4pre.2287" maxversion="1.7.*"/>
     </dependencies>
 </module>

@@ -18,7 +18,7 @@ class reposListZone extends jZone {
         $order = $this->param( 'order', 'asc' ); // 'asc' or 'desc'
         //passing a 'currentRepoName' param will make the corresponding repo <li> to get a "selected" class
      
-        $conf = jIniFile::read(jApp::configPath('profiles.ini.php'));
+        $conf = \Jelix\IniFile\Util::read(jApp::varConfigPath('profiles.ini.php'));
         $list = array();
         foreach($conf as $prop=> $val) {
             if (is_array($val) && preg_match('/^gtwrepo\:(.*)$/', $prop, $m)) {

@@ -6,7 +6,7 @@ class gitiwikiModuleUpgrader_conftoprofiles extends jInstallerModule {
     public $date = '2012-05-06';
 
     function install() {
-        $profiles = new jIniFileModifier(jApp::configPath('profiles.ini.php'));
+        $profiles = new \Jelix\IniFile\IniModifier(jApp::varConfigPath('profiles.ini.php'));
         $defaultconf = $this->config->getMaster();
         $list = $defaultconf->getSectionList();
         $first = true;

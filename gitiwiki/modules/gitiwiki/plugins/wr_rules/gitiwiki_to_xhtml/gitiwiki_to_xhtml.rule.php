@@ -10,7 +10,7 @@
 * @license    GNU PUBLIC LICENCE
 */
 
-require_once(LIB_PATH.'wikirenderer/rules/dokuwiki_to_xhtml.php');
+require_once(jApp::appPath('vendor/jelix/wikirenderer/src/rules/dokuwiki_to_xhtml.php'));
 
 
 
