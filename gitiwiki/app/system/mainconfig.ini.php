@@ -2,8 +2,6 @@
 ;for security reasons , don't remove or modify the first line
 ;this file doesn't list all possible properties. See lib/jelix/core/defaultconfig.ini.php for that
 
-startModule=main
-startAction="default:index"
 
 locale=en_US
 charset=UTF-8
@@ -23,23 +21,20 @@ domainName=
 
 
 [modules]
-; modulename.access = x where x =
-; 0 if installed but not used (database schema is ok for example)
-; 1 if accessible by other modules (other modules can use it, but it is not accessible directly through the web)
-; 2 if public (accessible through the web)
 
-jelix.access=2
 
-jacl2db.access=0
-jauth.access=0
-jauthdb.access=0
 
-gitiwiki.access=2
-main.access=2
-gtwdocbook.access=1
-gtwsphinx.access=2
-sphinxsearch.access=1
 
+jelix.enabled=on
+jacl2db.enabled=off
+jauth.enabled=off
+jauthdb.enabled=off
+gitiwiki.enabled=on
+main.enabled=on
+gtwdocbook.enabled=on
+gtwsphinx.enabled=on
+sphinxsearch.enabled=on
+jelix.installparam="wwwfiles=vhost"
 [coordplugins]
 ;name = file_ini_name or 1
 
@@ -51,7 +46,7 @@ html=myHtmlResponse
 
 [jResponseHtml]
 ; list of active plugins for jResponseHtml
-plugins = 
+plugins=
 
 [error_handling]
 ;errorMessage="A technical error has occured (code: %code%). Sorry for this inconvenience."
@@ -61,8 +56,6 @@ plugins =
 ;force=on
 
 [urlengine]
-; name of url engine :  "simple", "basic_significant" or "significant"
-engine=significant
 
 ; this is the url path to the jelix-www content (you can found this content in lib/jelix-www/)
 ; because the jelix-www directory is outside the yourapp/www/ directory, you should create a link to
@@ -89,35 +82,12 @@ multiview=off
 ; : basePath="/aaa/" )
 basePath=
 
-defaultEntrypoint=index
 
 entrypointExtension=.php
 
 ; action to show the 'page not found' error
 notfoundAct="jelix~error:notfound"
 
-; list of actions which require https protocol for the simple url engine
-; syntax of the list is the same as explained in the simple_urlengine_entrypoints
-simple_urlengine_https=
-
-[simple_urlengine_entrypoints]
-; parameters for the simple url engine. This is the list of entry points
-; with list of actions attached to each entry points
-
-; script_name_without_suffix = "list of action selectors separated by a space"
-; selector syntax :
-;   m~a@r    -> for the action "a" of the module "m" and for the request of type "r"
-;   m~c:*@r  -> for all actions of the controller "c" of the module "m" and for the request of type "r"
-;   m~*@r    -> for all actions of the module "m" and for the request of type "r"
-;   @r       -> for all actions for the request of type "r"
-
-index="@classic"
-
-
-[basic_significant_urlengine_entrypoints]
-; for each entry point, it indicates if the entry point name
-; should be include in the url or not
-index=on
 
 [fileLogger]
 default=messages.log
