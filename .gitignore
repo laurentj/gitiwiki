@@ -3,8 +3,11 @@
 Thumbs.db
 temp/gitiwiki/*
 gitiwiki/var/config/installer.ini.php
+gitiwiki/var/config/installer.bak.ini.php
 gitiwiki/var/config/profiles.ini.php
 gitiwiki/var/config/localconfig.ini.php
+gitiwiki/var/config/liveconfig.ini.php
+gitiwiki/var/config/localurls.xml
 gitiwiki/var/log/*
 gitiwiki/var/sessions/*
 gitiwiki/var/uploads/*
