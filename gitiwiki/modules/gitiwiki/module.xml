@@ -13,7 +13,6 @@
         <jelix minversion="1.4pre.2272" maxversion="1.7.*"/>
     </dependencies>
     <autoload>
-        <namespace name="Glip" dir="classes/glip/lib/" />
         <namespace name="Gitiwiki" dir="classes/" />
     </autoload>
 </module>
