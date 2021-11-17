@@ -1,0 +1,45 @@
+#!/usr/bin/env bash
+
+COMMAND="$1"
+shift
+
+export IMG_PREFIX=gitiwiki
+export APPBRANCH=
+
+IMAGE_PHP=${IMG_PREFIX}_php${APPBRANCH}
+
+if [ "$COMMAND" == "" ]; then
+    echo "Error: command is missing"
+    echo "Possible commands: "
+    echo "- Into php: reset, rights, clean-temp, install, composer-install,"
+    echo "  composer-update, unit-tests"
+    echo "- To enter into the php container: shell, shellroot"
+    exit 1;
+fi
+
+case $COMMAND in
+    clean-temp)
+        docker exec -t -i $IMAGE_PHP appctl.sh clean_tmp;;
+    reset)
+        docker exec -t -i $IMAGE_PHP appctl.sh reset;;
+    install)
+        docker exec -t -i $IMAGE_PHP appctl.sh install
+        ;;
+    rights)
+        docker exec -t -i $IMAGE_PHP appctl.sh rights;;
+    composer-install)
+        docker exec -t -i $IMAGE_PHP appctl.sh composer_install;;
+    composer-update)
+        docker exec -t -i $IMAGE_PHP appctl.sh composer_update;;
+    unit-tests)
+        docker exec -t -i $IMAGE_PHP appctl.sh unit-tests $@;;
+    shell)
+       docker exec -it --user usertest $IMAGE_PHP  /bin/bash -l;;
+    shell-root)
+       docker exec -it $IMAGE_PHP  /bin/bash  -l;;
+    *)
+        echo "wrong command"
+        exit 2
+        ;;
+esac
+

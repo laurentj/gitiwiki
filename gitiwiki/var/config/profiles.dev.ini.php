@@ -5,7 +5,7 @@
 current-manual=mymanual
 
 [gtwrepo:default]
-path = /home/vagrant/repositories/default/
+path = /srv/gitiwiki/tests/data/repositories/default/
 generators = gitiwikiGenerators
 branch = master
 title= "Test repository"
@@ -13,7 +13,7 @@ sphinxIndex= "gitiwikiTest"
 
 
 [gtwrepo:defaultwithbasepath]
-path="/home/vagrant/repositories/default/"
+path="/srv/gitiwiki/tests/data/repositories/default/"
 generators=gitiwikiGenerators
 branch=master
 title="Test repository 2"
@@ -21,7 +21,7 @@ basepath=/rootmanual/
 
 
 [gtwrepo:mymanual]
-path = /home/vagrant/repositories/default/
+path = /srv/gitiwiki/tests/data/repositories/default/
 generators = gitiwikiGenerators
 branch = master
 title= "Test repository"

@@ -9,6 +9,7 @@ plugins=debugbar
 [mailer]
 webmasterEmail="root@localhost"
 webmasterName=
+mailerType=file
 
 [logger]
 ; list of loggers for each categories of log messages
@@ -30,7 +31,7 @@ soap=
 
 
 [gitiwiki]
-booksPath="/home/vagrant/books"
+booksPath="/srv/gitiwiki/tests/data/books"
 
 [gitiwikiGenerators]
 gtw="gitiwiki~gtwWikiRenderer,gitiwiki_to_xhtml"
