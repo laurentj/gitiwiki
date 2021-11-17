@@ -15,6 +15,5 @@ gitiwiki/var/uploads/*
 gitiwiki/var/books/*
 gitiwiki/var/repositories/*
 gitiwiki/vendor/
-dev/.vagrant
 tests/data/books
 tests/data/repositories
