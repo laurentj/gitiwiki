@@ -144,20 +144,20 @@ Prefer to generate informations with the script. It's better. You can call
 it into a "cron" script (a shell script that is called periodically by your system),
 which will update the repository and then regenerate the book informations.
 
-To generate with the command line, open a shell, go into the gitiwiki/scripts/
+To generate with the command line, open a shell, go into the gitiwiki/
 directory, and type:
 
 ```bash
-   php manage.php gitiwiki~wiki:generateBook {repository_name} {summary_page}
+   php console.php gitiwiki:book {repository_name} {index_page}
 ```
 
 Replace `{repository_name}` by the name you give to the repository in the configuration. And
-replace `{summary_page}` by the path of the summary page into the repository.
+replace `{index_page}` by the path of the index page into the repository.
 
 For example:
 
 ```bash
-   php manage.php gitiwiki~wiki:generateBook mywiki index
+   php console.php gitiwiki:book mywiki index
 ```
 
 ## Generating a PDF
@@ -167,22 +167,22 @@ generate first a [Docbook](http://www.docbook.org/) file (this is an xml file to
 and then you can pass this file to external tools like [dblatex](http://dblatex.sourceforge.net/),
 to generate PDF files.
 
-To generate the docbook file,  open a shell, go into the gitiwiki/scripts/
+To generate the docbook file,  open a shell, go into the gitiwiki/
 directory, and type:
 
 ```bash
-   php manage.php gtwdocbook~docbook:index {repository_name} {summary_page}
+   php console.php gtwdocbook:docbook {repository_name} {index_page}
 ```
 
 Replace `{repository_name}` by the name you give to the repository in the configuration. And
-replace `{summary_page}` by the path of the summary page into the repository.
+replace `{index_page}` by the path of the index page into the repository.
 
 You'll then have a docbook.xml in the book directory.
 
 For example:
 
 ```bash
-   php manage.php gtwdocbook~docbook:index  mywiki index
+   php console.php gtwdocbook:docbook  mywiki index
 ```
 
 You'll have a gitiwiki/var/books/mywiki/books/index.gtw/docbook.xml file.

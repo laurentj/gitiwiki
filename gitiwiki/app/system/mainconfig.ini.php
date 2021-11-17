@@ -11,20 +11,12 @@ timeZone="Europe/Paris"
 
 theme=default
 
-pluginsPath="app:plugins/,lib:jelix-plugins/,module:gitiwiki/plugins/,module:gtwdocbook"
-
-modulesPath="lib:jelix-modules/,app:modules/"
-
 ; default domain name to use with jfullurl for example.
 ; Let it empty to use $_SERVER['SERVER_NAME'] value instead.
 domainName=
 
 
 [modules]
-
-
-
-
 jelix.enabled=on
 jacl2db.enabled=off
 jauth.enabled=off
@@ -35,6 +27,7 @@ gtwdocbook.enabled=on
 gtwsphinx.enabled=on
 sphinxsearch.enabled=on
 jelix.installparam="wwwfiles=vhost"
+
 [coordplugins]
 ;name = file_ini_name or 1
 
