@@ -98,16 +98,16 @@ class gtwDocbookGenerator {
         if ($file == null)
             $c .= $emptyContent;
 
-        elseif ($file instanceof gtwRedirection) {
+        elseif ($file instanceof gtw\Redirection) {
             $c .= $emptyContent;
         }
-        elseif($file instanceof gtwFile) {
+        elseif($file instanceof gtw\File) {
             if ($file->isStaticContent()) {
                 $c .= $emptyContent;
             }
             else {
                 $content = $file->getContent();
-                $wiki = new jWiki('gitiwiki_to_docbook');
+                $wiki = new \jWiki('gitiwiki_to_docbook');
                 $conf = $wiki->getConfig();
                 $conf->docbookGen = $this;
                 $conf->siteURL = $this->siteURL;
@@ -242,24 +242,22 @@ class gtwDocbookGenerator {
         return '';
     }
 
-    protected function downloadImage($url) {
-        //FIXME use guzzlehttp
-        if(!jHttp::readURL($url,$ssl,$host,$port,$path,$user,$pass))
-            return false;
-        $url= parse_url($url);
-
-        $http = new jHttp($host, $port);
-        if(!$http->get($path)) {
+    protected function downloadImage($url)
+    {
+        $client = new \GuzzleHttp\Client();
+        $res = $client->get($url, array());
+        if ($res->getStatusCode() >= 400) {
             return false;
         }
 
-        $filename = strtr($path,'?&=#','----');
+        $url= parse_url($url);
+        $filename = strtr($url['path'],'?&=#','----');
         if(substr($filename, 0,1) == '/')
             $filename = substr($filename, 1);
 
         $filename = $this->bookPath.'medias/'.$filename;
         jFile::createDir(dirname($filename));
-        file_put_contents($filename, $http->getContent());
+        file_put_contents($filename, (string) $res->getBody());
 
         return $filename;
     }
