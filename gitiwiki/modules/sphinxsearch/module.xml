@@ -11,6 +11,6 @@
         <homepageURL>http://jelix.org</homepageURL>
     </info>
     <dependencies>
-        <jelix minversion="1.4pre.2272" maxversion="1.7.*"/>
+        <jelix minversion="1.7.0" maxversion="1.7.*"/>
     </dependencies>
 </module>

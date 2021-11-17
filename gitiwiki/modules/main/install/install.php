@@ -3,22 +3,17 @@
 * @package   gitiwiki
 * @subpackage main
 * @author    Laurent Jouanneau
-* @copyright 2012 Laurnent Jouanneau
+* @copyright 2012-2021 Laurnent Jouanneau
 * @link      http://innophi.com
 * @license    All rights reserved
 */
 
 
-class mainModuleInstaller extends jInstallerModule {
+use Jelix\Installer\Module\API\InstallHelpers;
 
-    function install() {
-        //if ($this->firstDbExec())
-        //    $this->execSQLScript('sql/install');
+class mainModuleInstaller extends \Jelix\Installer\Module\Installer {
 
-        /*if ($this->firstExec('acl2')) {
-            jAcl2DbManager::addSubject('my.subject', 'main~acl.my.subject', 'subject.group.id');
-            jAcl2DbManager::addRight('admins', 'my.subject'); // for admin group
-        }
-        */
+    function install(InstallHelpers $helpers)
+    {
     }
 }

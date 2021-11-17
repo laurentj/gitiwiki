@@ -16,11 +16,11 @@ Here is a sample config (part of config for Jelix docs) :
     source docs-jelix-1-0-fr
     {
     	type			= xmlpipe
-    	xmlpipe_command		= sudo -u www-data php /path/to/app/doc_fr/scripts/manage.php gtwsphinx~sphinxSource:sphinxSearchExport manuel-1.0 index.gtw
+    	xmlpipe_command		= sudo -u www-data php /path/to/app/doc_fr/console.php gtwsphinx:sphinxSearchExport manuel-1.0 index.gtw
     }
     source docs-jelix-1-0-en : docs-jelix-1-0-fr
     {
-    	xmlpipe_command		= sudo -u www-data php /path/to/app/doc_en/scripts/manage.php gtwsphinx~sphinxSource:sphinxSearchExport manual-1.0 index.gtw
+    	xmlpipe_command		= sudo -u www-data php /path/to/app/doc_en/console.php gtwsphinx:sphinxSearchExport manual-1.0 index.gtw
     }
     
     index docs-jelix-1-0-fr
