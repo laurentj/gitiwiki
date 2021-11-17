@@ -37,7 +37,7 @@ class defaultCtrl extends jController {
 
         $rep = $this->getResponse('html');
 
-        $conf = jIniFile::read(jApp::configPath('profiles.ini.php'));
+        $conf = \Jelix\IniFile\Util::read(jApp::varConfigPath('profiles.ini.php'));
         $list = array();
         foreach($conf as $prop=> $val) {
             if (is_array($val) && preg_match('/^gtwrepo\:(.*)$/', $prop, $m)) {

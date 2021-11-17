@@ -1,19 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module xmlns="http://jelix.org/ns/module/1.0">
     <info id="gitiwiki@jelix.org" name="gitiwiki" createdate="2012-03-03">
-        <version date="2018-04-18">0.3</version>
+        <version date="2019-02-24">0.4</version>
         <label lang="en_US">gitiwiki</label>
         <description lang="en_US" />
         <license URL="">GPL</license>
-        <copyright>2012-2018 Laurent Jouanneau</copyright>
+        <copyright>2012-2021 Laurent Jouanneau</copyright>
         <creator name="Laurent Jouanneau" email="laurent@jelix.org"/>
         <homepageURL>http://jelix.org</homepageURL>
     </info>
     <dependencies>
-        <jelix minversion="1.4pre.2272" maxversion="1.6.*"/>
+        <jelix minversion="1.7.0" maxversion="1.7.*"/>
     </dependencies>
     <autoload>
-        <namespace name="Glip" dir="classes/glip/lib/" />
         <namespace name="Gitiwiki" dir="classes/" />
     </autoload>
 </module>

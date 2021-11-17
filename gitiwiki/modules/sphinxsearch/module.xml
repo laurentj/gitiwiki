@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module xmlns="http://jelix.org/ns/module/1.0">
     <info id="sphinxsearch@jelix.org" name="sphinxsearch" createdate="2012-12-04">
-        <version date="2012-12-04">0.1a1</version>
+        <version date="2019-02-24">0.2</version>
         <label lang="en_US">sphinxsearch</label>
         <description lang="en_US" />
         <license URL="">GPL</license>
@@ -11,6 +11,6 @@
         <homepageURL>http://jelix.org</homepageURL>
     </info>
     <dependencies>
-        <jelix minversion="1.4pre.2272" maxversion="1.6.*"/>
+        <jelix minversion="1.7.0" maxversion="1.7.*"/>
     </dependencies>
 </module>

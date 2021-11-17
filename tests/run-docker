@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+
+set -e
+
+export JELIX_USER_ID=${JELIX_USER_ID:-$(id -u)}
+export JELIX_GROUP_ID=${JELIX_GROUP_ID:-$(id -g)}
+
+CMD=$1
+
+export IMG_PREFIX=gitiwiki
+export APPBRANCH=
+
+
+if [ "$APP_WEB_PORT" == "" ]; then
+  export APP_WEB_PORT=8051
+fi
+
+if [ "$PHP_VERSION" == "" ]; then
+  export PHP_VERSION=7.4
+fi
+
+#if [ "$CMD" == "build" ]; then
+
+#fi
+
+if [ "$CMD" == "reset" ]; then
+    # Stop/Remove containers
+    docker-compose -p ${IMG_PREFIX}-tests${APPBRANCH} rm -sf || true
+    exit 0
+elif [ -z "$CMD" ]; then
+    CMD="up"
+else
+    shift
+fi
+
+
+docker-compose -p ${IMG_PREFIX}-tests${APPBRANCH} $CMD

@@ -9,7 +9,7 @@
 */
 
 $appPath = __DIR__.'/';
-require (__DIR__.'/../lib/jelix/init.php');
+require (__DIR__.'/vendor/autoload.php');
 
 jApp::initPaths(
     $appPath,
@@ -20,3 +20,12 @@ jApp::initPaths(
     $appPath.'scripts/'
 );
 jApp::setTempBasePath(realpath($appPath.'../temp/gitiwiki/').'/');
+require (__DIR__.'/vendor/jelix_app_path.php');
+
+jApp::declareModulesDir(array(
+    __DIR__.'/modules/'
+));
+jApp::declarePluginsDir(array(
+    __DIR__.'/plugins'
+));
+
