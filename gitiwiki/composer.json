@@ -11,15 +11,20 @@
             "email": "laurent@jelix.org"
         }
     ],
+  "config": {
+    "allow-plugins": {
+      "jelix/composer-module-setup": true
+    }
+  },
     "require": {
-        "php": ">=5.6",
-        "jelix/jelix": "1.7.*",
+        "php": ">=7.4",
+        "jelix/jelix": "dev-jelix-1.8.x",
         "jelix/wikirenderer-plugin": "1.7.*",
         "laurentj/glip": "1.0.*",
-        "guzzlehttp/guzzle": "^6.2.0"
+        "guzzlehttp/guzzle": "^7.5.0"
     },
     "require-dev": {
-        "phpunit/phpunit": "5.7.*"
+        "phpunit/phpunit": "9.6.*"
     },
     "autoload": {
         "psr-4": {

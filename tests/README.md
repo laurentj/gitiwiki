@@ -53,7 +53,7 @@ You will see only the jelix.org web site.
 To view other web sites, you should add this into your `/etc/hosts`:
 `127.0.0.1 gitiwiki.local`
 
-Then you could launch your browser at `http://gitiwiki:8051`.
+Then you could launch your browser at `http://gitiwiki.local:8051`.
 
 You can change the port by setting the environment variable `APP_WEB_PORT`
 before launching `run-docker`.

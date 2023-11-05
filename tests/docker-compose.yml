@@ -4,12 +4,13 @@ services:
     build:
       context: ./docker-conf/phpfpm
       args:
-        fpm_user_id: ${JELIX_USER_ID}
-        fpm_group_id: ${JELIX_GROUP_ID}
         php_version: ${PHP_VERSION}
     container_name: ${IMG_PREFIX}_php${APPBRANCH}
     environment:
+      APP_USER_ID: ${JELIX_USER_ID}
+      APP_GROUP_ID: ${JELIX_GROUP_ID}
       APP_WEB_PORT: "${APP_WEB_PORT}"
+      DISPLAY_ERRORS: "on"
     volumes:
       - "../:/srv/gitiwiki"
     networks:

@@ -10,7 +10,7 @@ generators = gitiwikiGenerators
 branch = master
 title= "Test repository"
 sphinxIndex= "gitiwikiTest"
-
+order=2
 
 [gtwrepo:defaultwithbasepath]
 path="/srv/gitiwiki/tests/data/repositories/default/"
@@ -18,7 +18,7 @@ generators=gitiwikiGenerators
 branch=master
 title="Test repository 2"
 basepath=/rootmanual/
-
+order=3
 
 [gtwrepo:mymanual]
 path = /srv/gitiwiki/tests/data/repositories/default/
@@ -28,6 +28,7 @@ title= "Test repository"
 sphinxIndex= "gitiwikiTest"
 robotsNoIndex=off
 urlName=current-manual
+order=1
 
 [jcache]
 

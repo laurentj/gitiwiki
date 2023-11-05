@@ -34,7 +34,7 @@ case $COMMAND in
     unit-tests)
         docker exec -t -i $IMAGE_PHP appctl.sh unit-tests $@;;
     shell)
-       docker exec -it --user usertest $IMAGE_PHP  /bin/bash -l;;
+       docker exec -it --user userphp $IMAGE_PHP  /bin/bash -l;;
     shell-root)
        docker exec -it $IMAGE_PHP  /bin/bash  -l;;
     *)
