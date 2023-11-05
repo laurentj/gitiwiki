@@ -210,7 +210,7 @@ case $COMMAND in
         composerUpdate $APPDIR
         ;;
     unit-tests)
-        UTCMD="cd $APPDIR/tests/ && php runtests.php --all-modules"
+        UTCMD="cd $ROOTDIR/tests/units/ && $APPDIR/vendor/bin/phpunit"
         su $APP_USER -c "$UTCMD"
         ;;
     *)

@@ -4,7 +4,7 @@
 
 use \Gitiwiki\Storage as gtw;
 
-class getFileWithBasePathTest extends PHPUnit_Framework_TestCase {
+class getFileWithBasePathTest extends \PHPUnit\Framework\TestCase {
 
 
     public function testGetUnknowFile() {

@@ -1,7 +1,7 @@
 <?php
 
 //require_once(dirname(__FILE__).'/../classes/gtw\Repository.class.php');
-
+require_once(__DIR__.'/getFileTest.php');
 use \Gitiwiki\Storage as gtw;
 
 class getFileRepoAliasTest extends getFileTest {

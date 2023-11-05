@@ -4,7 +4,7 @@
 
 use \Gitiwiki\Storage as gtw;
 
-class getFileTest extends PHPUnit_Framework_TestCase {
+class getFileTest extends \PHPUnit\Framework\TestCase {
 
     protected $repoName = 'default';
 

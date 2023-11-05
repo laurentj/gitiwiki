@@ -17,3 +17,4 @@ gitiwiki/var/repositories/*
 gitiwiki/vendor/
 tests/data/books
 tests/data/repositories
+.phpunit.result.cache
