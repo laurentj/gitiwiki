@@ -6,11 +6,11 @@
         <description lang="en_US" />
         <license URL="">GPL</license>
         <copyright>2012 Brice Tencé</copyright>
-        <creator name="Brice Tencé" email="brice.tence@gmail.com" active="true"/>
+        <creator name="Brice Tencé" email="brice.tence@gmail.com"/>
         <!--<contributor name="hisname" email="hisemail@yoursite.undefined" active="true" since="" role=""/>-->
-        <homepageURL>http://jelix.org</homepageURL>
+        <homepageURL>https://jelix.org</homepageURL>
     </info>
     <dependencies>
-        <jelix minversion="1.7.0" maxversion="1.7.*"/>
+        <jelix minversion="1.7.0" maxversion="1.8.*"/>
     </dependencies>
 </module>
