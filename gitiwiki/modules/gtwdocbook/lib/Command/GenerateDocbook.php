@@ -82,6 +82,6 @@ class GenerateDocbook extends \Jelix\Scripts\ModuleCommandAbstract
         \jFile::write($gen->getBookPath().'docbook.xml', $tpl->fetch('docbook', 'xml'));
 
         $output->writeln("docbook built.\n");
-
+        return 0;
     }
 }

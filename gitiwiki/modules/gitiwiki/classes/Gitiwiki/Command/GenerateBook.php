@@ -70,5 +70,6 @@ class GenerateBook extends \Jelix\Scripts\ModuleCommandAbstract
         else {
             throw new \Exception('The given path is not a page');
         }
+        return 0;
     }
 }

@@ -14,6 +14,6 @@
         <jelix minversion="1.7.0" maxversion="1.8.*"/>
     </dependencies>
     <autoload>
-        <namespace name="GtwSphinx" dir="lib/" />
+        <psr4 name="GtwSphinx" dir="lib/" />
     </autoload>
 </module>

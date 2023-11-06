@@ -13,6 +13,6 @@
         <jelix minversion="1.7.0" maxversion="1.8.*"/>
     </dependencies>
     <autoload>
-        <namespace name="GtwDocbook" dir="lib/" />
+        <psr4 name="GtwDocbook" dir="lib/" />
     </autoload>
 </module>
