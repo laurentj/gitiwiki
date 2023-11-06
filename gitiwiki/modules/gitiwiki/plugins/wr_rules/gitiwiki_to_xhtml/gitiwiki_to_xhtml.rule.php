@@ -1,6 +1,4 @@
 <?php
-
-
 /**
  * @package   gitiwiki
  * @subpackage
@@ -10,11 +8,7 @@
  * @license    GNU PUBLIC LICENCE
  */
 
-require_once(jApp::appPath('vendor/jelix/wikirenderer/src/rules/dokuwiki_to_xhtml.php'));
-
-
-
-class  gitiwiki_to_xhtml extends dokuwiki_to_xhtml  {
+class gitiwiki_to_xhtml extends dokuwiki_to_xhtml  {
 
     public $defaultTextLineContainer = 'WikiHtmlTextLine';
 

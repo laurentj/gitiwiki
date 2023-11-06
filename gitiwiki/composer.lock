@@ -976,16 +976,16 @@
         },
         {
             "name": "jelix/wikirenderer",
-            "version": "v3.1.9",
+            "version": "v3.1.10",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laurentj/wikirenderer.git",
-                "reference": "a9b3171271b3df07872fbce8a4eefbf9f7844e48"
+                "reference": "d1be6ab7e0bbdfc3947b099dcf7c34a6033fd832"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laurentj/wikirenderer/zipball/a9b3171271b3df07872fbce8a4eefbf9f7844e48",
-                "reference": "a9b3171271b3df07872fbce8a4eefbf9f7844e48",
+                "url": "https://api.github.com/repos/laurentj/wikirenderer/zipball/d1be6ab7e0bbdfc3947b099dcf7c34a6033fd832",
+                "reference": "d1be6ab7e0bbdfc3947b099dcf7c34a6033fd832",
                 "shasum": ""
             },
             "require": {
@@ -1021,7 +1021,7 @@
                 "issues": "https://github.com/laurentj/wikirenderer/issues",
                 "source": "https://github.com/laurentj/wikirenderer"
             },
-            "time": "2023-02-07T10:05:49+00:00"
+            "time": "2023-11-06T14:46:19+00:00"
         },
         {
             "name": "jelix/wikirenderer-plugin",
