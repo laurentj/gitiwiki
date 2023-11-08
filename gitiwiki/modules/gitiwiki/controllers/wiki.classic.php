@@ -58,8 +58,11 @@ class wikiCtrl extends jController {
         }
         elseif($page instanceof gtw\File) {
             if ($page->isStaticContent()) {
+                /**
+                 * @var jResponseBinary
+                 */
                 $resp = $this->getResponse('binary');
-                $resp->fileName = $page->getName();
+                $resp->outputFileName = $page->getName();
                 $resp->content = $page->getContent();
                 $resp->mimeType = $page->getMimeType();
                 $resp->doDownload = false;
