@@ -16,7 +16,7 @@ if [ "$APP_WEB_PORT" == "" ]; then
 fi
 
 if [ "$PHP_VERSION" == "" ]; then
-  export PHP_VERSION=8.1
+  export PHP_VERSION=8.4
 fi
 
 #if [ "$CMD" == "build" ]; then
@@ -25,7 +25,7 @@ fi
 
 if [ "$CMD" == "reset" ]; then
     # Stop/Remove containers
-    docker-compose -p ${IMG_PREFIX}-tests${APPBRANCH} rm -sf || true
+    docker compose -p ${IMG_PREFIX}-tests${APPBRANCH} rm -sf || true
     exit 0
 elif [ -z "$CMD" ]; then
     CMD="up"
@@ -34,4 +34,4 @@ else
 fi
 
 
-docker-compose -p ${IMG_PREFIX}-tests${APPBRANCH} $CMD
+docker compose -p ${IMG_PREFIX}-tests${APPBRANCH} $CMD
