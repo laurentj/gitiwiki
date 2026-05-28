@@ -3,7 +3,7 @@
 * @package   gitiwiki
 * @subpackage gitiwiki
 * @author    Laurent Jouanneau
-* @copyright 2012-2013 laurent Jouanneau
+* @copyright 2012-2026 laurent Jouanneau
 * @link      http://jelix.org
 * @license    GNU PUBLIC LICENCE
 */
@@ -12,6 +12,8 @@ namespace Gitiwiki\Storage;
 class Books {
 
     protected $booksPath = '';
+
+    protected $bookId = '';
 
     function __construct() {
         if (isset(\jApp::config()->gitiwiki)) {
